@@ -1,0 +1,47 @@
+
+<h1 class="text-center " > {{name}}</h1>
+<div class="d-flex justify-content-center">
+
+<a class="btn btn-primary " href="/admin/add-product?category=ACCESSORIES">ADD {{name}}</a>
+</div>
+
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">sl.no</th>
+      <th scope="col">Product</th>
+      <th scope="col">Description</th>
+      <th scope="col">Subcategory</th>
+      <th scope="col">Qty</th>
+      <th scope="col">Img</th>
+       <th scope="col">price</th>
+       <th scope="col">Options</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each result}}
+    <tr>
+      
+      <th scope="row">{{calculation  @index}}</th>
+      <td>{{this.product-name}}</td>
+      <td>{{this.description}}</td>
+      <td>{{this.sub-category}}</td>
+       <td>{{this.qty}}</td>
+       <td>
+         <div class="row">
+           <img class="col-lg-4 img-box "  src="/product-images/{{this._id}}1.jpg" alt="klj" >
+             <img class="col-lg-4 img-box" src="/product-images/{{this._id}}2.jpg" alt="klj" >
+               <img class="col-lg-4 img-box" src="/product-images/{{this._id}}3.jpg" alt="klj"  >
+
+       </div> </td>
+       <td>{{this.price}}</td>
+        <td>
+         
+        <a class="btn btn-success" href="updateUser?fName={{this.firstName}}&lName={{this.lastName}}&eMail={{this.emailAddress}}&phNum={{this.phoneNumber}}&id={{this._id}}">Update</a>
+         <a class="btn btn-danger" href="deleteUser?id={{this._id}}" onclick="return confirm('Delete {{this.firstName}} ?')" >Delete</a>
+        </td>
+    </tr>
+   {{/each}}
+  </tbody>
+</table>

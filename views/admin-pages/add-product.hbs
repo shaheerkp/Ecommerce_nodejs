@@ -1,0 +1,171 @@
+<form class="p-5" action="/admin/add-product" method="POST" enctype="multipart/form-data" >
+
+    <h3 class="text-center">ADD </h3>
+
+  <div class="form-row justify-content-center">
+    <div class="row">
+
+    <div class=" form-group col-md-6" >
+      <label for="productname ">PRODUCT NAME</label>
+      <input type="text" name="product-name" class="form-control" id="inputEmail4">
+    </div>
+
+             <div class="form-group col-md-6">
+      <label for="category" >CATEGORY</label>
+     <select  name="category" id="category" class="form-select" aria-label="Default select example">
+
+  <option value="bottom wear" >Bottom wear</option>
+  <option value="top wear">Top wear</option>
+  <option value="Accessories">Accessories</option>
+</select>
+    </div>
+    </div>
+
+
+        <div class="row">
+
+      <div class="form-group col-md-6">
+      <label for="description">DESCRIPTION</label>
+      <input name="description" type="text" class="form-control" id="inputEmail4">
+    </div>
+
+        <div class="form-group col-md-6">
+      <label for="subcategory">SUB CATEGORY</label>
+     <select  name="sub-category" id="sub-category" class="form-select" aria-label="Default select example">
+
+  <option value="Pants" id="one" >Pants</option>
+  <option value="Jeans" id="two">Jeans</option>
+  <option value="Shorts"id="three">Shorts</option>
+  <option value="Track pants" id="four">Track pants</option>
+</select>
+    </div>
+
+    </div>
+
+    <div class="row">
+       <div class="form-group col-md-6">
+      <label for="price">PRICE</label>
+      <input name="price" type="number" class="form-control" id="inputEmail4">
+    </div>
+
+        <div class="form-group col-md-6">
+      <label for="price">Quantity</label>
+      <input name="qty" type="number" class="form-control" id="inputEmail4">
+    </div>
+
+    </div>
+    <div class="form-group  ">
+
+
+      <div class="row p-3" > 
+                <div class="mb-3 col-md-4  image-div">
+  <input accept="image/*" type='file' name="img1" id="imgInp" required />
+  <img id="img" class="img-thumbnail"  src="https://cdn.iconscout.com/icon/free/png-256/gallery-187-902099.png"  alt=" https://cdn.iconscout.com/icon/free/png-256/gallery-187-902099.png" />
+</div>
+
+ <div class="mb-3 col-md-4  image-div">
+  <input   accept="image/*" type='file' name="img2" id="imgInp1" required />
+  <img id="img1" class="img-thumbnail image-fluid" src="#" />
+</div>
+
+<div class="mb-3 col-md-4  image-div" >
+  <input accept="image/*" name="img3" type='file' id="imgInp2" required />
+  <img id="img2" class="img-thumbnail" src="#"   alt=" img" />
+</div>
+
+      </div>
+
+      </div>
+
+
+  
+  </div>
+  <button type="submit" class="btn btn-primary">Sign in</button>
+</form>
+
+<script>
+
+  document.getElementById('imgInp').onchange = evt => {
+  const [file] = document.getElementById('imgInp').files
+  if (file) {
+    document.getElementById('img').src = URL.createObjectURL(file)
+  }
+}
+
+document.getElementById('imgInp1').onchange = evt => {
+  const [file] = document.getElementById('imgInp1').files
+  if (file) {
+    document.getElementById('img1').src = URL.createObjectURL(file)
+  }
+}
+
+document.getElementById('imgInp2').onchange = evt => {
+  const [file] = document.getElementById('imgInp2').files
+  if (file) {
+    document.getElementById('img2').src = URL.createObjectURL(file)
+  }
+}
+
+document.getElementById('category').onchange=e=>{
+
+  if(e.target.value=="Accessories"){
+
+   
+
+  document.getElementById('one').innerHTML="Watches"
+  document.getElementById('one').value="Watches"
+  document.getElementById('two').innerHTML="Footwear"
+   document.getElementById('two').value="Footwear"
+   document.getElementById('three').innerHTML="Glasses"
+   document.getElementById('three').value="Glasses"
+   document.getElementById('four').innerHTML="Wallets"
+    document.getElementById('four').value="Wallets"
+  
+  
+  
+
+   
+  
+
+  }
+  else if(e.target.value=="bottom wear"){
+    console.log("BUTTTTOM")
+     myFunction()
+   
+
+    function myFunction() {
+
+  document.getElementById('one').innerHTML="Pants"
+  document.getElementById('one').value="Pants"
+  document.getElementById('two').innerHTML="Jeans"
+   document.getElementById('two').value="Jeans"
+   document.getElementById('three').innerHTML="Shorts"
+   document.getElementById('three').value="Shorts"
+   document.getElementById('four').innerHTML="Track pants"
+    document.getElementById('four').value="Track pants"
+    }
+}
+   else if(e.target.value=="top wear"){
+     console.log("TOOOPPP")
+     myFunction()
+   
+
+    function myFunction() {
+      document.getElementById('one').innerHTML="Shrits"
+  document.getElementById('one').value="Shrits"
+  document.getElementById('two').innerHTML="T-shirt"
+   document.getElementById('two').value="T-shirt"
+   document.getElementById('three').innerHTML="Jackets"
+   document.getElementById('three').value="Jackets"
+   document.getElementById('four').innerHTML="Hoodies"
+    document.getElementById('four').value="Hoodies"
+   
+  
+
+    }
+    
+  }
+}
+  
+    
+</script>

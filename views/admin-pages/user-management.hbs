@@ -1,0 +1,38 @@
+
+<div class="d-flex justify-content-center">
+</div>
+
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">sl.no</th>
+      <th scope="col">name</th>
+      <th scope="col">Email</th>
+      <th scope="col">Gender
+       <th scope="col">Options</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each result}}
+    <tr>
+      
+      <th scope="row">{{calculation  @index}}</th>
+      <td>{{this.firstname}} {{this.lastname}}</td>
+      <td>{{this.email}}</td>
+      <td>{{this.gender}}</td>
+        <td>
+         {{#if this.blocked}}
+        
+          <a class="btn btn-success"  id="block-btn"  onclick="return confirm('Unblock {{this.firstname}} ?')"  href="blockUser?id={{this._id}}"  >Unblockk</a>
+         {{else}}
+           <a class="btn btn-danger"  id="block-btn"  onclick="return confirm('Block {{this.firstname}} ?')"  href="blockUser?id={{this._id}}" >Block</a>
+         {{/if}}
+       
+       
+        </td>
+    </tr>
+   {{/each}}
+  </tbody>
+</table>
+

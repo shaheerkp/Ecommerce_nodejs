@@ -1,0 +1,54 @@
+<div class="row container">
+
+<div class="sidebar col-lg-3">
+   <p class="p-4">
+       Refine by
+   </p>
+<ul >
+    <li>
+        
+    </li>
+</ul>  
+
+</div>
+<div class="content col-lg-9">
+    <h1 class="d-flex justify-content-center p-2 mt-3" >Shirts</h1>
+    <div class="row d-flex justify-content-between">
+
+
+     
+
+
+   
+
+
+
+
+    {{#each result}}
+   <div class="col-lg-4 d-flex justify-content-between">
+            <div class="card">
+                <a href="/product-detail?id={{_id}}&pn={{this.product-name}}&sc={{this.sub-category}}&pr={{this.price}}&des={{this.description}}" class="fill-div" style="text-decoration: none;">
+  <img src="/product-images/{{this._id}}1.jpg" class="card-img-top" alt="...">
+  <div class="card-body">
+    <h5 class="card-title cardtitle text-sm">{{this.product-name}}</h5>
+    <p class="card-text text-center cardtitle1">{{this.description}}</p>
+    <p class="text-center price">RS: {{this.price}} </p>
+   
+  </div>
+   </a>
+</div>
+        </div>
+
+        {{/each}}
+
+
+
+
+
+
+    </div>
+
+  
+</div>
+
+</div>

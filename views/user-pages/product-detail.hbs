@@ -1,0 +1,130 @@
+<!--Section: Block Content-->
+<section class="p-5">
+
+  <div class="row container">
+    <div class="col-md-6 mb-4 mb-md-0">
+
+      <div id="mdb-lightbox-ui"></div>
+
+      <div class="mdb-lightbox">
+
+        <div class="row product-gallery mx-1">
+
+          <div class="col-12 mb-0">
+
+              <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
+  <div class="carousel-inner">
+    <div class="carousel-item active">
+      <img src="/product-images/{{details.id}}1.jpg"
+                  class="img-fluid z-depth-1">
+    </div>
+    <div class="carousel-item">
+      <img src="/product-images/{{details.id}}2.jpg" class="d-block w-100" alt="...">
+    </div>
+    <div class="carousel-item">
+      <img src="/product-images/{{details.id}}3.jpg" class="d-block w-100" alt="...">
+    </div>
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+</div>
+            {{!-- <figure class="view overlay rounded z-depth-1 main-img">
+              <a href="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/15a.jpg"
+                data-size="710x823">
+                <img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/15a.jpg"
+                  class="img-fluid z-depth-1">
+              </a>
+            </figure> --}}
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+    <div class="col-md-6">
+
+      <h5>{{details.pn}}</h5>
+      <p class="mb-2 text-muted text-uppercase small">{{details.sc}}</p>
+      <p><span class="mr-1"><strong>RS: {{details.pr}}</strong></span></p>
+      <p class="pt-1">{{details.des}}</p>
+      <div class="table-responsive">
+        <table class="table table-sm table-borderless mb-0">
+
+        </table>
+      </div>
+      <hr>
+      <div class="table-responsive mb-2">
+        <table class="table table-sm table-borderless">
+          <tbody>
+            <tr>
+              <td class="pl-0 pb-0 w-25">Quantity</td>
+              <td class="pb-0">Select size</td>
+            </tr>
+            <tr>
+              <td class="pl-0">
+               <div class="quantity buttons_added">
+	<input type="button" value="-" class="minus"><input type="number" step="1" min="1" max="" name="quantity" value="1" title="Qty" class="input-text qty text" size="4" pattern="" inputmode=""><input type="button" value="+" class="plus">
+</div>
+              </td>
+              <td>
+                <div class="mt-1">
+                  <div class="form-check form-check-inline pl-0">
+                    <input type="radio" class="form-check-input" id="small" name="materialExampleRadios"
+                      checked>
+                    <label class="form-check-label small text-uppercase card-link-secondary"
+                      for="small">Small</label>
+                  </div>
+                  <div class="form-check form-check-inline pl-0">
+                    <input type="radio" class="form-check-input" id="medium" name="materialExampleRadios">
+                    <label class="form-check-label small text-uppercase card-link-secondary"
+                      for="medium">Medium</label>
+                  </div>
+                  <div class="form-check form-check-inline pl-0">
+                    <input type="radio" class="form-check-input" id="large" name="materialExampleRadios">
+                    <label class="form-check-label small text-uppercase card-link-secondary"
+                      for="large">Large</label>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <button type="button" class="btn btn-primary btn-md mr-1 mb-2">Buy now</button>
+      <button type="button" class="btn btn-light btn-md mr-1 mb-2"><i
+          class="fas fa-shopping-cart pr-2"></i>Add to cart</button>
+    </div>
+  </div>
+
+</section>
+<!--Section: Block Content-->
+<script>
+    function wcqib_refresh_quantity_increments() {
+    jQuery("div.quantity:not(.buttons_added), td.quantity:not(.buttons_added)").each(function(a, b) {
+        var c = jQuery(b);
+        c.addClass("buttons_added"), c.children().first().before('<input type="button" value="-" class="minus" />'), c.children().last().after('<input type="button" value="+" class="plus" />')
+    })
+}
+String.prototype.getDecimals || (String.prototype.getDecimals = function() {
+    var a = this,
+        b = ("" + a).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
+    return b ? Math.max(0, (b[1] ? b[1].length : 0) - (b[2] ? +b[2] : 0)) : 0
+}), jQuery(document).ready(function() {
+    wcqib_refresh_quantity_increments()
+}), jQuery(document).on("updated_wc_div", function() {
+    wcqib_refresh_quantity_increments()
+}), jQuery(document).on("click", ".plus, .minus", function() {
+    var a = jQuery(this).closest(".quantity").find(".qty"),
+        b = parseFloat(a.val()),
+        c = parseFloat(a.attr("max")),
+        d = parseFloat(a.attr("min")),
+        e = a.attr("step");
+    b && "" !== b && "NaN" !== b || (b = 0), "" !== c && "NaN" !== c || (c = ""), "" !== d && "NaN" !== d || (d = 0), "any" !== e && "" !== e && void 0 !== e && "NaN" !== parseFloat(e) || (e = 1), jQuery(this).is(".plus") ? c && b >= c ? a.val(c) : a.val((b + parseFloat(e)).toFixed(e.getDecimals())) : d && b <= d ? a.val(d) : b > 0 && a.val((b - parseFloat(e)).toFixed(e.getDecimals())), a.trigger("change")
+});
+</script>
