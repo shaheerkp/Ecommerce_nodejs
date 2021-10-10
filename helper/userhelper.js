@@ -33,6 +33,18 @@ module.exports={
         })
 
     },
+    googleSignin:(data)=>{
+       return new Promise(async(resolve,reject)=>{
+        var d= await db.get().collection("users").findOne({"email":data.email})
+        if(d){
+            resolve(true)
+
+        }else{
+            resolve(false)
+        }
+
+       })
+    },
 
     userSignin:(data)=>{
         return new Promise(async(resolve,reject)=>{
@@ -70,9 +82,13 @@ module.exports={
         })
     },
     viewProducts:(data)=>{
+        
         return new Promise(async(resolve,reject)=>{
 
-            let result= await db.get().collection("product").find({"sub-category":"Shrits"}).toArray()
+            let result= await db.get().collection("product").find({"sub-category":data}).toArray()
+            console.log("VIEWWW PRODUCTS");
+            console.log(result);
+            
             resolve(result)
        
         })
@@ -84,7 +100,6 @@ module.exports={
         return new Promise(async(resolve,reject)=>{
 
             let result= await db.get().collection("users").find().toArray()
-            console.log(result);
             resolve(result)
        
         })

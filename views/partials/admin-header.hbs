@@ -13,6 +13,9 @@
           <li>
              <a class="nav-link dropdown-toggle navbar-text text-black" href="#" id="navbarDropdown" role="button" >Order Management</a>
           </li>
+           <li>
+             <a class="nav-link dropdown-toggle navbar-text text-black" href="/admin/category-management" id="navbarDropdown" role="button" >Category Management</a>
+          </li>
           <li>
              <a class="nav-link dropdown-toggle navbar-text text-black" href="/admin/user-management" id="navbarDropdown" role="button" >User Management</a>
           </li>
@@ -21,9 +24,9 @@
            Produc Management
           </a>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <li><a class="dropdown-item" href="/admin/topwear">Top Wear</a></li>
-            <li><a class="dropdown-item" href="/admin/bottomwear">Botton wear</a></li>
-             <li><a class="dropdown-item" href="/admin/accessories">Accessories</a></li>
+            {{#each category}}
+            <li><a class="dropdown-item" href="/admin/a/{{this.category}}">{{this.category}}</a></li>
+            {{/each}}
           </ul>
         </li>
 
@@ -42,7 +45,8 @@
            <i class="fas fa-sign-in-alt cart-icon2"></i>
           </a>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-           <li><a class="dropdown-item"  href="/admin">SIGN OUT</a></li>
+            <li><a class="dropdown-item"  href="/admin/profile">Profile</a></li>
+           <li><a class="dropdown-item"  href="/admin/signout">SIGNOUT</a></li>
           </ul>
         </li>
 

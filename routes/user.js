@@ -1,92 +1,142 @@
 var express = require('express');
 var router = express.Router();
-var db=require('../helper/userhelper')
+var db = require('../helper/userhelper')
+const { OAuth2Client } = require('google-auth-library');
+const { viewCategory,findProduct } = require('../helper/producthelper');
+const CLIENT_ID = "360791234082-kap1r32c2bjt3fg3ip28qvp6fplu26ui.apps.googleusercontent.com"
+const client = new OAuth2Client(CLIENT_ID);
 
-
-var productdetails=null;
-
-
-let check=function(req,res,next){
-  if(req.session.isloggedin){
-    next()
-  }else{
-    res.redirect('/login')
-  }
-
+const getCategory = async () => {
+  let categories = await viewCategory();
+  return categories;
 }
 
+
+
+var productdetails = null;
+
+
+
 /* GET home page. */
-router.get('/', function(req, res, next) {
-  user=req.session.body
-
-  res.render('user-pages/user-home',{user});
+router.get('/', async function (req, res, next) {
+  user = req.session.user
+  res.render('user-pages/user-home', { user, category: await getCategory() });
 });
 
 
-router.get('/shirts', function(req, res ) {
-  db.viewProducts().then((result)=>{
-    console.log(req.session.body);
-    productdetails=result;
-    res.render('user-pages/shirts',{result});
+router.get('/viewProducts/:sub', function (req, res) {
+  user = req.session.user
+  console.log(req.params.sub);
 
-  })
-  
+  db.viewProducts(req.params.sub).then(async (result) => {
+    cat=result[0].category;
+    
+    res.render('user-pages/shirts', { user, result,cat, category: await getCategory() });
  
+  })
 });
 
-router.get('/signup', function(req, res) {
-  res.render('user-pages/user-signup',{noheader:true})
+
+
+router.get('/signup', function (req, res) {
+  if (req.session.user) {
+    res.redirect('/')
+  }
+  else {
+    res.render('user-pages/user-signup', { noheader: true })
+
+  }
+
+
 });
 
-router.post('/signup', function(req, res) {
-  db.userSignup(req.body).then((data)=>{
+router.post('/signup', function (req, res) {
+  db.userSignup(req.body).then((data) => {
     if (data.status) {
 
-      res.json({status:true})
-      
+      res.json({ status: true })
+
     }
-    else{
-      res.json({status:false})
+    else {
+      res.json({ status: false })
     }
 
 
   })
- 
+
 });
 
-router.get('/login', function(req, res) {
-  res.render('user-pages/user-login',{noheader:true})
-});
+router.get('/login', function (req, res) {
 
-router.post('/login', function(req, res) {
- 
- db.userSignin(req.body).then((loggedin)=>{
-   if(loggedin=="block"){
-     res.json({status:false,message:"blocked by user"})
+  if (req.session.user) {
+    res.redirect('/')
+  }
+  else {
+    res.render('user-pages/user-login', { noheader: true })
 
-   }
-   else if(loggedin){
-     req.session.body=req.body
-     req.session.body.isLoggedin=true
-     res.json({status:true})
-
-   }
-   else{
-     res.json({status:false,message:"Invalid credential"})
-
-   }
-
-
- })
+  }
 
 });
 
 
-router.get('/product-detail', function(req, res, next) {
-  let details=req.query
-  res.render('user-pages/product-detail',{details})
+router.post('/login-google', function (req, res) {
+  let token = req.body.token
+  console.log(token);
+  async function verify() {
+    const ticket = await client.verifyIdToken({
+      idToken: token,
+      audience: CLIENT_ID,
+    });
+    const payload = ticket.getPayload();
+    const userid = payload['sub'];
+    console.log(payload);
+
+  }
+  verify().catch(console.error);
+
 });
 
+router.post('/login', function (req, res) {
+
+  db.userSignin(req.body).then((loggedin) => {
+    if (loggedin == "block") {
+      res.json({ status: false, message: "blocked by user" })
+
+    }
+    else if (loggedin) {
+      req.session.user = req.body
+      req.session.user.isLoggedin = true
+      res.json({ status: true })
+
+    }
+    else {
+      res.json({ status: false, message: "Invalid credential" })
+
+    }
+
+
+  })
+
+});
+
+
+router.get('/product-detail', function (req, res, next) {
+  let detail = req.query
+  findProduct(detail.id).then(async(result)=>{
+    let details=result[0]
+    res.render('user-pages/product-detail', { details, user,category: await getCategory() })
+
+  }).catch((result)=>{
+    res.send(result)
+  })
+  
+});
+
+router.get('/signout', function (req, res, next) {
+  req.session.user = null
+  res.redirect('/')
+
+});
 
 
 

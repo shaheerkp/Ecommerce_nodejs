@@ -1,0 +1,245 @@
+<div class="row container">
+    <div class="col ps-5 ">
+        <h4 class="text-center">Category <h4>
+                <select class="form-select" id="category" aria-label="Default select example">
+                    <option selected>Select Category</option>
+                    {{#each result}}
+                    <option id="asd" onchange="getItem('{{this.id}}')" value={{this.category}}>{{this.category}}
+                    </option>
+                    {{/each}}
+
+                </select>
+
+
+                <div class="me-5">
+
+                    <table class="table mt-4">
+                        <thead>
+                        </thead>
+                        <tbody id="myList">
+
+
+                        </tbody>
+                    </table>
+                </div>
+
+
+
+
+
+    </div>
+    <div class="col ps-5">
+        <h4 class="text-center">Add New Subcategory <h4>
+
+
+                <form class=" pb-5 form" role="form" id="add_sub">
+                    <div class="mb-3">
+                        <select name="cat" class="form-select" required  >
+                            <option   >Select Category</option>
+                            {{#each result}}
+                            <option onchange="getItem('{{this.id}}')" id="select_cat" class="form-control"  value="{{this.category}}">{{this.category}}
+                            </option>
+                            {{/each}}
+
+                        </select>
+
+                    </div>
+                    <div class="mb-3" >
+                        <span class="text-danger" style="font-size: small;" id="fname_err"></span>
+
+                        <input type="text" name="sub_cat"  class="form-control" id="addsub">
+                    </div>
+
+                    <button type="submit" value="submit" class="btn btn-primary">Submit</button>
+                </form>
+
+
+
+
+
+
+
+    </div>
+
+</div>
+
+<script>
+    let fname_val = false;
+
+
+    document.getElementById("category").onchange = e => {
+        let id = e.target.value
+        // document.getElementById('sub-div').style.display = "block";
+
+
+        console.log("id" + id)
+        $.ajax({
+            url: "/admin/get-subcategory",
+            method: 'POST',
+            data: { id },
+            success: function (response) {
+                console.log(response);
+                document.getElementById("myList").innerHTML = "";
+                for (let i = 0; i < response.data.length; i++) {
+                    var innerCode = `<tr><td><input class='form-control' id="inp${i}" value='${response.data[i].name}'/></td><td>
+                        <button onclick="updateSub('${response.data[i].name}','inp${i}')" class='btn btn-info'>Update</button>
+                        <button onclick="deleteSub('${response.data[i].name}')" class='btn btn-danger'>Delete</button>
+                        </td></tr>`
+                    // var x = document.createElement("LI");
+                    //var t = document.createTextNode(response.data[i].name);
+                    //x.appendChild(t);
+                    document.getElementById("myList").innerHTML += innerCode;
+
+                }
+
+
+
+
+            },
+            error: function (err) {
+                alert("Something Error")
+
+            }
+
+        })
+
+
+    }
+
+
+    function updateSub(oldValue, id) {
+        let newValue = $("#" + id).val()
+        $.ajax({
+            url: "/admin/update-subcategory",
+            method: 'POST',
+            data: { oldValue, newValue },
+            success: function (response) {
+                console.log(response.success)
+                if (response.success) {
+                    alert("Successfully updated subcategory")
+                }
+                else {
+
+                }
+            },
+            error: function (err) {
+                alert("Something Error")
+
+            }
+
+        })
+
+    }
+
+    function deleteSub(oldValue) {
+        console.log("DEletED clicked")
+        console.log(oldValue)
+        
+        $.ajax({
+            url: "/admin/delete-subcategory",
+            method: 'POST',
+            data: { oldValue },
+            success: function (response) {
+                console.log(response.success)
+                if (response.success) {
+                    alert("Successfully updated subcategory")
+                }
+                else {
+
+                }
+            },
+            error: function (err) {
+                alert("Something Error")
+
+            }
+
+        })
+
+    }
+
+
+
+
+
+
+    $("#addsub").on('input', function () {
+        this.value = this.value.replace(/[^a-zA-Z ]/, '')
+
+
+        if (this.value.charAt(0) == " ") {
+            $("#fname_err").html("Do not start with space")
+            $(this).css({ borderColor: "red" })
+            fname_val = false;
+        }
+
+        else if (this.value.length < 3) {
+            $("#fname_err").text("Minimum  2 character")
+            $(this).css({ borderColor: "red" })
+            fname_val = false;
+
+        }
+
+
+
+
+        else if (this.value.length > 20) {
+            $("#fname_err").text("subcategory name should be max 20  character")
+            $(this).css({ borderColor: "red" })
+            fname_val = false;
+
+        }
+
+
+        else if (this.value.includes(" ")) {
+            $("#fname_err").text("subcategory name should not have any spaces ")
+            $(this).css({ borderColor: "red" })
+            fname_val = false;
+
+        }
+
+
+
+        else {
+            $(this).css({ borderColor: "green" })
+            $("#fname_err").html("")
+            fname_val = true
+        }
+    })
+
+
+   $("#add_sub").submit((e) => {
+    e.preventDefault()
+    if(fname_val){
+
+$.ajax({
+    url: "/admin/add-subcategory",
+    data: $("#add_sub").serialize(),
+    method: "post",
+    success: function (response) {
+        console.log(response)
+     
+      if (response.success) {
+     alert("Subcategory added")
+        
+      }
+      else{
+      alert("Subcategory Already exist")
+       
+      }
+      
+    },
+    error: function (err) {
+      alert("Something Error")
+
+    }
+  })
+    }
+    else{
+        alert("Cannot create subcategory")
+    }
+
+
+})
+
+  
+</script>

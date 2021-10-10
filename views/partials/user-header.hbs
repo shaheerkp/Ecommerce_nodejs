@@ -1,93 +1,115 @@
-<nav class="navbar container-fluid navbar-expand-lg  navbar-light bg-white fixed-top nav-cus" >
+<nav class="navbar container-fluid navbar-expand-lg  navbar-light bg-white fixed-top nav-cus">
   <div class="container-fluid mt-lg-4">
+
     <a class="navbar-brand cart" href="#">CART</a>
-    <button class="navbar-toggler bg-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler bg-white" type="button" data-bs-toggle="collapse"
+      data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+      aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
 
-  
 
-    <div class="collapse navbar-collapse nav-items container-fluid mt-3" id="navbarSupportedContent">      
+
+    <div class="collapse navbar-collapse nav-items container-fluid mt-3" id="navbarSupportedContent">
       <ul class="all navbar-nav me-5 mb-2 mb-lg-0">
-              <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle navbar-text text-black" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-           TOP WEAR
+        {{#each category}}
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle navbar-text text-black mt-4" href="#" id="navbarDropdown" role="button"
+            data-bs-toggle="dropdown" aria-expanded="false">
+            {{this.category}}
           </a>
-          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <li><a class="dropdown-item" href="/shirts">Shirts</a></li>
-            <li><a class="dropdown-item" href="/tshirts">Tshirts</a></li>
-             <li><a class="dropdown-item" href="/jandc">Jackets and Coats</a></li>
-              <li><a class="dropdown-item" href="/sandw">Sweatshirts and Woodies</a></li>
+          <ul class="dropdown-menu dropdown-menu1" aria-labelledby="navbarDropdown">
+            {{#each this.subcategories }}
+            <li><a class="dropdown-item"  href="/viewProducts/{{this.name}}" >{{this.name }}</a></li>
+            {{/each}}
+
           </ul>
         </li>
-              <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle navbar-text text-black" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-           BOTTOM WEAR
+
+        {{!-- <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle navbar-text text-black mt-4" href="#" id="navbarDropdown" role="button"
+            data-bs-toggle="dropdown" aria-expanded="false">
+            BOTTOM WEAR
           </a>
-          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <ul class="dropdown-menu dropdown-menu1" aria-labelledby="navbarDropdown">
             <li><a class="dropdown-item" href="#">Trousers and Pants</a></li>
             <li><a class="dropdown-item" href="#">Shorts</a></li>
             <li><a class="dropdown-item" href="#">Track pants</a></li>
-            </ul>
-        </li>
-      
+          </ul>
+        </li> --}}
+        {{!--
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle navbar-text text-black" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-           ACCESSORIES
+          <a class="nav-link dropdown-toggle navbar-text text-black mt-4" href="#" id="navbarDropdown" role="button"
+            data-bs-toggle="dropdown" aria-expanded="false">
+            ACCESSORIES
           </a>
-          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <ul class="dropdown-menu dropdown-menu1" aria-labelledby="navbarDropdown">
             <li><a class="dropdown-item" href="#">Watches</a></li>
             <li><a class="dropdown-item" href="#">Shoes</a></li>
             <li><a class="dropdown-item" href="#">Glasses</a></li>
             <li><a class="dropdown-item" href="#">Wallets</a></li>
-          
+
           </ul>
+        </li> --}}
+        {{/each }}
+
+        <li class="nav-item dropdown " style="margin-bottom: 10px;">
+          <div class="mb-4">
+            {{#if user.isLoggedin}}
+            <h6 class="ms-5 d-flex justify-content-center">Welcome : <b>{{user.email}}</b> </h6>
+            {{else}}
+            <h6 class="ms-5 d-flex justify-content-center">Welcome to CART</b> </h6>
+            {{/if}}
+
+            <form class="d-flex justify-content-center">
+              <input class="form-control me-2 search-field" type="search" placeholder="Search" aria-label="Search">
+            </form>
+
+          </div>
         </li>
-        <li class="nav-item dropdown" > 
-          <form class="d-flex justify-content-center">
-        <input class="form-control me-2 search-field" type="search" placeholder="Search" aria-label="Search">
-      </form>
+
+        <li class="nav-item dropdown mt-4">
+          <div class="navbar-btns rounded-circle text-white text-center dropdown ">
+            <i class=" dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown"
+              aria-expanded="false">
+              <i class="fas fa-sign-in-alt cart-icon"></i>
+            </i>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+              {{#if user.isLoggedin}}
+              <li><a class="dropdown-item" href="/signout" onclick="signOut()">SIGN OUT</a></li>
+              {{else }}
+
+              <li><a class="dropdown-item" href="/login">SIGN IN</a></li>
+              <li>
+                <hr class="dropdown-divider">
+              </li>
+              <li><a class="dropdown-item" href="/signup">SIGN UP</a></li>
+              {{/if}}
+            </ul>
+          </div>
         </li>
-            <li class="nav-item dropdown">
+
+
+
+
+        <li class="nav-item dropdown mt-4">
+
+
           <div class="navbar-btns rounded-circle text-white text-center dropdown">
-            <i class=" dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-               <i class="fas fa-sign-in-alt cart-icon"></i>
-              </i>
-              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                {{#if user.isLoggedin}}
-                <li><a class="dropdown-item"  href="/signout">SIGN OUT</a></li>
-                {{else }}
 
-                <li><a class="dropdown-item"  href="/login">SIGN IN</a></li>
-                <li><hr class="dropdown-divider"></li>
-                 <li><a class="dropdown-item"   href="/signup">SIGN UP</a></li>
-                 {{/if}}
-                 </ul>
-                 </div>
-                 </li>
-
-
-       
-
-        <li class="nav-item dropdown">
-          <div class="navbar-btns rounded-circle text-white text-center dropdown">
-            <i class=" dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class=" dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown"
+              aria-expanded="false">
               <i class="fas fa-cart-plus cart-icon"></i>
-              </i>
-              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                 <li><a class="dropdown-item" href="#">Action</a></li>
-                 </ul>
-                 </div>
-                 </li>
-
-       
-
-        
-
-       
+            </i>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+              <li><a class="dropdown-item" href="#">Action</a></li>
+            </ul>
+          </div>
+        </li>
       </ul>
-      
+
     </div>
   </div>
 </nav>
@@ -97,8 +119,29 @@
 
 
 
-  <script>
 
-</script>
+{{!-- <script>
+
+  function getProducts(name) {
+    console.log("evede kttununddddd")
+    $.ajax({
+      url: `/viewProducts?name=${name}`,
+      method: "post",
+      data: {name},
+      success: function (result) {
+        console.log(result)
+
+      },
+      error: function (err) {
+
+        alert("Something Error")
+
+      }
 
 
+    })
+
+  }
+
+
+</script>  --}}

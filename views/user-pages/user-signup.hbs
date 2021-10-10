@@ -5,19 +5,12 @@
 
       <p class="model-text pt-4" id="exampleModalLabel">Join/sign using to cart</p> 
 
-      <div class="social-login">
+   
 
-        <div class="fb-login">
-          <span class="fb-icon"> </span>
-          <span class="social-txt">Facebook</span>
-          </div>
+        
+               <div class="g-signin2" data-onsuccess="onSignIn"></div>
+              <a href="#" onclick="signOut();">Sign out</a>
 
-           <div class="google-login">
-            <span class="google-icon"></span>
-              <span class="social-txt">GOOGLE</span>
-               </div>
-
-          </div>
 
           <div class="or-separator"> <hr>  <span class="or-text-desktop"> Or </span>  <hr> </div>
 
@@ -65,6 +58,27 @@
 </div>
 
  </div>
+ <script>
+   function onSignIn(googleUser) {
+  console.log("GOOOOOOOOOOOOOOOOOOOOOOOOgle")
+  var id_token = googleUser.getAuthResponse().id_token;
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', '/login-google');
+  xhr.setRequestHeader('Content-Type', 'application/json');
+  xhr.onload = function() {
+  console.log('Signed in as: ' + xhr.responseText);
+  };
+  xhr.send(JSON.stringify({token:id_token}));
+  }
+
+
+function signOut() {
+    var auth2 = gapi.auth2.getAuthInstance();
+    auth2.signOut().then(function () {
+      console.log('User signed out.');
+    });
+  }
+ </script>
 
 <script src="/javascripts/user/usersignup.js"></script>
 

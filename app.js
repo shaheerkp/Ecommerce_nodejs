@@ -7,6 +7,9 @@ const handlebars=require('express-handlebars')
 var db=require('./config/connection')
 var fileUpload=require('express-fileupload')
 const session = require('express-session');
+const {OAuth2Client} = require('google-auth-library');
+const CLIENT_ID="360791234082-kap1r32c2bjt3fg3ip28qvp6fplu26ui.apps.googleusercontent.com"
+const client = new OAuth2Client(CLIENT_ID);
 
 const passport = require('passport');
 var userProfile;
@@ -46,11 +49,16 @@ app.use(fileUpload())
 
 
 app.use(session({
-  secret: "thisismysecrctekeyfhrgfgrfrty84fwir767",
-    saveUninitialized:true,
-    cookie: { maxAge: 6000000},
-    resave: false 
-}));
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { maxAge:6000000 }
+}))
+
+app.use(function(req, res, next) {
+  res.set('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
+  next();
+});
 
 
 

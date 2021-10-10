@@ -60,6 +60,13 @@
   .all{
     margin-left: auto;
   }
+
+
+  .dropdown-menu1[data-bs-popper] {
+    top: 100%;
+    left: 0;
+    margin-top: -26px;
+}
   
   
  
@@ -278,5 +285,15 @@
   .quantity.buttons_added .minus:focus,
  .quantity.buttons_added .plus:focus {
   outline: none; }
+
+
+  ul {
+    list-style-type: none;
+  }
+
+
+  #search-label{
+    width: 20%;
+  }
  
  
