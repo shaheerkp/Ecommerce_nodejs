@@ -1,6 +1,40 @@
 <div class="row container">
     <div class="col ps-5 ">
-        <h4 class="text-center">Category <h4>
+        <h4 class="text-center"> Categories </h4>
+        <div class="me-5">
+
+            <table class="table mt-4">
+                <thead>
+                </thead>
+                <tbody id="myList1">
+                    {{#each result}}
+
+                    <tr>
+                        <td>
+
+
+                            <input disabled type="text" value="{{this.category}}" name="sub_cat"
+                                class="form-control col-ld-7" id="delcat">
+                        </td>
+                        <td>
+                            <button onclick="deletecat('{{this.category}}')" class="btn btn-danger">Delete</button>
+
+                        </td>
+                    </tr>
+                    {{/each}}
+
+
+                </tbody>
+            </table>
+        </div>
+
+
+
+
+
+
+
+        <h4 class="text-center mt-5">Delete/Edit Sub Category <h4>
                 <select class="form-select" id="category" aria-label="Default select example">
                     <option selected>Select Category</option>
                     {{#each result}}
@@ -28,26 +62,52 @@
 
 
     </div>
-    <div class="col ps-5">
+    <div class="col ps-5 mt-4">
+        <h4 class="text-center">Add New Category </h4>
+        <div class="me-5">
+
+            <table class="table mt-4">
+                <thead>
+                </thead>
+                <tbody id="myList1">
+
+                    <tr>
+                        <td>
+                            <span class="text-danger" style="font-size: small;" id="cat_err"></span>
+
+                            <input type="text" name="sub_cat" class="form-control col-ld-7" id="addcat">
+                        </td>
+                        <td>
+                            <button id="addcatbtn" class="btn btn-primary">Add</button>
+
+                        </td>
+                    </tr>
+
+
+                </tbody>
+            </table>
+        </div>
+
         <h4 class="text-center">Add New Subcategory <h4>
 
 
                 <form class=" pb-5 form" role="form" id="add_sub">
                     <div class="mb-3">
-                        <select name="cat" class="form-select" required  >
-                            <option   >Select Category</option>
+                        <select name="cat" class="form-select" required>
+                            <option>Select Category</option>
                             {{#each result}}
-                            <option onchange="getItem('{{this.id}}')" id="select_cat" class="form-control"  value="{{this.category}}">{{this.category}}
+                            <option onchange="getItem('{{this.id}}')" id="select_cat" class="form-control"
+                                value="{{this.category}}">{{this.category}}
                             </option>
                             {{/each}}
 
                         </select>
 
                     </div>
-                    <div class="mb-3" >
+                    <div class="mb-3">
                         <span class="text-danger" style="font-size: small;" id="fname_err"></span>
 
-                        <input type="text" name="sub_cat"  class="form-control" id="addsub">
+                        <input type="text" name="sub_cat" class="form-control" id="addsub">
                     </div>
 
                     <button type="submit" value="submit" class="btn btn-primary">Submit</button>
@@ -65,13 +125,123 @@
 
 <script>
     let fname_val = false;
+    let catname = false
+
+
+    function deletecat(name) {
+        console.log(name)
+        $.ajax({
+            url: "/admin/deletecat",
+            method: "post",
+            data: { name },
+            success: function (response) {
+                if(response.status){
+                    alert(response.mes)
+                       location.replace('/admin/category-management')
+
+                }
+
+            },
+
+            error: function (err) {
+                alert("Something Error")
+
+            }
+        })
+
+    }
+
+
+    $("#addcat").on('input', function () {
+
+        this.value = this.value.replace(/[^a-zA-Z ]/, '')
+
+
+        if (this.value.charAt(0) == " ") {
+            $("#cat_err").html("Do not start with space")
+            $(this).css({ borderColor: "red" })
+            catname = false;
+        }
+
+        else if (this.value.length < 3) {
+            $("#cat_err").text("Minimum  2 character")
+            $(this).css({ borderColor: "red" })
+            catname = false;
+
+        }
+
+
+
+
+        else if (this.value.length > 20) {
+            $("#cat_err").text("subcategory name should be max 20  character")
+            $(this).css({ borderColor: "red" })
+            catname = false;
+
+        }
+
+
+        else if (this.value.includes(" ")) {
+            $("#cat_err").text("subcategory name should not have any spaces ")
+            $(this).css({ borderColor: "red" })
+            catname = false;
+
+        }
+
+
+
+        else {
+            $(this).css({ borderColor: "green" })
+            $("#cat_err").html("")
+            catname = true
+        }
+
+    })
+
+
+    $("#addcatbtn").click((e) => {
+        cat = document.getElementById("addcat").value
+        let name = cat.toUpperCase()
+
+        e.preventDefault()
+        if (catname) {
+
+            $.ajax({
+                url: "/admin/add-category",
+                method: "post",
+                data: { name },
+                success: function (response) {
+                    console.log(response)
+
+                    if (response.status) {
+                        alert(response.mes)
+                        location.replace('/admin/category-management')
+
+                    }
+                    else {
+                        alert(response.mes)
+                        location.replace('/admin/category-management')
+
+                    }
+
+                },
+                error: function (err) {
+                    alert("Something Error")
+
+                }
+            })
+        }
+        else {
+            alert("Cannot create subcategory")
+        }
+
+
+    })
+
 
 
     document.getElementById("category").onchange = e => {
         let id = e.target.value
-        // document.getElementById('sub-div').style.display = "block";
-
-
         console.log("id" + id)
         $.ajax({
             url: "/admin/get-subcategory",
@@ -81,20 +251,13 @@
                 console.log(response);
                 document.getElementById("myList").innerHTML = "";
                 for (let i = 0; i < response.data.length; i++) {
-                    var innerCode = `<tr><td><input class='form-control' id="inp${i}" value='${response.data[i].name}'/></td><td>
-                        <button onclick="updateSub('${response.data[i].name}','inp${i}')" class='btn btn-info'>Update</button>
-                        <button onclick="deleteSub('${response.data[i].name}')" class='btn btn-danger'>Delete</button>
+                    var innerCode = `<tr><td><input class='form-control' oninput="change(${i})"  id="inp${i}" value='${response.data[i].name}'/></td><td>
+                        <button style="display:none" onclick="updateSub('${response.data[i].name}','inp${i}')" id="btn${i}" class='btn btn-info'>Update</button>
+                        <button  onclick="deleteSub('${response.data[i].name}')" class='btn btn-danger'>Delete</button>
                         </td></tr>`
-                    // var x = document.createElement("LI");
-                    //var t = document.createTextNode(response.data[i].name);
-                    //x.appendChild(t);
                     document.getElementById("myList").innerHTML += innerCode;
 
                 }
-
-
-
-
             },
             error: function (err) {
                 alert("Something Error")
@@ -103,6 +266,11 @@
 
         })
 
+
+    }
+    function change(e) {
+        let x = document.getElementById(`btn${e}`)
+        x.style.display = ""
 
     }
 
@@ -117,6 +285,7 @@
                 console.log(response.success)
                 if (response.success) {
                     alert("Successfully updated subcategory")
+                    location.replace('/admin/category-management')
                 }
                 else {
 
@@ -132,17 +301,15 @@
     }
 
     function deleteSub(oldValue) {
-        console.log("DEletED clicked")
-        console.log(oldValue)
-        
         $.ajax({
             url: "/admin/delete-subcategory",
             method: 'POST',
             data: { oldValue },
             success: function (response) {
                 console.log(response.success)
-                if (response.success) {
-                    alert("Successfully updated subcategory")
+                if (response) {
+                    alert("Successfully deleted subcategory")
+                    location.replace('/admin/category-management')
                 }
                 else {
 
@@ -163,6 +330,8 @@
 
 
     $("#addsub").on('input', function () {
+        console.log("asdasd")
+
         this.value = this.value.replace(/[^a-zA-Z ]/, '')
 
 
@@ -207,39 +376,41 @@
     })
 
 
-   $("#add_sub").submit((e) => {
-    e.preventDefault()
-    if(fname_val){
+    $("#add_sub").submit((e) => {
+        console.log("asda")
+        e.preventDefault()
+        if (fname_val) {
 
-$.ajax({
-    url: "/admin/add-subcategory",
-    data: $("#add_sub").serialize(),
-    method: "post",
-    success: function (response) {
-        console.log(response)
-     
-      if (response.success) {
-     alert("Subcategory added")
-        
-      }
-      else{
-      alert("Subcategory Already exist")
-       
-      }
-      
-    },
-    error: function (err) {
-      alert("Something Error")
+            $.ajax({
+                url: "/admin/add-subcategory",
+                data: $("#add_sub").serialize(),
+                method: "post",
+                success: function (response) {
+                    console.log(response)
 
-    }
-  })
-    }
-    else{
-        alert("Cannot create subcategory")
-    }
+                    if (response.success) {
+                        alert("Subcategory added")
+                        location.replace('/admin/category-management')
+
+                    }
+                    else {
+                        alert("Subcategory Already exist")
+
+                    }
+
+                },
+                error: function (err) {
+                    alert("Something Error")
+
+                }
+            })
+        }
+        else {
+            alert("Cannot create subcategory")
+        }
 
 
-})
+    })
 
-  
+
 </script>

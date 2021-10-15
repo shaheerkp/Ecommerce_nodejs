@@ -5,7 +5,7 @@ var router = express.Router();
 var producthelper=require('../helper/producthelper')
 var userhelper=require('../helper/userhelper')
 var handlebars=require('express-handlebars');
-const { viewCategory, deleteSubcategory, viewProduct, viewSubcategory } = require('../helper/producthelper');
+const { viewCategory, deleteSubcategory, viewProduct,deleteCategory,getOrderDetials, viewSubcategory,deleteProduct, addCategory, getAllOrders } = require('../helper/producthelper');
 let admin_email="kpshaheer123@gmail.com"
 let admin_password="123"
 
@@ -39,25 +39,18 @@ router.get('/', function (req, res, next) {
 
     }else{
       res.render('admin-pages/admin-login',{noheader:true});
-
     }
-    
-    
-
   }
-
-
-  
 });
 
 router.get('/dashboard',check, async function (req, res, next) {  
-  console.log(await getCategory());
+ 
     res.render("admin-pages/dashboard",{admin:true,category:await getCategory()})
   });
 
 
 router.post('/dashboard', function (req, res, next) {
-  console.log(req.body);
+
   if(admin_email==req.body.email&&admin_password==req.body.password){
     req.session.admin=req.body
     req.session.admin.isLoggedin=true
@@ -77,16 +70,129 @@ router.get('/signout',async function (req, res, next) {
 
 
 
-router.get('/product-mgmt',check,async function(req, res, next) {
-  res.render("admin-pages/product-mgmt",{admin:true,category:await getCategory()})
+router.get('/product-mgmt',check,function(req, res, next) {
+  producthelper.getAllProducts().then(async(result)=>{
+    res.render("admin-pages/product-mgmt",{admin:true,result,category:await getCategory()})
+
+  })
+ 
 });
+
+
 
 
 router.get('/a/:name',check, function(req, res, next) {
 viewProduct(req.params.name).then(async(result)=>{
-  res.render('admin-pages/view-products',{result,admin:true, category:await getCategory()})
+  res.render('admin-pages/product-mgmt',{result,admin:true, category:await getCategory()})
 
 })
+});
+
+
+router.get('/deleteProduct/:id',check,function(req, res, next) {
+ 
+  deleteProduct(req.params.id).then(async(result)=>{
+ 
+    res.redirect('/admin/product-mgmt')
+
+  })
+  
+});
+
+router.get('/updateProduct/:id',check,function(req, res, next) {
+
+
+  producthelper.findProduct(req.params.id).then((result)=>{
+   if(result=="Invalid url"){
+
+   }else{
+     let data=result[0]
+     res.render('admin-pages/edit-product',{data})
+   }
+  })
+});
+
+router.post('/updateProduct',check, function(req, res, next) {
+
+  console.log(req.body); 
+  producthelper.updateProduct(req.body)
+  .then((id)=>{
+    console.log(id);
+    console.log("fileeeeeeeeeeee"+req.files);
+    if(!req.files){
+      res.redirect('/admin/product-mgmt')
+      
+
+    }else{
+      let img1=req.files.img1
+  
+      let img2=req.files.img2
+      let img3=req.files.img3
+      
+  
+  if (img1&&img2&&img3){
+    console.log("#####mOOOOOOONAAm");
+     img1.mv('./public/product-images/'+id+"1"+'.jpg')
+     img2.mv('./public/product-images/'+id+"2"+'.jpg')
+    let result= img3.mv('./public/product-images/'+id+"3"+'.jpg')
+    console.log(result);
+  }
+  else if(img1&&img2){
+    img1.mv('./public/product-images/'+id+"1"+'.jpg')
+     img2.mv('./public/product-images/'+id+"2"+'.jpg')
+  }
+  else if(img2&&img3){
+    img3.mv('./public/product-images/'+id+"3"+'.jpg')
+     img2.mv('./public/product-images/'+id+"2"+'.jpg')
+  }
+  else if(img1&&img3){
+    img3.mv('./public/product-images/'+id+"3"+'.jpg')
+     img1.mv('./public/product-images/'+id+"1"+'.jpg')
+  }
+  else if(img1){
+    img1.mv('./public/product-images/'+id+"1"+'.jpg')
+  }
+  else if(img2){
+    img2.mv('./public/product-images/'+id+"2"+'.jpg')
+  }
+  else if(img3){
+    img3.mv('./public/product-images/'+id+"3"+'.jpg')
+  }
+  else{
+    res.redirect('/admin/product-mgmt')
+  
+  }
+
+    }
+   
+
+
+    // img1.mv('./public/product-images/'+id+"1"+'.jpg',(err,done)=>{
+  
+    //   if(!err){
+
+    //     img2.mv('./public/product-images/'+id+"2"+'.jpg',(err,done)=>{
+  
+    //       if(!err){
+    //         img3.mv('./public/product-images/'+id+"3"+'.jpg',(err,done)=>{
+  
+    //           if(!err){
+    //             res.redirect('/admin')
+    //           }else{
+    //             console.log("errrrr");
+    //           }
+    //         })
+           
+    //       }else{
+    //         console.log("errrrr");
+    //       }
+    //     })
+    //          }else{
+    //     console.log("errrrr");
+    //   }
+    // })
+ 
+  })
 });
 
 
@@ -95,7 +201,8 @@ viewProduct(req.params.name).then(async(result)=>{
 router.get('/add-product',check,function(req, res, next) {
   viewCategory().then(async(result)=>{
     console.log(res);
-    res.render("admin-pages/add-product",{admin:true,result,category:await getCategory()})
+   
+  res.render("admin-pages/add-product",{admin:true,result,category:await getCategory()})
 
   })
   
@@ -106,6 +213,7 @@ router.post('/add-product',check, function(req, res, next) {
   producthelper.addProduct(req.body)
   .then((id)=>{
     console.log(id);
+    console.log(req.body);
     let img1=req.files.img1
     console.log(img1);
     let img2=req.files.img2
@@ -121,7 +229,7 @@ router.post('/add-product',check, function(req, res, next) {
             img3.mv('./public/product-images/'+id+"3"+'.jpg',(err,done)=>{
   
               if(!err){
-                res.render('admin-pages/add-product',{admin:true})
+                res.redirect('/admin/product-mgmt')
               }else{
                 console.log("errrrr");
               }
@@ -146,6 +254,15 @@ userhelper.viewUsers().then(async(result)=>{
 }) 
 });
 
+router.get('/order-management',check,async(req,res)=>{
+  getAllOrders().then((result)=>{
+    
+    res.render('admin-pages/order-mgmt',{admin:true })
+  })
+
+
+})
+
 
 router.get('/category-management',check, function(req, res, next) {
   producthelper.viewCategory().then(async(result)=>{
@@ -158,6 +275,41 @@ router.get('/blockUser',check, function(req, res, next) {
   res.redirect('/admin/user-management')
   })
   });
+
+  router.post('/add-category',check, function(req, res, next) {
+    console.log(req.body);
+    addCategory(req.body.name).then((result)=>{
+      if(result){
+        res.json({status:true,mes:"Category added"})
+      }
+      else{
+        res.json({status:false,mes:"Category exsist"})
+
+      }
+
+    })
+ 
+
+    });
+
+    router.post('/deletecat',check, function(req, res, next) {
+      console.log(req.body.name);
+      deleteCategory(req.body.name).then((result)=>{
+        if(result){
+          res.json({status:true,mes:"Category deleted"})
+        }
+        else{
+          res.json({status:false,mes:""})
+  
+        }
+  
+      })
+   
+  
+      });
+  
+
+
 
   router.post('/get-subcategory',check, function(req, res, next) {
     producthelper.viewSubcategory(req.body.id).then((result)=>{
@@ -196,7 +348,10 @@ router.get('/blockUser',check, function(req, res, next) {
 
         router.post('/delete-subcategory',check,function(req,res){
           console.log(req.body);
-          deleteSubcategory(req.body.oldValue)
+          deleteSubcategory(req.body.oldValue).then((result)=>{
+            res.json({success:true,mes:"Sucessfull deleted subcategory"})
+          })
+
 
 
         })

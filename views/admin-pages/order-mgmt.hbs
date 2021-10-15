@@ -1,15 +1,9 @@
 
 <div class="p-2" style="justify-content: center;">
 <div class="d-flex justify-content-center" > 
-  <a class="btn btn-primary  "  href="/admin/add-product">ADD NEW PRODUCT {{name}}</a>
+<h2 class="mt-4" >MY ORDERS</h2>
 </div>
-<div  class="p-3 d-flex justify-content-center">
-  <ul class="list-group list-group-horizontal">
-   {{#each category}}
-  <li value="{{this.category}}"   class="list-group-item"><a class="btn btn-info" href="/admin/a/{{this.category}}">{{this.category}}</a></li>
-  {{/each}}
-</ul>
-</div>
+
 
 <input class="search-label p-2"  style="width=10px " type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names..">
 <div class="table-responsive">
@@ -18,35 +12,33 @@
     <tr>
      <th scope="col">sl.no</th>
       <th scope="col">Product</th>
-      <th scope="col">Description</th>
       <th scope="col">Subcategory</th>
       <th scope="col">Qty</th>
       <th scope="col">Img</th>
        <th scope="col">price</th>
-       <th scope="col">Options</th>
+       <th scope="col">status</th> 
+       <th scope="col">Order</th>  
     </tr>
   </thead>
    <tbody>
-    {{#each result}}
+    {{#each orderdetails}}
     <tr>
       
       <th scope="row">{{calculation  @index}}</th>
-      <td>{{this.product_name}}</td>
-      <td>{{this.description}}</td>
-      <td>{{this.sub_category}}</td>
-       <td>{{this.qty}}</td>
+      <td>{{this.products.product_name}}</td>
+      <td>{{this.products.sub_category}}</td>
+       <td>{{this.quantity}}</td>
        <td>
          <div class="row">
-           <img class="col-lg-4 img-box "  src="/product-images/{{this._id}}1.jpg" alt="klj" >
-             <img class="col-lg-4 img-box" src="/product-images/{{this._id}}2.jpg" alt="klj" >
-               <img class="col-lg-4 img-box" src="/product-images/{{this._id}}3.jpg" alt="klj"  >
-
+           <img class="col-lg-4 img-box "  src="/product-images/{{this.products._id}}1.jpg" alt="klj" >
        </div> </td>
-       <td>{{this.price}}</td>
-        <td>
+       <td>{{this.products.price}}</td>
+        <td class="text-success">
          
-        <a class="btn btn-success" href="/admin/updateProduct/{{this._id}}"  >Update</a>
-         <a class="btn btn-danger" href="/admin/deleteProduct/{{this._id}}" onclick="return confirm('Delete {{this.firstName}} ?')" >Delete</a>
+        {{../status}}
+        </td>
+        <td>
+            <a class="btn btn-danger" >Cancel </a>
         </td>
     </tr>
    {{/each}}

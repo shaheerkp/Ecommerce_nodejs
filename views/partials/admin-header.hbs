@@ -11,7 +11,7 @@
     <div class="collapse navbar-collapse nav-items container-fluid mt-3  " id="navbarSupportedContent">      
       <ul class="all navbar-nav me-5 mb-0 ">
           <li>
-             <a class="nav-link dropdown-toggle navbar-text text-black" href="#" id="navbarDropdown" role="button" >Order Management</a>
+             <a class="nav-link dropdown-toggle navbar-text text-black" href="/admin/order-management" id="navbarDropdown" role="button" >Order Management</a>
           </li>
            <li>
              <a class="nav-link dropdown-toggle navbar-text text-black" href="/admin/category-management" id="navbarDropdown" role="button" >Category Management</a>
@@ -20,15 +20,10 @@
              <a class="nav-link dropdown-toggle navbar-text text-black" href="/admin/user-management" id="navbarDropdown" role="button" >User Management</a>
           </li>
             <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle navbar-text text-black" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <a class="nav-link dropdown-toggle navbar-text text-black" href="/admin/product-mgmt" id="navbarDropdown" role="button" >
            Produc Management
           </a>
-          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-            {{#each category}}
-            <li><a class="dropdown-item" href="/admin/a/{{this.category}}">{{this.category}}</a></li>
-            {{/each}}
-          </ul>
-        </li>
+         
 
 
 

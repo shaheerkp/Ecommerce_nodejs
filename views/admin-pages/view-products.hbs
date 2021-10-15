@@ -2,7 +2,7 @@
 <h1 class="text-center " > {{name}}</h1>
 <div class="d-flex justify-content-center">
 
-<a class="btn btn-primary " href="/admin/add-product">ADD {{name}}</a>
+
 </div>
 
 <div class="p-4">
@@ -27,9 +27,9 @@
     <tr>
       
       <th scope="row">{{calculation  @index}}</th>
-      <td>{{this.product-name}}</td>
+      <td>{{this.product_name}}</td>
       <td>{{this.description}}</td>
-      <td>{{this.sub-category}}</td>
+      <td>{{this.sub_category}}</td>
        <td>{{this.qty}}</td>
        <td>
          <div class="row">
@@ -41,8 +41,8 @@
        <td>{{this.price}}</td>
         <td>
          
-        <a class="btn btn-success" href="updateUser?fName={{this.firstName}}&lName={{this.lastName}}&eMail={{this.emailAddress}}&phNum={{this.phoneNumber}}&id={{this._id}}">Update</a>
-         <a class="btn btn-danger" href="deleteUser?id={{this._id}}" onclick="return confirm('Delete {{this.firstName}} ?')" >Delete</a>
+        <a class="btn btn-success" href="/admin/updateProduct/{{this._id}}"  >Update</a>
+         <a class="btn btn-danger" href="/admin/deleteProduct/{{this._id}}" onclick="return confirm('Delete {{this.firstName}} ?')" >Delete</a>
         </td>
     </tr>
    {{/each}}
@@ -53,6 +53,10 @@
 
 
 <script>
+ function update(){
+   console.log("updated clickeede")
+ }
+
 function myFunction() {
   // Declare variables
   var input, filter, table, tr, td, i, txtValue;

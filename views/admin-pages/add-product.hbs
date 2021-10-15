@@ -1,13 +1,13 @@
 <form class="ms=5 me=5 " action="/admin/add-product" method="POST" enctype="multipart/form-data">
 
 
-  <div class="form-row mb-5 container bg-light justify-content-center">
+  <div class="form-row mb-5 bg-light container bg-light justify-content-center">
   <h3 class="text-center" >ADD PRODUCTS </h3>
     <div class="row">
 
       <div class=" form-group col-md-6">
         <label for="productname ">PRODUCT NAME</label>
-        <input type="text" required name="product-name" class="form-control" id="inputEmail4">
+        <input type="text" required name="product_name" class="form-control" id="inputEmail4">
       </div>
 
       <div class="form-group col-md-6">
@@ -31,7 +31,7 @@
 
       <div class="form-group col-md-6">
         <label for="subcategory">SUB CATEGORY</label>
-        <select name="sub-category" required id="myList" class="form-select" aria-label="Default select example">
+        <select name="sub_category" required id="myList" class="form-select" aria-label="Default select example">
           {{#each result}}
          
           {{/each}}
@@ -80,7 +80,7 @@
     </div>
 
 
-  <button type="submit" class=" mb-5 ms-5 btn btn-primary">Add Product</button>
+  <button type="submit" class=" mb-5 ms-5 btn btn-primary" onclick="return confirm('Add product ?') "  >Add Product</button>
 
   </div>
 </form>
@@ -88,7 +88,6 @@
 <script>
    document.getElementById("category").onchange = e => {
         let id = e.target.value
-        console.log("id" + id)
         $.ajax({
             url: "/admin/get-subcategory",
             method: 'POST',
@@ -97,7 +96,7 @@
                 console.log(response);
                 document.getElementById("myList").innerHTML = "";
                 for (let i = 0; i < response.data.length; i++) {
-                    var innerCode = ` <option value='${response.data[i].name}'' onchange="getItem('{{this.category}}')" id="one">${response.data[i].name}</option>`
+                    var innerCode = ` <option value='${response.data[i].name}'' onchange="getItem('{{this.sub_category}}')" id="one">${response.data[i].name}</option>`
                     // var x = document.createElement("LI");
                     //var t = document.createTextNode(response.data[i].name);
                     //x.appendChild(t);

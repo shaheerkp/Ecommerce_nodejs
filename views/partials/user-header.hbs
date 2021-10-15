@@ -15,48 +15,22 @@
       <ul class="all navbar-nav me-5 mb-2 mb-lg-0">
         {{#each category}}
 
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle navbar-text text-black mt-4" href="#" id="navbarDropdown" role="button"
+        <li class="nav-item bg-white dropdown" style="height: 50px;">
+          <a class="nav-link dropdown-toggle navbar-text  text-black mt-4" href="#" id="navbarDropdown" role="button"
             data-bs-toggle="dropdown" aria-expanded="false">
             {{this.category}}
           </a>
-          <ul class="dropdown-menu dropdown-menu1" aria-labelledby="navbarDropdown">
+          <ul class="dropdown-menu dropdown-menu1 mt-4" aria-labelledby="navbarDropdown">
             {{#each this.subcategories }}
             <li><a class="dropdown-item"  href="/viewProducts/{{this.name}}" >{{this.name }}</a></li>
             {{/each}}
 
           </ul>
         </li>
-
-        {{!-- <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle navbar-text text-black mt-4" href="#" id="navbarDropdown" role="button"
-            data-bs-toggle="dropdown" aria-expanded="false">
-            BOTTOM WEAR
-          </a>
-          <ul class="dropdown-menu dropdown-menu1" aria-labelledby="navbarDropdown">
-            <li><a class="dropdown-item" href="#">Trousers and Pants</a></li>
-            <li><a class="dropdown-item" href="#">Shorts</a></li>
-            <li><a class="dropdown-item" href="#">Track pants</a></li>
-          </ul>
-        </li> --}}
-        {{!--
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle navbar-text text-black mt-4" href="#" id="navbarDropdown" role="button"
-            data-bs-toggle="dropdown" aria-expanded="false">
-            ACCESSORIES
-          </a>
-          <ul class="dropdown-menu dropdown-menu1" aria-labelledby="navbarDropdown">
-            <li><a class="dropdown-item" href="#">Watches</a></li>
-            <li><a class="dropdown-item" href="#">Shoes</a></li>
-            <li><a class="dropdown-item" href="#">Glasses</a></li>
-            <li><a class="dropdown-item" href="#">Wallets</a></li>
-
-          </ul>
-        </li> --}}
         {{/each }}
 
         <li class="nav-item dropdown " style="margin-bottom: 10px;">
-          <div class="mb-4">
+          <div class="mb-4 bg-white">
             {{#if user.isLoggedin}}
             <h6 class="ms-5 d-flex justify-content-center">Welcome : <b>{{user.email}}</b> </h6>
             {{else}}
@@ -78,7 +52,7 @@
             </i>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
               {{#if user.isLoggedin}}
-              <li><a class="dropdown-item" href="/signout" onclick="signOut()">SIGN OUT</a></li>
+              <li><a class="dropdown-item" href="/signout" id="signout">SIGN OUT</a></li>
               {{else }}
 
               <li><a class="dropdown-item" href="/login">SIGN IN</a></li>
@@ -94,17 +68,24 @@
 
 
 
-        <li class="nav-item dropdown mt-4">
+        <li class="nav-item dropdown ">
 
+           
 
-          <div class="navbar-btns rounded-circle text-white text-center dropdown">
+          <div class="navbar-btns rounded-circle text-white text-center dropdown mt-4">
 
             <i class=" dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown"
               aria-expanded="false">
-              <i class="fas fa-cart-plus cart-icon"></i>
+              <i class="fas fa-cart-plus cart-icon"></i> <span class=" badge badge-success text-danger" id="cart_count">{{cart_count}}</span>
             </i>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-              <li><a class="dropdown-item" href="#">Action</a></li>
+               {{#if user.isLoggedin}}
+              <li><a class="dropdown-item" href="/cart">Cart</a></li>
+              <hr>
+              <li><a class="dropdown-item" href="/order-details">Order Details</a></li>
+              {{else}}
+              <li><a class="dropdown-item" href="/login">Login</a></li>
+              {{/if}}
             </ul>
           </div>
         </li>
@@ -120,28 +101,17 @@
 
 
 
-{{!-- <script>
-
-  function getProducts(name) {
-    console.log("evede kttununddddd")
-    $.ajax({
-      url: `/viewProducts?name=${name}`,
-      method: "post",
-      data: {name},
-      success: function (result) {
-        console.log(result)
-
-      },
-      error: function (err) {
-
-        alert("Something Error")
-
-      }
+<script>
 
 
-    })
-
+  function signOut() {
+    var auth2 = gapi.auth2.getAuthInstance();
+    auth2.signOut().then(function () {
+      console.log('User signed out.');
+    });
   }
 
 
-</script>  --}}
+
+ </script>
+ <script src="/javascripts/user/cart.js" ></script>

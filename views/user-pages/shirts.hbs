@@ -1,44 +1,119 @@
 <div class="row container-fluid">
 
-<div class="sidebar col-lg-3">
-   <p class="p-4">
-       Refine by
-   </p>
-<ul >
-    <li>
-        
-    </li>
-</ul>  
+    <div class="sidebar col-lg-4" >
+       
 
-</div>
-<div class="content col-lg-9">
-    <h1 class="d-flex justify-content-center p-2 mt-3" >{{cat}}</h1>
-    <div class="row d-flex justify-content-between">
-    {{#each result}}
-   <div class="col-lg-4 d-flex justify-content-between">
-            <div class="card">
-                <a href="/product-detail?id={{_id}}" class="fill-div" style="text-decoration: none;">
-  <img src="/product-images/{{this._id}}1.jpg" class="card-img-top" alt="...">
-  <div class="card-body">
-    <h5 class="card-title cardtitle text-sm">{{this.product-name}}</h5>
-    <p class="card-text text-center cardtitle1">{{this.description}}</p>
-    <p class="text-center price">RS: {{this.price}} </p>
-   
-  </div>
-   </a>
-</div>
+            <!-- Section: Sidebar -->
+            <section>
+
+                <!-- Section: Filters -->
+                <section>
+
+                    <h5 class="mt-5 text-center "> Filters</h5>
+
+                    <!-- Section: Price -->
+                    <section class="mb-4">
+
+                        <h6 class="font-weight-bold mb-3">Price</h6>
+
+                        <div class="form-check pl-0 mb-3">
+                            <input type="radio" class="form-check-input" id="under25" name="materialExampleRadios">
+                            <label class="form-check-label small text-uppercase card-link-secondary" for="under25">Under
+                                $25</label>
+                        </div>
+                        <div class="form-check pl-0 mb-3">
+                            <input type="radio" class="form-check-input" id="2550" name="materialExampleRadios">
+                            <label class="form-check-label small text-uppercase card-link-secondary" for="2550">$25 to
+                                $50</label>
+                        </div>
+                        <div class="form-check pl-0 mb-3">
+                            <input type="radio" class="form-check-input" id="50100" name="materialExampleRadios">
+                            <label class="form-check-label small text-uppercase card-link-secondary" for="50100">$50 to
+                                $100</label>
+                        </div>
+                        <div class="form-check pl-0 mb-3">
+                            <input type="radio" class="form-check-input" id="100200" name="materialExampleRadios">
+                            <label class="form-check-label small text-uppercase card-link-secondary" for="100200">$100
+                                to $200</label>
+                        </div>
+                        <div class="form-check pl-0 mb-3">
+                            <input type="radio" class="form-check-input" id="200above" name="materialExampleRadios">
+                            <label class="form-check-label small text-uppercase card-link-secondary" for="200above">$200
+                                & Above</label>
+                        </div>
+                        <form>
+                            <div class="d-flex align-items-center mt-4 pb-1">
+                                <div class="md-form md-outline my-0">
+                                    <input id="from" type="text" class="form-control mb-0">
+                                    <label for="form">$ Min</label>
+                                </div>
+                                <p class="px-2 mb-0 text-muted"> - </p>
+                                <div class="md-form md-outline my-0">
+                                    <input id="to" type="text" class="form-control mb-0">
+                                    <label for="to">$ Max</label>
+                                </div>
+                            </div>
+                        </form>
+
+                    </section>
+                    <!-- Section: Price -->
+
+                    <!-- Section: Price version 2 -->
+                    <section class="mb-4">
+
+                        <h6 class="font-weight-bold mb-3">Price</h6>
+
+                        <div class="slider-price d-flex align-items-center my-4">
+                            <span class="font-weight-normal small text-muted mr-2">$0</span>
+                            <form class="multi-range-field w-100 mb-1">
+                                <input id="multi" class="multi-range" type="range" />
+                            </form>
+                            <span class="font-weight-normal small text-muted ml-2">$100</span>
+                        </div>
+
+                    </section>
+                    <!-- Section: Price version 2 -->
+
+
+                    <!-- Section: Color -->
+
+                </section>
+                <!-- Section: Filters -->
+
+            </section>
+            <!-- Section: Sidebar -->
+
+    
+    </div>
+
+    <div class="  col-lg-8 float-end float-lg-start ">
+        <h1 class="d-flex justify-content-center p-2 mt-3">{{cat}}</h1>
+        <div class="row d-flex justify-content-between">
+            {{#each result}}
+            <div class="col-lg-4 d-flex justify-content-between">
+                <div class="card">
+                    <a href="/product-detail?id={{_id}}" class="fill-div" style="text-decoration: none;">
+                        <img src="/product-images/{{this._id}}1.jpg" class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <h5 class="card-title cardtitle text-sm">{{this.product-name}}</h5>
+                            <p class="card-text text-center cardtitle1">{{this.description}}</p>
+                            <p class="text-center price">RS: {{this.price}} </p>
+
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            {{/each}}
+
+
+
+
+
+
         </div>
-
-        {{/each}}
-
-
-
-
 
 
     </div>
-
-  
-</div>
 
 </div>
