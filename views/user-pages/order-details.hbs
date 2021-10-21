@@ -1,76 +1,114 @@
+<div class="p-2 " style="justify-content: center;">
+  <div class="d-flex justify-content-center">
+    <h2 class="" style="margin-top: 5rem;">MY ORDERS</h2>
+  </div>
 
-<div class="p-2" style="justify-content: center;">
-<div class="d-flex justify-content-center" > 
-<h2 class="mt-4" >MY ORDERS</h2>
-</div>
 
+  <input class="search-label p-2" style="width=10px " type="text" id="myInput" onkeyup="myFunction()"
+    placeholder="Search for names..">
+  <div class="table-responsive">
+    <table id="myTable" class="table">
+      <thead>
+        <tr>
+          <th scope="col">sl.no</th>
+          <th scope="col">Product</th>
+          <th scope="col">Subcategory</th>
+          <th scope="col">Qty</th>
+          <th scope="col">Img</th>
+          <th scope="col">price</th>
+          <th scope="col">status</th>
+          <th scope="col">Order</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each orderdetails}}
+        <tr>
 
-<input class="search-label p-2"  style="width=10px " type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names..">
-<div class="table-responsive">
-<table id="myTable" class="table">
-  <thead>
-    <tr>
-     <th scope="col">sl.no</th>
-      <th scope="col">Product</th>
-      <th scope="col">Subcategory</th>
-      <th scope="col">Qty</th>
-      <th scope="col">Img</th>
-       <th scope="col">price</th>
-       <th scope="col">status</th> 
-       <th scope="col">Order</th>  
-    </tr>
-  </thead>
-   <tbody>
-    {{#each orderdetails}}
-    <tr>
-      
-      <th scope="row">{{calculation  @index}}</th>
-      <td>{{this.products.product_name}}</td>
-      <td>{{this.products.sub_category}}</td>
-       <td>{{this.quantity}}</td>
-       <td>
-         <div class="row">
-           <img class="col-lg-4 img-box "  src="/product-images/{{this.products._id}}1.jpg" alt="klj" >
-       </div> </td>
-       <td>{{this.products.price}}</td>
-        <td class="text-success">
-         
-        {{../status}}
-        </td>
-        <td>
-            <a class="btn btn-danger" >Cancel </a>
-        </td>
-    </tr>
-   {{/each}}
-  </tbody>
-</table>
-</div>
+          <th scope="row">{{calculation @index}}</th>
+          <td>{{this.products.product_name}}</td>
+          <td>{{this.products.sub_category}}</td>
+          <td>{{this.quantity}}</td>
+          <td>
+            <div class="row">
+              <img class="col-lg-4 img-box " src="/product-images/{{this.products._id}}1.jpg" alt="klj">
+            </div>
+          </td>
+          <td>{{this.products.price}}</td>
+          <td class="text-success" id="{{this.status}}">{{this.status}}</td>
+          <td>
+            {{#if this.isCanceled }}
+            {{else}}
+            {{#if this.isDelivered}}
+            {{else}}
+            <button class="btn btn-danger" onclick="update('{{this.products._id}}','{{this._id}}')">Cancel </button>
+            {{/if}}
+            {{/if}}
+          </td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
 </div>
 
 <script>
- function update(){
-   console.log("updated clickeede")
- }
+  function update(id, proid) {
+    console.log("updated clickeede")
+    console.log(id, proid,)
+    let newVal="User cancelled"
 
-function myFunction() {
-  // Declare variables
-  var input, filter, table, tr, td, i, txtValue;
-  input = document.getElementById("myInput");
-  filter = input.value.toUpperCase();
-  table = document.getElementById("myTable");
-  tr = table.getElementsByTagName("tr");
 
-  // Loop through all table rows, and hide those who don't match the search query
-  for (i = 0; i < tr.length; i++) {
-    td = tr[i].getElementsByTagName("td")[0];
-    if (td) {
-      txtValue = td.textContent || td.innerText;
-      if (txtValue.toUpperCase().indexOf(filter) > -1) {
-        tr[i].style.display = "";
-      } else {
-        tr[i].style.display = "none";
+    $.ajax({
+      url:'/changestatus',
+      method:'post',
+      data:({proid,id,newVal}),
+           success:function(respose){
+             var countryVal;    
+
+    if (!confirm('do you want to cancel the order')) {
+    $(this).val(countryVal); 
+    return;            
+  }       
+    location.reload()      
+ countryVal = newVal; 
+
+      },
+      error:function(){
+
+      }
+
+    })
+
+  
+
+
+   
+   
+      
+  
+
+
+  }
+
+  function myFunction() {
+    // Declare variables
+    var input, filter, table, tr, td, i, txtValue;
+    input = document.getElementById("myInput");
+    filter = input.value.toUpperCase();
+    table = document.getElementById("myTable");
+    tr = table.getElementsByTagName("tr");
+
+    // Loop through all table rows, and hide those who don't match the search query
+    for (i = 0; i < tr.length; i++) {
+      td = tr[i].getElementsByTagName("td")[0];
+      if (td) {
+        txtValue = td.textContent || td.innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+          tr[i].style.display = "";
+        } else {
+          tr[i].style.display = "none";
+        }
       }
     }
   }
-}
 </script>

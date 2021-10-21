@@ -1,0 +1,280 @@
+<div class="bg-light ms-5 justify-content-center me-5 mb-5">
+  <form id="address-form" action="/buynow-add-address" method="post" class="ms-5">
+    <div style="margin-top: 3rem;margin-left: 10rem;"
+      class="col-lg-9 col-md-8 col-sm-10 offset-lg-0 offset-md-2 offset-sm-1">
+
+      <h5 class="text-center p-5 "> Enter New Address</h5>
+
+
+
+
+
+      <div id="details" class=" rounded p-5">
+        <span id="main_err" class="text-danger"></span>
+        <div class="form-group">
+          <label class="text-muted">Name</label>
+          <span id="name_err" class="text-danger"></span>
+          <div class="d-flex jusify-content-start align-items-center rounded p-2">
+            <input id="user_name" type="text" name="name" value="">
+            <input id="prod_id" style="display: none;" type="text" name="proid" value="{{id}}">
+
+
+          </div>
+        </div>
+        <div style="display: none;" class="form-group">
+          <label class="text-muted">Email</label>
+          <div class="d-flex jusify-content-start align-items-center rounded p-2">
+            <input name="email" value="{{email}}">
+            <input name="id" value="{{random}}">
+
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-4">
+            <div class="form-group"> <label>City</label>
+              <span id="city_err" class="text-danger"></span>
+              <div class="d-flex jusify-content-start align-items-center rounded p-2">
+                <input type="text" id="city_val" name="city" value="">
+
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="form-group"> <label>Zip code</label>
+              <span id="number_err" class="text-danger"></span>
+              <div class="d-flex jusify-content-start align-items-center rounded p-2">
+                <input id="pin_number" type="number" name="pin" value="">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-4">
+            <div class="form-group"> <label>Address</label>
+              <span id="add_err" class="text-danger"></span>
+              <div class="d-flex jusify-content-start align-items-center rounded p-2">
+                <input type="text" id="add_val" name="address" value="">
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="form-group"> <label>State</label>
+              <span id="state_err" class="text-danger"></span>
+              <div class="d-flex jusify-content-start align-items-center rounded p-2">
+                <input id="state_val" name="state" type="text" value="">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button type="submit" class="subscribe btn btn-primary btn-block shadow-sm"> ADD ADDRESS
+      </button>
+
+
+    </div>
+  </form>
+
+</div>
+
+
+
+<script>
+
+  let number_val = true;
+  let name_val = true;
+  let city_val = true;
+  let add_val = true;
+  let state_val = true
+
+  var u_number = document.getElementById("pin_number")
+  u_number.addEventListener('input', (e) => {
+    u_number.value = u_number.value.replace(/[^0-9]/, '').replace(/(\..*)\./, '$1');;
+
+
+    if (u_number.value.length != 6) {
+      number_err.innerHTML = "Enter 6 numbers"
+      number_val = false;
+
+    }
+    else {
+      number_err.innerHTML = " "
+      number_val = true;
+
+    }
+  })
+
+
+
+  $("#user_name").on('input', function () {
+    this.value = this.value.replace(/[^a-zA-Z ]/, '')
+
+
+    if (this.value.charAt(0) == " ") {
+      $("#name_err").html("  should not start with space")
+      $(this).css({ borderColor: "red" })
+      name_val = false;
+    }
+
+    else if (this.value.length < 3) {
+      $("#name_err").text("  should be atleast 2 character")
+      $(this).css({ borderColor: "red" })
+      name_val = false;
+
+    }
+    else if (this.value.length > 20) {
+      $("#name_err").text("  should be max 20  character")
+      $(this).css({ borderColor: "red" })
+      name_val = false;
+
+    }
+    else if (this.value.includes("  ")) {
+      $("#name_err").text("  should not have more spaces ")
+      $(this).css({ borderColor: "red" })
+      name_val = false;
+
+    }
+    else {
+      $(this).css({ borderColor: "green" })
+      $("#name_err").html("")
+      name_val = true
+    }
+  })
+
+
+  $("#add_val").on('input', function () {
+    this.value = this.value.replace(/[^a-zA-Z ]/, '')
+
+
+    if (this.value.charAt(0) == " ") {
+      $("#add_err").html("  should not start with space")
+      $(this).css({ borderColor: "red" })
+      add_val = false;
+    }
+
+    else if (this.value.length < 3) {
+      $("#add_err").text("  should be atleast 2 character")
+      $(this).css({ borderColor: "red" })
+      add_val = false;
+
+    }
+    else if (this.value.length > 20) {
+      $("#add_err").text("  should be max 20  character")
+      $(this).css({ borderColor: "red" })
+      add_val = false;
+
+    }
+    else if (this.value.includes("  ")) {
+      $("#add_err").text("  should not have more spaces ")
+      $(this).css({ borderColor: "red" })
+      add_val = false;
+
+    }
+    else {
+      $(this).css({ borderColor: "green" })
+      $("#add_err").html("")
+      add_val = true
+    }
+  })
+
+
+  $("#city_val").on('input', function () {
+    this.value = this.value.replace(/[^a-zA-Z ]/, '')
+
+
+    if (this.value.charAt(0) == " ") {
+      $("#city_err").html("  should not start with space")
+      $(this).css({ borderColor: "red" })
+      city_val = false;
+    }
+
+    else if (this.value.length < 3) {
+      $("#city_err").text("  should be atleast 2 character")
+      $(this).css({ borderColor: "red" })
+      city_val = false;
+
+    }
+    else if (this.value.length > 20) {
+      $("#city_err").text("  should be max 20  character")
+      $(this).css({ borderColor: "red" })
+      city_val = false;
+
+    }
+    else if (this.value.includes("  ")) {
+      $("#city_err").text("  should not have more spaces ")
+      $(this).css({ borderColor: "red" })
+      city_val = false;
+
+    }
+    else {
+      $(this).css({ borderColor: "green" })
+      $("#city_err").html("")
+      city_val = true
+    }
+  })
+
+
+  $("#state_val").on('input', function () {
+    this.value = this.value.replace(/[^a-zA-Z ]/, '')
+
+
+    if (this.value.charAt(0) == " ") {
+      $("#state_err").html("  should not start with space")
+      $(this).css({ borderColor: "red" })
+      state_val = false;
+    }
+
+    else if (this.value.length < 3) {
+      $("#state_err").text("  should be atleast 2 character")
+      $(this).css({ borderColor: "red" })
+      state_val = false;
+
+    }
+    else if (this.value.length > 20) {
+      $("#state_err").text("  should be max 20  character")
+      $(this).css({ borderColor: "red" })
+      state_val = false;
+
+    }
+    else if (this.value.includes("  ")) {
+      $("#state_err").text("  should not have more spaces ")
+      $(this).css({ borderColor: "red" })
+      state_val = false;
+
+    }
+    else {
+      $(this).css({ borderColor: "green" })
+      $("#state_err").html("")
+      state_val = true
+    }
+  })
+
+
+
+
+  /* $("#address-form").submit((e) => {
+    e.preventDefault()
+    let pro_value = document.getElementById('prod_id').value
+    
+    if (city_val && state_val && name_val && add_val && number_val) {
+      $.ajax({
+        url: "/buynow-add-address",
+        data: $("#address-form").serialize(),
+        method: "post",
+        success: function (result) {
+          alert(pro_value)
+          
+          location.replace(`/buynow/${pro_value}`)
+
+        }
+
+
+      })
+    }
+    else {
+
+      $('#main_err').html("Enter All Fields Correctly")
+    }
+
+  }) */
+
+</script>

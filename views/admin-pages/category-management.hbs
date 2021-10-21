@@ -1,5 +1,5 @@
-<div class="row container">
-    <div class="col ps-5 ">
+<div class="row container mt-5 bg-light ms-5">
+    <div class="col-12 col-lg-6 ps-5 ">
         <h4 class="text-center"> Categories </h4>
         <div class="me-5">
 
@@ -62,7 +62,7 @@
 
 
     </div>
-    <div class="col ps-5 mt-4">
+    <div class="col-12 col-lg-6 ps-5 mt-4">
         <h4 class="text-center">Add New Category </h4>
         <div class="me-5">
 
@@ -135,9 +135,9 @@
             method: "post",
             data: { name },
             success: function (response) {
-                if(response.status){
+                if (response.status) {
                     alert(response.mes)
-                       location.replace('/admin/category-management')
+                    location.replace('/admin/category-management')
 
                 }
 

@@ -11,12 +11,37 @@
       <hr> <span class="or-text-desktop"> Or </span>
     </div>
 
+    <form action="" role="form" id="otp-form">
+
+        <label  class="form-label ms-2">Otp Login</label>
+         <span class="text-danger" id="number_err" ></span>
+        <input type="number"  class="form-control" name="email" id="otp_number" >
+
+        <button type="submit" class="btn-sm mt-2 ms-2  btn-primary">Sent Otp</button>
+     </form>
+
+      <div style="display: none;"  id="otp_div"  class=" row  input-group ms-2 mt-3 mb-3">
+  <input type="text" id="ver_otp" class="form-control" placeholder="Enter Otp" aria-label="Recipient's username" aria-describedby="basic-addon2">
+  <div  class=" col-lg-6 input-group-append">
+    <button id="ver_submit_btn" class="btn btn-outline-secondary" type="button">Submit</button>
+  </div>
+</div>
+
+    
+
+
+     <div class="or-separator">
+      <hr> <span class="or-text-desktop"> Or </span>
+    </div>
+
 
     <form class="p-3 pb-5 form" role="form" id="login-form">
       <span id="err" class="text-center text-danger"> </span>
       <div class="mb-3">
+       
         <label for="exampleInputEmail1" class="form-label">Email address</label>
-        <input type="email" class="form-control" name="email" id="exampleInputEmail1" aria-describedby="emailHelp">
+         <span id="email_err" class="text-center text-danger"> </span>
+        <input type="email" class="form-control" name="email" id="login_email" aria-describedby="emailHelp">
       </div>
       <div class="mb-3">
         <label for="exampleInputPassword1" class="form-label">Password</label>
@@ -30,6 +55,9 @@
     </form>
   </div>
 </div>
+
+
+
 
 <script src="/javascripts/user/userlogin.js"></script>
 <script src="/javascripts/user/googleauth.js"></script>

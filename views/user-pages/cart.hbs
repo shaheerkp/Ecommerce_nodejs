@@ -1,14 +1,21 @@
 <link href="/css/cart.css" rel="stylesheet">
-<div class="container">
+{{#if items}}
+<div style="margin-top: 7rem;" class="container">
     <div class="wrapper wrapper-content animated fadeInRight">
         <div class="row">
             <div class="col-md-9">
                 <div class="ibox">
                     <div class="ibox-title">
 
+
+
+
+
+
                         <h5>items in your cart [ {{cart_count}}]</h5>
                     </div>
                     {{#each items}}
+                                        
 
                     <div class="ibox-content">
                         <div class="table-responsive">
@@ -30,8 +37,13 @@
                                                     {{this.products.product_name}}
                                                 </a>
                                             </h3>
-                                            <p class="small">
-                                                {{this.products.description}}
+                                             <h6 >
+                                                <p style="color: rgb(121, 120, 120);" href="#" class="text-navy">
+                                                    {{this.products.sub_category}}
+                                                </p>
+                                            </h6>
+                                            <p style="color: rgb(121, 120, 120);" class="small">
+                                               RS : {{this.products.price}}
                                             </p>
 
                                             <div class="m-t-sm">
@@ -51,9 +63,10 @@
                                                 <input type="button"
                                                     onclick="changeQuantity('{{this._id}}','{{this.products._id}}',-1)"
                                                     value="-" id="qtyminus" class="minus">
-                                                <input type="number" step="1" min="1" max="" onchange="qtychange()"
-                                                    name="quantity" id="{{this.products._id}}qty" value="{{this.quantity}}"  title="Qty"
-                                                    class="input-text qty text" size="4" pattern="" inputmode="">
+                                                <input type="" disabled step="1" min="1" max="" onchange="qtychange()"
+                                                    name="quantity" id="{{this.products._id}}qty"
+                                                    value="{{this.quantity}}" title="Qty" class="input-text qty text"
+                                                    size="4" pattern="" inputmode="">
                                                 <input type="button" value="+"
                                                     onclick="changeQuantity('{{this._id}}','{{this.products._id}}',1)"
                                                     class="plus">
@@ -61,19 +74,23 @@
                                         </td>
 
 
+
                                         <td>
+
                                             <p class="fs-6">
-                                                RS : {{this.products.price}}
+                                                RS : {{this.subtotal}}
                                             </p>
                                         </td>
 
                                     </tr>
+                                  
+                                    {{/each}}
                                 </tbody>
                             </table>
                         </div>
 
                     </div>
-                    {{/each}}
+
 
 
 
@@ -105,13 +122,13 @@
                         <span class="text-muted small">
                             *For United States, France and Germany applicable sales tax will be applied
                         </span>
-                        <div class="m-t-sm">
+                        {{!-- <div class="m-t-sm">
                             <div class="btn-group">
                                 <a href="#" class="btn btn-primary btn-sm"><i class="fa fa-shopping-cart"></i>
                                     Checkout</a>
                                 <a href="#" class="btn btn-white btn-sm"> Cancel</a>
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
 
@@ -163,5 +180,12 @@
         </div>
     </div>
 </div>
+{{else}}
+<div>
+    <h1  class="mt-5 p-5 ms-5">NO Products In Cart</h1>
+    <a href="/" class=" ms-5 btn btn-primary" >Go to home</a>
+
+</div>
+{{/if}}
 
 <script src="/javascripts/user/removecart.js"></script>

@@ -1,4 +1,30 @@
-<form class="ms=5 me=5 " action="/admin/add-product" method="POST" enctype="multipart/form-data">
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script src="https://kit.fontawesome.com/4f9ff9a3d7.js" crossorigin="anonymous"></script>
+  <!-- Material Dashboard CSS -->
+  <link href="/assets/css/material-dashboard.min.css?v=2.1.0" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
+  		<link rel="stylesheet" href="https://unpkg.com/dropzone/dist/dropzone.css" />
+		<link href="https://unpkg.com/cropperjs/dist/cropper.css" rel="stylesheet"/>
+
+	<script src="https://unpkg.com/dropzone"></script>
+		<script src="https://unpkg.com/cropperjs"></script>
+
+    <style>
+    .preview {
+        overflow: hidden;
+        width: 160px;
+        height: 160px;
+        margin: 10px;
+        border: 1px solid red;
+    }
+
+    .modal-lg {
+        max-width: 1000px !important;
+    }
+</style>
+
+
+<form class="ms=5 me=5 " action="/admin/add-product" onsubmit="return checkValid()"  method="POST" enctype="multipart/form-data">
 
 
   <div class="form-row mb-5 bg-light container bg-light justify-content-center">
@@ -7,12 +33,13 @@
 
       <div class=" form-group col-md-6">
         <label for="productname ">PRODUCT NAME</label>
-        <input type="text" required name="product_name" class="form-control" id="inputEmail4">
+         <span id="p_name_err" class="text-center text-danger"> </span>
+        <input type="text" itemid="p_name"  name="product_name" class="form-control" id="p_name">
       </div>
 
       <div class="form-group col-md-6">
         <label for="category">CATEGORY</label>
-        <select name="category" id="category" class="form-select" aria-label="Default select example" required>
+        <select required name="category" id="category" class="form-select" aria-label="Default select example" >
           <option >Select Category</option>
           {{#each this.category}}
           <option  value={{this.category}}>{{this.category}}</option>
@@ -26,7 +53,7 @@
 
       <div class="form-group col-md-6">
         <label for="description">DESCRIPTION</label>
-        <input name="description" type="text" class="form-control" id="inputEmail4">
+        <input required name="description" type="text" class="form-control" id="des">
       </div>
 
       <div class="form-group col-md-6">
@@ -44,12 +71,14 @@
     <div class="row">
       <div class="form-group col-md-6">
         <label for="price">PRICE</label>
-        <input name="price" required type="number" class="form-control" id="inputEmail4">
+         <span id="price_err" class="text-center text-danger"> </span>
+        <input name="price" id="p_price" required type="number" class="form-control" id="inputEmail4">
       </div>
 
       <div class="form-group col-md-6">
         <label for="price">Quantity</label>
-        <input name="qty" style="width: 10rem;"  type="number" required class="form-control" id="inputqty">
+         <span id="qty_err" class="text-center text-danger"> </span>
+        <input name="qty"  style="width: 10rem;"  type="number" required class="form-control" id="inputqty">
       </div>
 
     </div>
@@ -86,6 +115,87 @@
 </form>
 
 <script>
+  let p_name=false;
+  let p_price=false;
+  let inputqty=false;
+
+
+  $("#p_name").on('input', function () {
+  this.value = this.value.replace(/[^a-zA-Z ]/, '')
+
+
+  if (this.value.charAt(0) == " ") {
+    $("#p_name_err").html("should not start with space")
+    $(this).css({ borderColor: "red" })
+    p_name = false;
+  }
+
+  else if (this.value.length < 3) {
+    $("#p_name_err").text("should be atleast 2 character")
+    $(this).css({ borderColor: "red" })
+    p_name = false;
+
+  }
+  else if (this.value.length > 20) {
+    $("#p_name_err").text("should be max 20  character")
+    $(this).css({ borderColor: "red" })
+    p_name = false;
+
+  }
+  else if (this.value.includes("  ")) {
+    $("#p_name_err").text("should not have more spaces ")
+    $(this).css({ borderColor: "red" })
+    p_name = false;
+
+  }
+  else {
+    $(this).css({ borderColor: "green" })
+    $("#p_name_err").html("")
+    p_name = true
+  }
+})
+
+
+
+var u_number = document.getElementById("p_price")
+u_number.addEventListener('input', (e) => {
+    u_number.value = u_number.value.replace(/[^0-9]/, '').replace(/(\..*)\./, '$1');;
+
+
+    if (u_number.value.length < 0) {
+       price_err.innerHTML = "Enter price"
+        p_price = false;
+
+    }
+    else {
+        price_err.innerHTML = " "
+        p_price = true;
+
+    }
+})
+
+
+var qty = document.getElementById("inputqty")
+qty.addEventListener('input', (e) => {
+    qty.value = qty.value.replace(/[^0-9]/, '').replace(/(\..*)\./, '$1');;
+
+
+    if (qty.value.length < 0) {
+       qty_err.innerHTML = "Enter price"
+        inputqty = false;
+
+    }
+    else {
+        qty_err.innerHTML = " "
+        inputqty = true;
+
+    }
+})
+
+
+
+
+
    document.getElementById("category").onchange = e => {
         let id = e.target.value
         $.ajax({
@@ -97,9 +207,7 @@
                 document.getElementById("myList").innerHTML = "";
                 for (let i = 0; i < response.data.length; i++) {
                     var innerCode = ` <option value='${response.data[i].name}'' onchange="getItem('{{this.sub_category}}')" id="one">${response.data[i].name}</option>`
-                    // var x = document.createElement("LI");
-                    //var t = document.createTextNode(response.data[i].name);
-                    //x.appendChild(t);
+
                     document.getElementById("myList").innerHTML += innerCode;
 
                 }
@@ -139,4 +247,20 @@
     }
   }
 
+
+  function checkValid(){
+
+    if(p_name&&p_price&&inputqty){
+    return true
+
+    }
+    else{
+      alert("Enter all fields correctly")
+      return false
+
+    }
+
+  }
+  
 </script>
+

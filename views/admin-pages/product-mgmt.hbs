@@ -1,5 +1,25 @@
 
-<div class="p-2" style="justify-content: center;">
+
+<style>
+  a.btn:hover {
+     -webkit-transform: scale(1.1);
+     -moz-transform: scale(1.1);
+     -o-transform: scale(1.1);
+ }
+ a.btn {
+     -webkit-transform: scale(0.8);
+     -moz-transform: scale(0.8);
+     -o-transform: scale(0.8);
+     -webkit-transition-duration: 0.5s;
+     -moz-transition-duration: 0.5s;
+     -o-transition-duration: 0.5s;
+ }
+
+</style>
+
+
+
+<div class="p-2 bg-light"  style="justify-content: center;">
 <div class="d-flex justify-content-center" > 
   <a class="btn btn-primary  "  href="/admin/add-product">ADD NEW PRODUCT {{name}}</a>
 </div>
@@ -44,9 +64,18 @@
        </div> </td>
        <td>{{this.price}}</td>
         <td>
+
+              <a href="/admin/updateProduct/{{this._id}}"  class="btn btn-primary a-btn-slide-text">
+        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+        <span><strong>Edit</strong></span>            
+    </a>
+        <a href="/admin/deleteProduct/{{this._id}}" onclick="return confirm('Delete {{this.firstName}} ?')" class="btn btn-danger a-btn-slide-text">
+       <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+        <span><strong>Delete</strong></span>            
+    </a>
          
-        <a class="btn btn-success" href="/admin/updateProduct/{{this._id}}"  >Update</a>
-         <a class="btn btn-danger" href="/admin/deleteProduct/{{this._id}}" onclick="return confirm('Delete {{this.firstName}} ?')" >Delete</a>
+      
+      
         </td>
     </tr>
    {{/each}}
@@ -54,6 +83,10 @@
 </table>
 </div>
 </div>
+
+
+
+
 
 <script>
  function update(){

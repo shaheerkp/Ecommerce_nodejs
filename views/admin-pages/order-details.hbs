@@ -1,0 +1,137 @@
+<div class="p-2" style="justify-content: center;">
+  <div class="d-flex justify-content-center">
+    <h2 class="mt-4">Order Details</h2>
+  </div>
+
+
+  <input class="search-label p-2" style="width=10px " type="text" id="myInput" onkeyup="myFunction()"
+    placeholder="Search for names..">
+  <div class="table-responsive">
+    <table id="myTable" class="table">
+      <thead>
+        <tr>
+          <th scope="col">sl.no</th>
+          <th scope="col">Product</th>
+          <th scope="col">Subcategory</th>
+          <th scope="col">Qty</th>
+          <th scope="col">Img</th>
+          <th scope="col">price</th>
+          <th scope="col">status</th>
+          <th scope="col">options</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each result}}
+        <tr>
+
+          <th scope="row">{{calculation @index}}</th>
+          <td>{{this.products.product_name}}</td>
+          <td>{{this.products.sub_category}}</td>
+          <td>{{this.quantity}}</td>
+          <td>
+            <div class="row">
+              <img class="col-lg-4 " style="height:10rem;width:10rem;border-radius:0"
+                src="/product-images/{{this.products._id}}1.jpg" alt="klj">
+            </div>
+          </td>
+          <td>{{this.products.price}}</td>
+          <th scope="col">{{this.status}}</th>
+
+          <td>
+            {{#if this.isCanceled}}
+            {{else}}
+            <div>
+              <select class="form-select" onchange="changeStatus('{{this.products._id}}','{{this._id}}')" id="status{{this.products._id}}" style="width: 10rem;" aria-label="Disabled select example" >
+                <option selected> select menu</option>
+                <option  value="Order received">Order received</option>
+                <option value="Shipped">Shipped</option>
+                <option value="Delivered">Delivered</option>
+                <option value="Order Canceled">Order Canceled</option>
+              </select>
+            </div>
+
+            {{/if }}
+          </td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+
+  function changeStatus(id,proid,) {
+    var newVal = document.getElementById("status"+id).value
+    console.log("updated clickeede",id,proid,newVal)
+
+
+      swal({
+    title: "Are you sure?",
+    icon: "warning",
+    buttons: true,
+    dangerMode: true,
+  })
+  .then((willDelete) => {
+    if (willDelete) {
+    $.ajax({
+      url:"/admin/changestatus",
+      method:'post',
+      data:({proid,id,newVal}),
+      success:function(respose){
+
+             var countryVal;    
+    
+
+        
+    location.reload() 
+ countryVal = newVal;
+  let r=$(this).val(countryVal) 
+
+
+      },
+      error:function(){
+
+      }
+    })
+
+    } else {
+      location.reload()
+      
+    }
+  });
+
+
+
+       
+
+       
+      
+      
+}
+ 
+
+
+
+  function myFunction() {
+    // Declare variables
+    var input, filter, table, tr, td, i, txtValue;
+    input = document.getElementById("myInput");
+    filter = input.value.toUpperCase();
+    table = document.getElementById("myTable");
+    tr = table.getElementsByTagName("tr");
+
+    // Loop through all table rows, and hide those who don't match the search query
+    for (i = 0; i < tr.length; i++) {
+      td = tr[i].getElementsByTagName("td")[0];
+      if (td) {
+        txtValue = td.textContent || td.innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+          tr[i].style.display = "";
+        } else {
+          tr[i].style.display = "none";
+        }
+      }
+    }
+  }
+</script>

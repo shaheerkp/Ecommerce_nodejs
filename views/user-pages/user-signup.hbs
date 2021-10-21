@@ -27,13 +27,14 @@
 
             <input type="hidden" name="blocked" value=false class="form-control input-lg" placeholder="Your Email"
               required />
+              <span class="ms-3 text-danger" id="main_err"></span>
             <p class="ms-3">Please setup your account</p>
 
 
 
-            <label class="ms-3">Gender : </label>
+            <label  class="ms-3">Gender : </label>
             <label class="radio-inline">
-              <input type="radio" name="gender" value="M" id=male />
+              <input required type="radio" name="gender" value="M" id=male />
               Male
             </label>
             <label class="radio-inline">
@@ -42,18 +43,26 @@
             </label>
             <div class="row p-2">
               <div class="col-xs-6 col-md-6">
-                <input type="text" name="firstname" value="" class="form-control input-lg" placeholder="First Name" />
+                 <span id="name_err" class="text-center text-danger"> </span>
+                <input type="text" id="sign_fname" name="firstname" value="" class="form-control input-lg" placeholder="First Name" />
               </div>
               <div class="col-xs-6 col-md-6">
-                <input type="text" name="lastname" value="" class="form-control input-lg" placeholder="Last Name" />
+                <span id="lname_err" class="text-center text-danger"> </span>
+                <input type="text" id="sign_lname" name="lastname" value="" class="form-control input-lg" placeholder="Last Name" />
               </div>
             </div>
             <div class="p-2">
-              <input type="email" name="email" value="" class="form-control input-lg" placeholder="Your Email"
+                <span id="email_err" class="text-center text-danger"> </span>
+              <input type="email" id="login_email" name="email" value="" class="form-control input-lg" placeholder="Your Email"
                 required />
             </div>
             <div class="p-2">
-              <input type="password" name="password" value="" class="form-control input-lg" placeholder="Password" />
+               <span id="pass_err" class="text-center text-danger"> </span>
+              <input type="password" id="pass" name="password" value="" class="form-control input-lg" placeholder="Password" />
+            </div>
+             <div class="p-2">
+                <span id="number_err" class="text-center text-danger"> </span>
+              <input id="ph_number" type="text" name="Number" value="" class="form-control input-lg" placeholder="Number" />
             </div>
 
             <br />

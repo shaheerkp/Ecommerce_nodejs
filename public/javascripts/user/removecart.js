@@ -1,22 +1,28 @@
-function removeCartItem(id){
-    console.log("removedddd"+id);
-    $.ajax({
+ 
+ 
+ 
+ function removeCartItem(id){
+
+  swal({
+    title: "Are you sure?",
+    icon: "warning",
+    buttons: true,
+    dangerMode: true,
+  })
+  .then((willDelete) => {
+    if (willDelete) {
+      $.ajax({
         url: "/removecart",
          method: "POST",
         data:{id},
       success: function (response) {
           console.log(response);
           if (response.status) {
-            alert(response.mes)
-            location.replace("/cart")
-          
-            
+        
+            location.replace("/cart")  
           }
           else{
-            
-           
-          }
-          
+          }   
         },
         error: function (err) {
           alert("{Please Signin to add to cart}")
@@ -26,6 +32,13 @@ function removeCartItem(id){
        
        
       })
+    } else {
+      
+    }
+  });
+
+  
+
 }
 
 

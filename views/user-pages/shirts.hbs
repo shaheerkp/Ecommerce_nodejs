@@ -1,4 +1,6 @@
-<div class="row container-fluid">
+ 
+ <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+ <div class="row container-fluid " style="margin-top: 5rem;">
 
     <div class="sidebar col-lg-4" >
        
@@ -88,17 +90,21 @@
 
     <div class="  col-lg-8 float-end float-lg-start ">
         <h1 class="d-flex justify-content-center p-2 mt-3">{{cat}}</h1>
-        <div class="row d-flex justify-content-between">
+        <div class="row d-flex justify-content-start">
             {{#each result}}
-            <div class="col-lg-4 d-flex justify-content-between">
+            <div class="col-lg-4 ">
                 <div class="card">
                     <a href="/product-detail?id={{_id}}" class="fill-div" style="text-decoration: none;">
-                        <img src="/product-images/{{this._id}}1.jpg" class="card-img-top" alt="...">
+                        <img src="/product-images/{{this._id}}1.jpg" data-NZoomscale="2" class="zoom card-img-top" alt="...">
                         <div class="card-body">
-                            <h5 class="card-title cardtitle text-sm">{{this.product-name}}</h5>
-                            <p class="card-text text-center cardtitle1">{{this.description}}</p>
+                            <p style="font-size: 15px;" class="card-title cardtitle">{{this.product_name}}</p>
+                            <p class="text-center price" style="font-weight: lighter;color: rgb(119, 119, 119);">{{this.sub_category}} </p>
                             <p class="text-center price">RS: {{this.price}} </p>
+                        </div>
+                        <div class="row mb-3">
 
+                        <div class="col-6 ms-2"><a class="btn btn-info" onclick="addtoCart('{{this._id}}')"  style="width: 9rem;">ADD TO CART</a></div>
+                        <div class="col-4 ms-3"><a class="btn btn-success" href="/buynow/{{this._id}}" style="=width:3rem">BUY</a></div>
                         </div>
                     </a>
                 </div>
@@ -117,3 +123,5 @@
     </div>
 
 </div>
+<script src="/javascripts/user/cart.js"></script>
+<script src="/plugins/Nzoom.min.js" ></script>

@@ -4,6 +4,20 @@ const objectId = require('mongodb').ObjectId
 const { LoopDetected } = require('http-errors')
 
 module.exports = {
+
+    getNumber:(num)=>{
+        return new Promise(async(resolve,reject)=>{
+            let user=await db.get().collection('users').findOne({Number:num})
+            if(user){
+                resolve(user)
+            }
+            else{
+                resolve(false)
+                        }
+
+        })
+
+    },
     googleSign: (gmail) => {
         return new Promise(async (resolve, reject) => {
             let user = await db.get().collection('users').findOne({ email: gmail })
@@ -18,7 +32,8 @@ module.exports = {
     userSignup: (data) => {
         return new Promise(async (resolve, reject) => {
             
-
+           console.log(data);
+           data.blocked=false;
             let users = await db.get().collection('users').findOne({ email: data.email })
             if (!users) {
 
@@ -47,17 +62,33 @@ module.exports = {
 
     },
     googleSignin: (data) => {
+        console.log(data);
+        let email=data.email
         return new Promise(async (resolve, reject) => {
-            var d = await db.get().collection("users").findOne({ "email": data })
-          
-            if (!d) {
-                resolve(false)
-               
+            if (data.email_verified) {
+                var d = await db.get().collection("users").findOne({ "email": email })
+                if (!d) {
+                   let user={
+                       blocked:false,
+                       firstname:data.given_name,
+                       lastname:data.family_name,
+                       email:data.email,
+                       password:null,
+                       number:null
 
-            } else {
-                resolve(d)
+                   }
+                   db.get().collection("users").insertOne(user)
+                   resolve(user)
+                    
+                   
     
+                } else {
+                    resolve(d)
+        
+                }
+                
             }
+          
 
         })
     },
@@ -112,10 +143,52 @@ module.exports = {
         return new Promise(async (resolve, reject) => {
 
             let result = await db.get().collection("product").find({ "sub_category": data }).toArray()
-
             resolve(result)
 
         })
+
+    },
+    getuserAddress:(eml)=>{
+        return new Promise(async (resolve,reject)=>{
+            let address=await db.get().collection("address").find({email:eml}).toArray()
+            resolve(address)
+
+        })
+            
+    },
+    getAddress:(add_id,eml)=>{
+        return new Promise(async(resolve,reject)=>{
+            let address=await db.get().collection("address").findOne({email:eml},{address:{$eleMatch:{id:add_id}}})
+            resolve(address)
+        })
+    },
+    addAddress:(data)=>{
+        return new Promise(async(resolve,reject)=>{
+       
+            console.log(data);
+            let eml=data.email
+           let user= await db.get().collection('address').find({email:eml}).toArray()
+       
+           if(user[0]){
+               
+               db.get().collection('address').updateOne({email:eml},{$push:{address:data}})
+               resolve(true)
+           }
+           else{
+               db.get().collection('address').insertOne({email:eml,address:[data]})
+               resolve(true)
+           }
+          
+
+        })
+    },
+    deleteAddress:(eml,i)=>{
+        return new Promise((resolve,reject)=>{
+            db.get().collection('address').update({email:eml},{$pull:{address:{id:i}}}).then((result)=>{
+                resolve(true)
+            })
+        })
+
 
     },
 

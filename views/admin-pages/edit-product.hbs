@@ -1,17 +1,20 @@
-<form class="ms=5 me=5 " action="/admin/updateProduct" method="POST" enctype="multipart/form-data">
+<form style="margin-top: 10rem;" action="/admin/updateProduct" onsubmit="return checkValid()" method="POST" enctype="multipart/form-data">
 
 
-  <div class="form-row mb-5 bg-light container bg-light justify-content-center">
-  <h3 class="text-center" >Edit PRODUCTS </h3>
+  <div class="form-row mt-5 mb-5 bg-light container bg-light justify-content-center">
+  <h3 class=" mt-5 text-center" >Edit PRODUCTS </h3>
     <div class="row">
 
       <div class=" form-group col-md-6">
         <input hidden name="_id" value="{{data._id}}" >
+
         <label for="productname ">PRODUCT NAME</label>
-        <input type="text" required name="product_name" value="{{data.product_name}}" class="form-control" id="inputEmail4">
+
+         <span id="p_name_err" class="text-center text-danger"> </span>
+        <input type="text" required name="product_name" value="{{data.product_name}}" class="form-control" id="p_name">
       </div>
 
-      <div class="form-group col-md-6">
+      <div hidden class="form-group col-md-6">
         <label for="category">CATEGORY</label>
         <input name="category" value="{{data.category}}">
       </div>
@@ -25,7 +28,7 @@
         <input name="description" value="{{data.description}}" type="text" class="form-control" id="inputEmail4">
       </div>
 
-      <div class="form-group col-md-6">
+      <div hidden class="form-group col-md-6">
         <label for="subcategory">SUB CATEGORY</label>
        <input name="sub_category" value="{{data.sub_category}}" >
          
@@ -37,11 +40,13 @@
     <div class="row">
       <div class="form-group col-md-6">
         <label for="price">PRICE</label>
-        <input name="price" required type="number" value="{{data.price}}" class="form-control" id="inputEmail4">
+         <span id="price_err" class="text-center text-danger"> </span>
+        <input name="price" required type="number" value="{{data.price}}" class="form-control" id="p_price">
       </div>
 
       <div class="form-group col-md-6">
         <label for="price">Quantity</label>
+        <span id="qty_err" class="text-center text-danger"> </span>
         <input name="qty" style="width: 10rem;" value="{{data.qty}}" type="number" required class="form-control" id="inputqty">
       </div>
 
@@ -79,6 +84,83 @@
 </form>
 
 <script>
+
+   let p_name=true;
+  let p_price=true;
+  let inputqty=true;
+
+
+  $("#p_name").on('input', function () {
+  this.value = this.value.replace(/[^a-zA-Z ]/, '')
+
+
+  if (this.value.charAt(0) == " ") {
+    $("#p_name_err").html("should not start with space")
+    $(this).css({ borderColor: "red" })
+    p_name = false;
+  }
+
+  else if (this.value.length < 3) {
+    $("#p_name_err").text("should be atleast 2 character")
+    $(this).css({ borderColor: "red" })
+    p_name = false;
+
+  }
+  else if (this.value.length > 20) {
+    $("#p_name_err").text("should be max 20  character")
+    $(this).css({ borderColor: "red" })
+    p_name = false;
+
+  }
+  else if (this.value.includes("  ")) {
+    $("#p_name_err").text("should not have more spaces ")
+    $(this).css({ borderColor: "red" })
+    p_name = false;
+
+  }
+  else {
+    $(this).css({ borderColor: "green" })
+    $("#p_name_err").html("")
+    p_name = true
+  }
+})
+
+
+
+var u_number = document.getElementById("p_price")
+u_number.addEventListener('input', (e) => {
+    u_number.value = u_number.value.replace(/[^0-9]/, '').replace(/(\..*)\./, '$1');;
+
+
+    if (u_number.value.length < 0) {
+       price_err.innerHTML = "Enter price"
+        p_price = false;
+
+    }
+    else {
+        price_err.innerHTML = " "
+        p_price = true;
+
+    }
+})
+
+
+var qty = document.getElementById("inputqty")
+qty.addEventListener('input', (e) => {
+    qty.value = qty.value.replace(/[^0-9]/, '').replace(/(\..*)\./, '$1');;
+
+
+    if (qty.value.length < 0) {
+       qty_err.innerHTML = "Enter price"
+        inputqty = false;
+
+    }
+    else {
+        qty_err.innerHTML = " "
+        inputqty = true;
+
+    }
+})
  
 
   document.getElementById('imgInp').onchange = evt => {
@@ -100,6 +182,20 @@
     if (file) {
       document.getElementById('img2').src = URL.createObjectURL(file)
     }
+  }
+
+  function checkValid(){
+
+    if(p_name&&p_price&&inputqty){
+    return true
+
+    }
+    else{
+      alert("Enter all fields correctly")
+      return false
+
+    }
+
   }
 
 </script>
