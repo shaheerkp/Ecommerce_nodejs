@@ -218,19 +218,29 @@ router.get('/add-product', check, function (req, res, next) {
 });
 
 router.post('/add-product', check, function (req, res, next) {
+  let price=parseInt(req.body.price)
+ let qty=parseInt(req.body.qty)
+ console.log(req.body.id);
+  let product={
+    _id:req.body._id,
+    product_name:req.body.product_name,
+    category:req.body.category,
+    sub_category:req.body.sub_category,
+    description:req.body.description,
+    price:req.body.price,
+    qty:req.body.qty
+  }
 
-req.body.price=parseInt(req.body.price)
-req.body.qty=parseInt(req.body.qty)
-console.log(req.body);
 
-  producthelper.addProduct(req.body)
+
+  producthelper.addProduct(product)
     .then((id) => {
-      console.log(id);
-      console.log(req.body);
-      let img1 = req.files.img1
-      console.log(img1);
+     
+      console.log(req.files.image);
+      let img1 = req.files.img1 
       let img2 = req.files.img2
       let img3 = req.files.img3
+      console.log(img1);
 
       img1.mv('./public/product-images/' + id + "1" + '.jpg', (err, done) => {
 

@@ -2,6 +2,13 @@ var db = require('../config/connection')
 const bcrypt = require('bcrypt')
 const objectId = require('mongodb').ObjectId
 const { LoopDetected } = require('http-errors')
+const Razorpay=require('razorpay')
+const { ObjectId } = require('bson')
+var instance = new Razorpay({
+    key_id: 'rzp_test_5hQK7ZeFBkNf4X',
+    key_secret: 'OdlCOk6TWmdnr2nykmAUSaaW',
+  });
+
 
 module.exports = {
 
@@ -213,6 +220,62 @@ module.exports = {
 
 
 
+        })
+
+    },
+
+    generateRazorpay:(id,amount)=>{
+        return new Promise(async (resolve, reject) => {
+            var options = {
+                amount: amount.total*100, 
+                currency: "INR",
+                receipt: ""+id
+              };
+              instance.orders.create(options, function(err, order) {
+                  if(err){
+                      console.log(err);
+                  }else{
+                      
+                      resolve(order)
+                  }
+              });
+           
+        })
+
+    },
+    verifyPayment:(details)=>{
+        console.log("reach");
+        return new Promise(async (resolve, reject) => {
+            const {createHmac } = await import('crypto');
+            let  hmac = createHmac('sha256', 'OdlCOk6TWmdnr2nykmAUSaaW');
+            
+            hmac.update(details['payment[razorpay_order_id]']+'|'+details['payment[razorpay_payment_id]']); 
+            hmac=hmac.digest('hex')
+            console.log(hmac);
+            if(hmac==details['payment[razorpay_signature]']){
+                console.log("resolve");
+                resolve()
+            }
+            else{
+                console.log("reject");
+                reject()
+            }
+
+
+        })
+
+    },
+    changePaymentStatus:(orderid)=>{
+        console.log("asdasd",orderid);
+        return new Promise(async (resolve, reject) => {
+            db.get().collection('orders').updateOne({_id:ObjectId(orderid)},
+            {
+                $set:{
+                    "orderObj.status":'Placed'
+                }
+            }).then(()=>{
+                resolve()
+            })
         })
 
     }

@@ -1,5 +1,5 @@
 <div class="bg-light ms-5 justify-content-center me-5 mb-5">
-  <form id="address-form" action="/buynow-add-address" method="post" class="ms-5">
+  <form id="address-form" onsubmit="return check()" action="/buynow-add-address" method="post" class="ms-5">
     <div style="margin-top: 3rem;margin-left: 10rem;"
       class="col-lg-9 col-md-8 col-sm-10 offset-lg-0 offset-md-2 offset-sm-1">
 
@@ -247,6 +247,17 @@
       state_val = true
     }
   })
+
+
+
+  function check(){
+    if (city_val && state_val && name_val && add_val && number_val) {
+      return true
+    }else{
+      return false
+    }
+    
+  }
 
 
 

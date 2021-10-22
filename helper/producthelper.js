@@ -463,11 +463,29 @@ module.exports = {
                 date:new Date()
 
             }
-            db.get().collection('orders').insertOne({ orderObj }).then(() => {
-                db.get().collection('cart').remove({ user: address.userid })
-                resolve(true)
+            db.get().collection('orders').insertOne({ orderObj }).then((result) => {
+                if(address.mode=="cod"){
+                    
+                            db.get().collection('cart').remove({ user: address.userid })
+                            resolve(result.insertedId)
+
+                }else{
+                    resolve(result.insertedId)
+                }
+
+                
             })
         })
+    },
+
+    deleteFinalcart:(userid)=>{
+        return new Promise((resolve, reject) => {
+            console.log(userid);
+
+            db.get().collection('cart').remove({ user: userid })
+            resolve()
+        })
+
     },
     buynowplaceOrder: (s_add,address, products, total_amount) => {
         return new Promise((resolve, reject) => {
@@ -492,7 +510,7 @@ module.exports = {
 
             }
             db.get().collection('orders').insertOne({ orderObj }).then(() => {
-                db.get().collection('cart').remove({ user: address.userid })
+              
                 resolve(true)
             })
         })
@@ -559,7 +577,7 @@ module.exports = {
     },
     getAllOrders:()=>{
         return new Promise(async(resolve,reject)=>{
-            let all_orders= await db.get().collection('orders').find({}).sort(-1).toArray()
+            let all_orders= await db.get().collection('orders').find({}).sort({}).toArray()
         
             resolve(all_orders)
 

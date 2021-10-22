@@ -1,48 +1,37 @@
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-  <script src="https://kit.fontawesome.com/4f9ff9a3d7.js" crossorigin="anonymous"></script>
-  <!-- Material Dashboard CSS -->
-  <link href="/assets/css/material-dashboard.min.css?v=2.1.0" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
-  		<link rel="stylesheet" href="https://unpkg.com/dropzone/dist/dropzone.css" />
-		<link href="https://unpkg.com/cropperjs/dist/cropper.css" rel="stylesheet"/>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="https://kit.fontawesome.com/4f9ff9a3d7.js" crossorigin="anonymous"></script>
+<!-- Material Dashboard CSS -->
+<link href="/assets/css/material-dashboard.min.css?v=2.1.0" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://unpkg.com/dropzone/dist/dropzone.css" />
+<link href="https://unpkg.com/cropperjs/dist/cropper.css" rel="stylesheet" />
 
-	<script src="https://unpkg.com/dropzone"></script>
-		<script src="https://unpkg.com/cropperjs"></script>
-
-    <style>
-    .preview {
-        overflow: hidden;
-        width: 160px;
-        height: 160px;
-        margin: 10px;
-        border: 1px solid red;
-    }
-
-    .modal-lg {
-        max-width: 1000px !important;
-    }
-</style>
+<script src="https://unpkg.com/dropzone"></script>
+<script src="https://unpkg.com/cropperjs"></script>
 
 
-<form class="ms=5 me=5 " action="/admin/add-product" onsubmit="return checkValid()"  method="POST" enctype="multipart/form-data">
+
+
+<form class="ms=5 me=5 " action="/admin/add-product" onsubmit="return checkValid()" method="POST"
+  enctype="multipart/form-data">
 
 
   <div class="form-row mb-5 bg-light container bg-light justify-content-center">
-  <h3 class="text-center" >ADD PRODUCTS </h3>
+    <h3 class="text-center">ADD PRODUCTS </h3>
     <div class="row">
 
       <div class=" form-group col-md-6">
         <label for="productname ">PRODUCT NAME</label>
-         <span id="p_name_err" class="text-center text-danger"> </span>
-        <input type="text" itemid="p_name"  name="product_name" class="form-control" id="p_name">
+        <span id="p_name_err" class="text-center text-danger"> </span>
+        <input type="text" itemid="p_name" name="product_name" class="form-control" id="p_name">
       </div>
 
       <div class="form-group col-md-6">
         <label for="category">CATEGORY</label>
-        <select required name="category" id="category" class="form-select" aria-label="Default select example" >
-          <option >Select Category</option>
+        <select required name="category" id="category" class="form-select" aria-label="Default select example">
+          <option>Select Category</option>
           {{#each this.category}}
-          <option  value={{this.category}}>{{this.category}}</option>
+          <option value={{this.category}}>{{this.category}}</option>
           {{/each}}
         </select>
       </div>
@@ -60,9 +49,9 @@
         <label for="subcategory">SUB CATEGORY</label>
         <select name="sub_category" required id="myList" class="form-select" aria-label="Default select example">
           {{#each result}}
-         
+
           {{/each}}
-          
+
         </select>
       </div>
 
@@ -71,196 +60,570 @@
     <div class="row">
       <div class="form-group col-md-6">
         <label for="price">PRICE</label>
-         <span id="price_err" class="text-center text-danger"> </span>
+        <span id="price_err" class="text-center text-danger"> </span>
         <input name="price" id="p_price" required type="number" class="form-control" id="inputEmail4">
       </div>
 
       <div class="form-group col-md-6">
         <label for="price">Quantity</label>
-         <span id="qty_err" class="text-center text-danger"> </span>
-        <input name="qty"  style="width: 10rem;"  type="number" required class="form-control" id="inputqty">
-      </div>
-
-    </div>
-    <div class="form-group  ">
-
-
-      <div class="row p-3">
-        <div class="mb-3 col-md-4  image-div">
-          <input accept="image/*" type='file' name="img1" id="imgInp" required />
-          <img id="img" class="img-thumbnail" src="https://cdn.iconscout.com/icon/free/png-256/gallery-187-902099.png"
-            alt=" https://cdn.iconscout.com/icon/free/png-256/gallery-187-902099.png" />
-        </div>
-
-        <div class="mb-3 col-md-4  image-div">
-          <input accept="image/*" type='file' name="img2" id="imgInp1" required />
-          <img id="img1" class="img-thumbnail image-fluid" src="https://cdn.iconscout.com/icon/free/png-256/gallery-187-902099.png"
-            alt=" https://cdn.iconscout.com/icon/free/png-256/gallery-187-902099.png" />
-        </div>
-
-        <div class="mb-3 col-md-4  image-div">
-          <input accept="image/*" name="img3" type='file' id="imgInp2" required />
-          <img id="img2" class="img-thumbnail" src="https://cdn.iconscout.com/icon/free/png-256/gallery-187-902099.png"
-            alt=" https://cdn.iconscout.com/icon/free/png-256/gallery-187-902099.png"alt=" img" />
-        </div>
-
+        <span id="qty_err" class="text-center text-danger"> </span>
+        <input name="qty" style="width: 10rem;" type="number" required class="form-control" id="inputqty">
       </div>
 
     </div>
 
+      <div class="container">
+    <div class="row justify-content-between" style="width:90%">
+        {{!-- item 1 start --}}
+        <div class="col-md-2 col-sm-2">
+            <h4 class="title"> Image 1</h4>
+            <div class="fileinput fileinput-new text-center">
+                <div class="fileinput-new thumbnail">
+                    <img src="../../assets/img/image_placeholder.jpg" id="chekPreview1" alt="...">
 
-  <button type="submit" class=" mb-5 ms-5 btn btn-primary" onclick="return confirm('Add product ?') "  >Add Product</button>
+                </div>
+                <div>
+                    <span class="btn btn-rose btn-round btn-file">
+                        <span class="fileinput-new">Select image</span>
+                        <input type="file" id="image1" name="img1" accept="image/gif, image/jpeg, image/png" required />
+                        <textarea name="img1" id="imageValue1" cols="30" rows="10" hidden></textarea>
+                    </span>
+                </div>
+            </div>
+        </div>
 
-  </div>
+     {{!-- item 1 end--}}
+
+
+
+      {{!-- item 2 start --}}
+        <div class="col-md-2 col-sm-2">
+            <h4 class="title"> Image 2</h4>
+            <div class="fileinput fileinput-new text-center">
+                <div class="fileinput-new thumbnail">
+                    <img src="../../assets/img/image_placeholder.jpg" id="chekPreview2" alt="...">
+
+                </div>
+                <div>
+                    <span class="btn btn-rose btn-round btn-file">
+                        <span class="fileinput-new">Select image</span>
+                        <input type="file" id="image2" name="img2" accept="image/gif, image/jpeg, image/png" required />
+                        <textarea name="img2"  id="imageValue2" cols="20" rows="5" hidden></textarea>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+     {{!-- item 2 end--}}
+
+
+    {{!-- item 3 start --}}
+        <div class="col-md-2 col-sm-2">
+            <h4 class="title"> Image 3</h4>
+            <div class="fileinput fileinput-new text-center">
+                <div class="fileinput-new thumbnail">
+                    <img src="../../assets/img/image_placeholder.jpg" id="chekPreview3" alt="...">
+
+                </div>
+                <div>
+                    <span class="btn btn-rose btn-round btn-file">
+                        <span style="width: 10rem;height: 10rem;" class="fileinput-new">Select image</span>
+                        <input type="file" name="img3" id="image3" accept="image/gif, image/jpeg, image/png" required />
+                        <textarea name="img3" id="imageValue3" cols="10" rows="10" hidden></textarea>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+     {{!-- item 3 end--}}
+
+
+    </div>
+</div>
+      
+
+
+      <button type="submit" class=" mb-5 ms-5 btn btn-primary" onclick="return confirm('Add product ?') ">Add
+        Product</button>
+
+    </div>
 </form>
 
+<div class="modal" id="modal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Crop Image Here</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="img-container">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <img src="" id="sampleImage1" />
+                        </div>
+                        <div class="col-md-4">
+                            <div class="preview" id="preview1"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+
+                <button type="button" id="crop1" class="btn btn-primary">Crop</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal  1 end-->
+
+ 
+
+<!-- Modal 2-->
+<div class="modal fade" id="modal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Crop Image Here</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="img-container">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <img src="" id="sampleImage2" />
+                        </div>
+                        <div class="col-md-4">
+                            <div class="preview" id="preview2"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+
+                <button type="button" id="crop2" class="btn btn-primary">Crop</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal  2 end-->
+
+
+<!-- Modal 3-->
+<div class="modal fade" id="modal3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Crop Image Here</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="img-container">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <img src="" id="sampleImage3" />
+                        </div>
+                        <div class="col-md-4">
+                            <div class="preview" id="preview3"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+
+                <button type="button" id="crop3" class="btn btn-primary">Crop</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal  3 end-->
+
+
+
+
+
+
+
+
+
+<style>
+  .preview {
+    overflow: hidden;
+    width: 160px;
+    height: 160px;
+    margin: 10px;
+    border: 1px solid red;
+  }
+
+  .modal-lg {
+    max-width: 1000px !important;
+  }
+</style>
+
+
+
+
 <script>
-  let p_name=false;
-  let p_price=false;
-  let inputqty=false;
+  let p_name = false;
+  let p_price = false;
+  let inputqty = false;
 
 
   $("#p_name").on('input', function () {
-  this.value = this.value.replace(/[^a-zA-Z ]/, '')
+    this.value = this.value.replace(/[^a-zA-Z ]/, '')
 
 
-  if (this.value.charAt(0) == " ") {
-    $("#p_name_err").html("should not start with space")
-    $(this).css({ borderColor: "red" })
-    p_name = false;
-  }
+    if (this.value.charAt(0) == " ") {
+      $("#p_name_err").html("should not start with space")
+      $(this).css({ borderColor: "red" })
+      p_name = false;
+    }
 
-  else if (this.value.length < 3) {
-    $("#p_name_err").text("should be atleast 2 character")
-    $(this).css({ borderColor: "red" })
-    p_name = false;
+    else if (this.value.length < 3) {
+      $("#p_name_err").text("should be atleast 2 character")
+      $(this).css({ borderColor: "red" })
+      p_name = false;
 
-  }
-  else if (this.value.length > 20) {
-    $("#p_name_err").text("should be max 20  character")
-    $(this).css({ borderColor: "red" })
-    p_name = false;
+    }
+    else if (this.value.length > 20) {
+      $("#p_name_err").text("should be max 20  character")
+      $(this).css({ borderColor: "red" })
+      p_name = false;
 
-  }
-  else if (this.value.includes("  ")) {
-    $("#p_name_err").text("should not have more spaces ")
-    $(this).css({ borderColor: "red" })
-    p_name = false;
+    }
+    else if (this.value.includes("  ")) {
+      $("#p_name_err").text("should not have more spaces ")
+      $(this).css({ borderColor: "red" })
+      p_name = false;
 
-  }
-  else {
-    $(this).css({ borderColor: "green" })
-    $("#p_name_err").html("")
-    p_name = true
-  }
-})
+    }
+    else {
+      $(this).css({ borderColor: "green" })
+      $("#p_name_err").html("")
+      p_name = true
+    }
+  })
 
 
 
-var u_number = document.getElementById("p_price")
-u_number.addEventListener('input', (e) => {
+  var u_number = document.getElementById("p_price")
+  u_number.addEventListener('input', (e) => {
     u_number.value = u_number.value.replace(/[^0-9]/, '').replace(/(\..*)\./, '$1');;
 
 
     if (u_number.value.length < 0) {
-       price_err.innerHTML = "Enter price"
-        p_price = false;
+      price_err.innerHTML = "Enter price"
+      p_price = false;
 
     }
     else {
-        price_err.innerHTML = " "
-        p_price = true;
+      price_err.innerHTML = " "
+      p_price = true;
 
     }
-})
+  })
 
 
-var qty = document.getElementById("inputqty")
-qty.addEventListener('input', (e) => {
+  var qty = document.getElementById("inputqty")
+  qty.addEventListener('input', (e) => {
     qty.value = qty.value.replace(/[^0-9]/, '').replace(/(\..*)\./, '$1');;
 
 
     if (qty.value.length < 0) {
-       qty_err.innerHTML = "Enter price"
-        inputqty = false;
+      qty_err.innerHTML = "Enter price"
+      inputqty = false;
 
     }
     else {
-        qty_err.innerHTML = " "
-        inputqty = true;
+      qty_err.innerHTML = " "
+      inputqty = true;
 
     }
-})
+  })
 
 
 
 
 
-   document.getElementById("category").onchange = e => {
-        let id = e.target.value
-        $.ajax({
-            url: "/admin/get-subcategory",
-            method: 'POST',
-            data: { id },
-            success: function (response) {
-                console.log(response);
-                document.getElementById("myList").innerHTML = "";
-                for (let i = 0; i < response.data.length; i++) {
-                    var innerCode = ` <option value='${response.data[i].name}'' onchange="getItem('{{this.sub_category}}')" id="one">${response.data[i].name}</option>`
+  document.getElementById("category").onchange = e => {
+    let id = e.target.value
+    $.ajax({
+      url: "/admin/get-subcategory",
+      method: 'POST',
+      data: { id },
+      success: function (response) {
+        console.log(response);
+        document.getElementById("myList").innerHTML = "";
+        for (let i = 0; i < response.data.length; i++) {
+          var innerCode = ` <option value='${response.data[i].name}'' onchange="getItem('{{this.sub_category}}')" id="one">${response.data[i].name}</option>`
 
-                    document.getElementById("myList").innerHTML += innerCode;
+          document.getElementById("myList").innerHTML += innerCode;
 
-                }
-
-
+        }
 
 
-            },
-            error: function (err) {
-                alert("Something Error")
-
-            }
-
-        })
 
 
-    }
+      },
+      error: function (err) {
+        alert("Something Error")
 
-  document.getElementById('imgInp').onchange = evt => {
-    const [file] = document.getElementById('imgInp').files
-    if (file) {
-      document.getElementById('img').src = URL.createObjectURL(file)
-    }
-  }
+      }
 
-  document.getElementById('imgInp1').onchange = evt => {
-    const [file] = document.getElementById('imgInp1').files
-    if (file) {
-      document.getElementById('img1').src = URL.createObjectURL(file)
-    }
-  }
+    })
 
-  document.getElementById('imgInp2').onchange = evt => {
-    const [file] = document.getElementById('imgInp2').files
-    if (file) {
-      document.getElementById('img2').src = URL.createObjectURL(file)
-    }
+
   }
 
 
-  function checkValid(){
 
-    if(p_name&&p_price&&inputqty){
-    return true
+
+
+
+  function checkValid() {
+
+    if (p_name && p_price && inputqty) {
+      return true
 
     }
-    else{
+    else {
       alert("Enter all fields correctly")
       return false
 
     }
 
   }
-  
-</script>
 
+
+  $('document').ready(function () {
+    //modal1 and image 1
+    var image1 = document.getElementById('sampleImage1');
+    var modal1 = $('#modal1');
+    var cropper1;
+
+    $('#image1').change(function (event) {
+      var files = event.target.files;
+
+      var done = function (url) {
+        image1.src = url;
+        modal1.modal('show');
+      };
+
+      if (files && files.length > 0) {
+        reader = new FileReader();
+        reader.onload = function (event) {
+          done(reader.result);
+        };
+        reader.readAsDataURL(files[0]);
+      }
+    });
+
+    modal1.on('shown.bs.modal', function () {
+      cropper1 = new Cropper(image1, {
+        aspectRatio: 1,
+        viewMode: 3,
+        preview: '#preview1'
+      });
+    }).on('hidden.bs.modal', function () {
+      cropper1.destroy();
+      cropper1 = null;
+    });
+
+    $('#crop1').click(function () {
+      canvas = cropper1.getCroppedCanvas({
+        width: 400,
+        height: 400
+      });
+
+      canvas.toBlob(function (blob) {
+        url = URL.createObjectURL(blob);
+        var reader = new FileReader();
+        reader.readAsDataURL(blob);
+        reader.onloadend = function () {
+          var base64data = reader.result;
+          modal1.modal('hide');
+          $("#imageValue1").val(base64data)
+          $('#chekPreview1').attr('src', base64data);
+        };
+      });
+    });
+    //modal1 and image 1 end
+
+    //modal2 and image 2
+    var image2 = document.getElementById('sampleImage2');
+    var modal2 = $('#modal2');
+    var cropper2;
+
+    $('#image2').change(function (event) {
+      var files = event.target.files;
+
+      var done = function (url) {
+        image2.src = url;
+        modal2.modal('show');
+      };
+
+      if (files && files.length > 0) {
+        reader = new FileReader();
+        reader.onload = function (event) {
+          done(reader.result);
+        };
+        reader.readAsDataURL(files[0]);
+      }
+    });
+
+    modal2.on('shown.bs.modal', function () {
+      cropper2 = new Cropper(image2, {
+        aspectRatio: 1,
+        viewMode: 3,
+        preview: '#preview2'
+      });
+    }).on('hidden.bs.modal', function () {
+      cropper2.destroy();
+      cropper2 = null;
+    });
+
+    $('#crop2').click(function () {
+      canvas = cropper2.getCroppedCanvas({
+        width: 400,
+        height: 400
+      });
+
+      canvas.toBlob(function (blob) {
+        url = URL.createObjectURL(blob);
+        var reader = new FileReader();
+        reader.readAsDataURL(blob);
+        reader.onloadend = function () {
+          var base64data = reader.result;
+          modal2.modal('hide');
+          $("#imageValue2").val(base64data)
+          $('#chekPreview2').attr('src', base64data);
+        };
+      });
+    });
+    //image 2 and modal 2 end
+
+
+    //modal3 and image 3 start
+    var image3 = document.getElementById('sampleImage3');
+    var modal3 = $('#modal3');
+    var cropper3;
+
+    $('#image3').change(function (event) {
+      var files = event.target.files;
+
+      var done = function (url) {
+        image3.src = url;
+        modal3.modal('show');
+      };
+
+      if (files && files.length > 0) {
+        reader = new FileReader();
+        reader.onload = function (event) {
+          done(reader.result);
+        };
+        reader.readAsDataURL(files[0]);
+      }
+    });
+
+    modal3.on('shown.bs.modal', function () {
+      cropper3 = new Cropper(image3, {
+        aspectRatio: 1,
+        viewMode: 3,
+        preview: '#preview3'
+      });
+    }).on('hidden.bs.modal', function () {
+      cropper3.destroy();
+      cropper3 = null;
+    });
+
+    $('#crop3').click(function () {
+      canvas = cropper3.getCroppedCanvas({
+        width: 400,
+        height: 400
+      });
+
+      canvas.toBlob(function (blob) {
+        url = URL.createObjectURL(blob);
+        var reader = new FileReader();
+        reader.readAsDataURL(blob);
+        reader.onloadend = function () {
+          var base64data = reader.result;
+          modal3.modal('hide');
+          $("#imageValue3").val(base64data)
+          $('#chekPreview3').attr('src', base64data);
+        };
+      });
+    });
+    //image 3 and modal 3 end
+
+    //modal4 and image 4 start
+    var image4 = document.getElementById('sampleImage4');
+    var modal4 = $('#modal4');
+    var cropper4;
+
+    $('#image4').change(function (event) {
+      var files = event.target.files;
+
+      var done = function (url) {
+        image4.src = url;
+        modal4.modal('show');
+      };
+
+      if (files && files.length > 0) {
+        reader = new FileReader();
+        reader.onload = function (event) {
+          done(reader.result);
+        };
+        reader.readAsDataURL(files[0]);
+      }
+    });
+
+    modal4.on('shown.bs.modal', function () {
+      cropper4 = new Cropper(image4, {
+        aspectRatio: 1,
+        viewMode: 3,
+        preview: '#preview4'
+      });
+    }).on('hidden.bs.modal', function () {
+      cropper4.destroy();
+      cropper4 = null;
+    });
+
+    $('#crop4').click(function () {
+      canvas = cropper4.getCroppedCanvas({
+        width: 400,
+        height: 400
+      });
+
+      canvas.toBlob(function (blob) {
+        url = URL.createObjectURL(blob);
+        var reader = new FileReader();
+        reader.readAsDataURL(blob);
+        reader.onloadend = function () {
+          var base64data = reader.result;
+          modal4.modal('hide');
+          $("#imageValue4").val(base64data)
+          $('#chekPreview4').attr('src', base64data);
+        };
+      });
+    });
+    //image 4 and modal 4 end
+
+  });
+
+</script>
