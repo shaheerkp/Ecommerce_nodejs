@@ -11,6 +11,14 @@ const client = new OAuth2Client(CLIENT_ID);
 var uuid = require('uuid');
 const { response } = require('express');
 
+const paypal = require('paypal-rest-sdk');
+
+paypal.configure({
+  'mode': 'sandbox', //sandbox or live
+  'client_id': 'ASBmU8eIqjR8f4yfMBL8yRBCd18Y9W622WEKVxJNI7qjVboo3qll46NO9_qx8qVQyUFjg6mUHWInLo7C',
+  'client_secret': 'EM9ekcQGYniwDvyaWMxWGU-gSXi5zaX2qODWXprK1QB6ra-3mvuLG5NAETFhoDiB2Gb2hvqGJVxLTQjR'
+});
+
 
 
 const serviceSID = "VA233b542e6e55ddb7942545ac51720ed9"
@@ -71,6 +79,89 @@ function checkauth(req, res, next) {
     next()
   })
 }
+
+
+router.post('/pay', (req, res) => {
+  console.log(req.body.price);
+  let price=req.body.price
+  req.session.user.price=price
+  const create_payment_json = {
+    "intent": "sale",
+    "payer": {
+        "payment_method": "paypal"
+    },
+    "redirect_urls": {
+        "return_url": "http://localhost:3000/success",
+        "cancel_url": "http://localhost:3000/cancel"
+    },
+    "transactions": [{
+        "item_list": {
+            "items": [{
+                "name": "Red Sox Hat",
+                "sku": "001",
+                "price": price,
+                "currency": "USD",
+                "quantity": 1
+            }]
+        },
+        "amount": {
+            "currency": "USD",
+            "total": price
+        },
+        "description": "Hat for the best team ever"
+    }]
+};
+
+paypal.payment.create(create_payment_json, function (error, payment) {
+  if (error) {
+      throw error;
+  } else {
+      for(let i = 0;i < payment.links.length;i++){
+        if(payment.links[i].rel === 'approval_url'){
+         
+          res.redirect(payment.links[i].href);
+        }
+      }
+  }
+});
+
+});
+
+router.get('/success', (req, res) => {
+  const payerId = req.query.PayerID;
+  const paymentId = req.query.paymentId;
+  let total_amount =req.session.user.price
+  console.log(total_amount);
+
+
+
+  const execute_payment_json = {
+    "payer_id": payerId,
+    "transactions": [{
+        "amount": {
+            "currency": "USD",
+            "total":total_amount,
+        }
+    }]
+  };
+
+  paypal.payment.execute(paymentId, execute_payment_json, function (error, payment) {
+    if (error) {
+        console.log(error.response);
+        throw error;
+    } else {
+        console.log(JSON.stringify(payment));
+        req.session.user.ordersuccess = true
+        
+        res.redirect('/suc')
+    }
+});
+});
+
+router.get('/cancel', (req, res) => res.send('Cancelled'));
+
+
+
 
 
 router.post('/verifypayment', (req, res) => {
@@ -685,7 +776,7 @@ router.get('/buynow-delete/:id/:prodid', (req, res) => {
 })
 
 
-router.get('/success', checkLogin, function (req, res, next) {
+router.get('/suc', checkLogin, function (req, res, next) {
   if (req.session.user.ordersuccess) {
 
     res.render('user-pages/success', { noheader: true })

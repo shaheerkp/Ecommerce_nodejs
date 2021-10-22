@@ -464,7 +464,7 @@ module.exports = {
 
             }
             db.get().collection('orders').insertOne({ orderObj }).then((result) => {
-                if(address.mode=="cod"){
+                if(address.mode=="cod"||address.mode=="p_pal"){
                     
                             db.get().collection('cart').remove({ user: address.userid })
                             resolve(result.insertedId)
