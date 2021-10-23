@@ -271,7 +271,7 @@ module.exports = {
             db.get().collection('orders').updateOne({_id:ObjectId(orderid)},
             {
                 $set:{
-                    "orderObj.status":'Placed'
+                    "orderObj.status":'placed'
                 }
             }).then(()=>{
                 resolve()

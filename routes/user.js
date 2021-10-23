@@ -46,17 +46,7 @@ const checkLogin = (req, res, next) => {
 }
 
 
-// const cart_count=async(req,res,next)=>{
-//   if(req.session.user){
-//     let count=await cartCount(req.session.user._id)
-//     req.session.user.cart_count=count
-//     next()
-//   }
-//   else{
-//     next
-//   }
 
-// }
 
 function checkauth(req, res, next) {
   let token = req.cookies['session-token'];
@@ -82,9 +72,11 @@ function checkauth(req, res, next) {
 
 
 router.post('/pay', (req, res) => {
-  console.log(req.body.price);
+  console.log(req.body);
   let price=req.body.price
   req.session.user.price=price
+
+
   const create_payment_json = {
     "intent": "sale",
     "payer": {
@@ -454,7 +446,7 @@ router.post('/mobile_otp', (req, res) => {
 
       twilio.verify.services(serviceSID)
         .verifications.create({
-          to: `+916282237744`,
+          to: `+91${req.body.number}`,
           channel: "sms",
           message: "thsfasd"
         }).then((response) => {
@@ -565,67 +557,160 @@ router.post('/buynow-place-order', async function (req, res) {
 
 
 router.post('/place-order', async function (req, res) {
+  console.log(req.body);
 
 
-
-
-  let products = await getCartProductList(req.body.userid)
-  let total_amount = await getTotalAmount(req.body.userid)
-  console.log(typeof (total_amount), total_amount);
-  let add = await getAddress(req.body.address, req.session.user.email);
-  let selectedAddress = add.address.find((address) => address.id == req.body.address);
-  if (selectedAddress) {
-    console.log("selected", selectedAddress);
-    console.log(req.body);
-    if (req.body.mode == "cod") {
-      req.session.user.ordersuccess = true;
-      placeOrder(selectedAddress, req.body, products, total_amount).then((result) => {
-        console.log(result);
-        res.json({ codSuccess: true })
-      })
-
-    }
-    else if (req.body.mode == "r_pay") {
-
-      placeOrder(selectedAddress, req.body, products, total_amount).then((id) => {
-        console.log("resolved order id", id);
-
-        userhelper.generateRazorpay(id, total_amount).then((result) => {
-          req.session.user.ordersuccess = true;
-
-          res.json(result)
-
+  if(req.body.prodid==''){
+    let products = await getCartProductList(req.body.userid)
+    let total_amount = await getTotalAmount(req.body.userid)
+    console.log(typeof (total_amount), total_amount);
+    let add = await getAddress(req.body.address, req.session.user.email);
+    let selectedAddress = add.address.find((address) => address.id == req.body.address);
+    if (selectedAddress) {
+      console.log("selected", selectedAddress);
+      console.log(req.body);
+      if (req.body.mode == "cod") {
+        req.session.user.ordersuccess = true;
+        placeOrder(selectedAddress, req.body, products, total_amount).then((result) => {
+          console.log(result);
+          res.json({ codSuccess: true })
         })
-      })
-
-
+  
+      }
+      else if (req.body.mode == "r_pay") {
+  
+        placeOrder(selectedAddress, req.body, products, total_amount).then((id) => {
+          console.log("resolved order id", id);
+  
+          userhelper.generateRazorpay(id, total_amount).then((result) => {
+            req.session.user.ordersuccess = true;
+  
+            res.json(result)
+  
+          })
+        })
+  
+  
+      }
     }
-  }
-  else {
-    res.json({ status: false })
+    else {
+      res.json({ status: "noaddress" })
+  
+    }
+    
+  }else{
+    let products=await findProduct(req.body.prodid)
+    product=[
+      {
+        item:products[0]._id,
+        quantity:1,
+        staus:"placed",
+      }
+    ]
+    let tot=products[0].price
+    req.body.sudden=true
+    total_amount={
+      id:null,
+      total:tot
+    }
+    let add = await getAddress(req.body.address, req.session.user.email);
+    let selectedAddress = add.address.find((address) => address.id == req.body.address);
+    if (selectedAddress) {
+      console.log("selected", selectedAddress);
+      console.log(req.body);
+      if (req.body.mode == "cod") {
+        req.session.user.ordersuccess = true;
+        placeOrder(selectedAddress, req.body, product, total_amount).then((result) => {
+          console.log(result);
+          res.json({ codSuccess: true })
+        })
+  
+      }
+      else if (req.body.mode == "r_pay") {
+  
+        placeOrder(selectedAddress, req.body, product, total_amount).then((id) => {
+          console.log("resolved order id", id);
+  
+          userhelper.generateRazorpay(id, total_amount).then((result) => {
+            req.session.user.ordersuccess = true;
+  
+            res.json(result)
+  
+          })
+        })
+  
+  
+      }
+    }
+    else {
+      res.json({ status: "noaddress" })
+  
+    }
 
   }
+
 
 })
 
 router.get('/address', checkLogin, async (req, res) => {
-  console.log("addresss worked again");
-  let user = req.session.user._id;
-  let email = req.session.user.email
-  let total_amount = await getTotalAmount(user)
-  console.log(email);
-  console.log(total_amount);
-  let address = await getuserAddress(req.session.user.email)
-  if (address[0]) {
-    let add = address[0].address
-    console.log("add", add);
-    res.render('user-pages/address', { add, user, noheader: true, total_amount })
+  console.log(req.query);
+  if(req.query.sudden=="true"){
+    console.log("suddeeeeennnn");
+    let user = req.session.user._id;
+    let email = req.session.user.email
+    
+    let productId=req.query.prodid
+    let single_product=await findProduct(productId)
+    if(single_product){
+      console.log("suddenn",single_product);
+      let tot=single_product[0].price
+      console.log("total",tot);
+      total_amount={
+        id:null,
+        total:tot
+      }
 
-  } else {
+      let address = await getuserAddress(email)
+      if (address[0]) {
+        let add = address[0].address
+      console.log("add", add);
+      res.render('user-pages/address', { productId,add, user, noheader: true, total_amount })
+
+
+      }else{
+        res.render('user-pages/address', {productId, user, noheader: true, total_amount })
+
+      }
+
+
+    }else if(single_product=="Invalid url"){
+      res.redirect('/')
+    }
+    
+    
+
+  }else{
+    
+    console.log("addresss worked again");
+    let user = req.session.user._id;
+    let email = req.session.user.email
     let total_amount = await getTotalAmount(user)
-    res.render('user-pages/address', { user, noheader: true, total_amount })
-
+    console.log(email);
+    console.log(total_amount);
+    let address = await getuserAddress(req.session.user.email)
+    if (address[0]) {
+      let add = address[0].address
+      console.log("add", add);
+      res.render('user-pages/address', { add, user, noheader: true, total_amount })
+  
+    } else {
+      let total_amount = await getTotalAmount(user)
+      res.render('user-pages/address', { user, noheader: true, total_amount })
+  
+    }
   }
+
+
 
 
 })
@@ -666,12 +751,25 @@ router.get('/buynow-add-address/:id', checkLogin, (req, res) => {
 
 
 router.get('/add-address', checkLogin, (req, res) => {
-  console.log(req.body);
-  user = req.session.user._id
-  email = req.session.user.email
-  let random = Math.floor(1000 + Math.random() * 9000)
-  console.log(random);
-  res.render("user-pages/add-address", { random, email, user, noheader: true, })
+  console.log(req.query);
+  if (!req.query.id=='') {
+    
+    let  productId=req.query.id
+    console.log(req.body);
+    user = req.session.user._id
+    email = req.session.user.email
+    let random = Math.floor(1000 + Math.random() * 9000)
+    console.log(random);
+    res.render("user-pages/add-address", {productId, random, email, user, noheader: true, })
+  }
+  else{
+    user = req.session.user._id
+    email = req.session.user.email
+    let random = Math.floor(1000 + Math.random() * 9000)
+    console.log(random);
+    res.render("user-pages/add-address", { random, email, user, noheader: true, })
+
+  }
 
 })
 router.post('/add-address', (req, res) => {
@@ -741,17 +839,34 @@ router.post('/add-address', (req, res) => {
 
 })
 
-router.get('/delete-address/:id', (req, res) => {
+router.get('/delete-address', (req, res) => {
 
 
-  let id = req.params.id
-  let email = req.session.user.email
-  console.log(email, id);
+  let id = req.query.id
+  let prodid=req.query.prodid
+  if(!prodid==" "){
+    
+    console.log(req.query.prodid);
+    console.log("vallllll",id);
+    let email = req.session.user.email
+    console.log(email, id);
+  
+    deleteAddress(email, id).then((result) => {
+      res.redirect(`/address?sudden=true&&prodid=${prodid}`);
+  
+    })
+  }else{
+    console.log(req.query.prodid);
+    console.log("vallllll",id);
+    let email = req.session.user.email
+    console.log(email, id);
+  
+    deleteAddress(email, id).then((result) => {
+      res.redirect('/address');
+  
+    })
 
-  deleteAddress(email, id).then((result) => {
-    res.redirect('/address');
-
-  })
+  }
 
 
 })

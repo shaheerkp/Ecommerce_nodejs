@@ -443,7 +443,39 @@ module.exports = {
 
     },
     placeOrder: (sel,address, products, total_amount) => {
+      
+   if(sel.sudden){
+    return new Promise((resolve, reject) => {
+           
+        let ok = address.mode == "cod" ? 'placed' : 'pending'
+        let orderObj = {
+            delivery_address: {
+                name: sel.name,
+                email: sel.email,
+                city: sel.city,
+                pin: sel.pin,
+                address: sel.address,
+                state: sel.state,
+               
+            },
+            userid: address.userid,
+            payment:address.mode,
+            amount: total_amount.total,
+            products: products,
+            status: ok,
+            date:new Date()
+
+        }
+        console.log("obj",orderObj);
+        db.get().collection('orders').insertOne({ orderObj }).then(() => {
+          
+            resolve(true)
+        })
+    })
+       
+   }else{
         return new Promise((resolve, reject) => {
+            console.log("??????",sel,address,products,total_amount);
            
             let ok = address.mode == "cod" ? 'placed' : 'pending'
             let orderObj = {
@@ -463,6 +495,7 @@ module.exports = {
                 date:new Date()
 
             }
+            console.log("VVVVVV{{{{",orderObj);
             db.get().collection('orders').insertOne({ orderObj }).then((result) => {
                 if(address.mode=="cod"||address.mode=="p_pal"){
                     
@@ -476,6 +509,7 @@ module.exports = {
                 
             })
         })
+    }
     },
 
     deleteFinalcart:(userid)=>{
@@ -488,32 +522,7 @@ module.exports = {
 
     },
     buynowplaceOrder: (s_add,address, products, total_amount) => {
-        return new Promise((resolve, reject) => {
-           
-            let ok = address.mode == "cod" ? 'placed' : 'pending'
-            let orderObj = {
-                delivery_address: {
-                    name: s_add.name,
-                    email: s_add.email,
-                    city: s_add.city,
-                    pin: s_add.pin,
-                    address: s_add.address,
-                    state: s_add.state,
-                   
-                },
-                userid: address.userid,
-                payment:address.mode,
-                amount: address.total_amount,
-                products: products,
-                status: ok,
-                date:new Date()
 
-            }
-            db.get().collection('orders').insertOne({ orderObj }).then(() => {
-              
-                resolve(true)
-            })
-        })
     },
     getOrderDetials: (user) => {
         return new Promise(async(resolve,reject)=>{

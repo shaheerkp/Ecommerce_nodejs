@@ -36,11 +36,14 @@ u_number.addEventListener('input', (e) => {
     if (u_number.value.length != 10) {
         number_err.innerHTML = "Enter 10 numbers"
         number_val = false;
+ email_val = false;
+
 
     }
     else {
         number_err.innerHTML = " "
         number_val = true;
+        email_val=true;
 
     }
 })

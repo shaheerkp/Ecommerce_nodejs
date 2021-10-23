@@ -24,7 +24,8 @@
                     <div class="col-lg-11">
                         <h5>Delivery Address</h5>
                         <p>We willl deliver your order to this address</p>
-                        <div id="address" class="text-danger"></div>
+                        <div id="addr_err" class="text-danger"></div>
+                        <input  style="display: none;" name="prodid" value="{{productId}}" ></input>
 
                         {{#each add}}
                         <div class="form-check">
@@ -34,14 +35,14 @@
                                 {{this.name}} , {{this.address}}<br>{{this.city}},{{this.state}}<br>{{this.pin}}
                             </label>
                             <a onclick="return confirm('Are you sure you want to delete this item?');"
-                                href="/delete-address/{{this.id}}">
+                                href="/delete-address?prodid={{../productId}}&&id={{this.id}}">
                                 <i class="ms-5 fas fa-trash-alt"></i>
 
                             </a>
                         </div>
 
                         {{/each}}
-                        <a type="button" href="/add-address" class="btn-sm btn-primary mb-5 mt-5">Add</a>
+                        <a  type="button" href="/add-address?id={{productId}}" class="btn-sm btn-primary mb-5 mt-5">Add</a>
                     </div>
 
                 </div>
@@ -94,24 +95,24 @@
                                     <span class="text-danger" id="disp"></span>
 
                                     <div class="form-check">
-                                        <input class="form-check-input" value="cod" type="radio" name="mode" id="cod">
+                                        <input class="form-check-input" onclick="checkradio()" value="cod" type="radio" name="mode" id="cod">
                                         <label class="form-check-label" for="flexRadioDefault1">Cash on Delivery</label>
                                     </div>
                                     <div class="form-check">
-                                        <input class="form-check-input" value="r_pay" type="radio" name="mode"
+                                        <input class="form-check-input" onclick="checkradio1()" value="r_pay" type="radio" name="mode"
                                             id="r_pay">
                                         <label class="form-check-label" for="flexRadioDefault1">Razor Pay</label>
                                     </div>
 
                                     <div class="form-check">
-                                        <input class="form-check-input" value="p_pal" type="radio" name="mode"
+                                        <input class="form-check-input" onclick="checkradio2()" value="p_pal" type="radio" name="mode"
                                             id="p_pal">
                                         <label class="form-check-label" for="flexRadioDefault1">Pay pal</label>
                                     </div>
 
 
 
-                                    <div class="card-footer"> <button type="submit" onclick="pay_mode()"
+                                    <div class="card-footer"> <button type="submit" onclick="pay_mode()" id="confirmbtn" style="display: none;"
                                             class="subscribe btn btn-primary btn-block shadow-sm"> Confirm Order
                                         </button>
 
@@ -126,8 +127,8 @@
     </form>
 
      <form id="pay_pal" action="/pay" method="post">
-     <input name="price" value="{{total_amount.total}}">
-    <input type="submit" value="Buy">
+     <input style="display: none;" name="price" value="{{total_amount.total}}">
+    <input style="display: none;" class="btn btn-primary ms-4 btn-block shadow-sm" id="paypalbtn" type="submit" value="Pay with pay pal">
   </form>
 </div>
 
@@ -156,7 +157,10 @@
                 success: function (response) {
                     console.log(response);
                     if (response.codSuccess) {
-                        location.replace('/success');
+                        location.replace('/suc');
+                    }else if(response.status=="noaddress"){
+                        document.getElementById("addr_err").innerHTML = "Please select a addresss";
+
                     }
                     else {
                         razorpayPayment(response)
@@ -187,9 +191,7 @@
             "image": "https://example.com/your_logo",
             "order_id": order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
             "handler": function (response) {
-                alert(response.razorpay_payment_id);
-                alert(response.razorpay_order_id);
-                alert(response.razorpay_signature)
+                
                 verifyPayment(response, order)
             },
             "prefill": {
@@ -207,7 +209,9 @@
         var rzp1 = new Razorpay(options);
         rzp1.open();
 
-    }
+    }alert(response.razorpay_payment_id);
+                alert(response.razorpay_order_id);
+                alert(response.razorpay_signature)
 
 
     function verifyPayment(payment, order) {
@@ -225,7 +229,7 @@
                     method:"post",
                     success:function(response){
                         if(response.status){
-                location.replace('/success')
+                location.replace('/suc')
 
                         }
                         else{
@@ -245,6 +249,22 @@
         })
 
     }
+
+   function checkradio(){
+       console.log(document.getElementById('confirmbtn').value)
+       document.getElementById('confirmbtn').style.display=""
+       document.getElementById('paypalbtn').style.display="none"
+   }
+      function checkradio1(){
+       console.log(document.getElementById('confirmbtn').value)
+       document.getElementById('confirmbtn').style.display=""
+       document.getElementById('paypalbtn').style.display="none"
+   }
+      function checkradio2(){
+       console.log(document.getElementById('confirmbtn').value)
+       document.getElementById('confirmbtn').style.display="none"
+       document.getElementById('paypalbtn').style.display=""
+   }
 
 
     function pay_mode() {
