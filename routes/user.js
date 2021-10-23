@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var db = require('../helper/userhelper')
 const { OAuth2Client } = require('google-auth-library');
-const { viewCategory, findProduct, addtoCart, getCartProducts, getTotalAmount, cartCount, deletecart, changeQuantity, changestatus, placeOrder, getCartProductList, getOrderDetials, orderStatus, buynowplaceOrder, deleteFinalcart, } = require('../helper/producthelper');
+const { viewCategory, findProduct, addtoCart, getCartProducts, getTotalAmount, cartCount, deletecart, changeQuantity, changestatus, placeOrder, getCartProductList, getOrderDetials, orderStatus, buynowplaceOrder, deleteFinalcart, findProductByName, } = require('../helper/producthelper');
 const { token } = require('morgan');
 const { googleSign, googleSignin, userSignup, getNumber, getuserAddress, getAddress, addAddress, deleteAddress } = require('../helper/userhelper');
 const userhelper = require('../helper/userhelper');
@@ -169,17 +169,22 @@ router.post('/verifypayment', (req, res) => {
 
 /* GET home page. */
 router.get('/', checkauth, async function (req, res, next) {
+  let shirts=await findProductByName("Shirts")
+  let tshirt=await findProductByName("Tshirt")
+  let Pantss=await findProductByName("Pantss")
+  let Shorts=await findProductByName("Shorts")
+  console.log(shirts); 
   let count = null
   if (req.session.user) {
     await cartCount(req.session.user._id).then(async (cart_count) => {
       cart_count = await cartCount(req.session.user._id)
       req.session.user.isLoggedin = true
       user = req.session.user
-      res.render('user-pages/user-home', { user, cart_count, category: await getCategory() });
+      res.render('user-pages/user-home', {Shorts,Pantss,tshirt,shirts, user, cart_count, category: await getCategory() });
     })
   }
   else {
-    res.render('user-pages/user-home', { category: await getCategory() });
+    res.render('user-pages/user-home', {Shorts,Pantss,tshirt,shirts, category: await getCategory() });
   }
 
 

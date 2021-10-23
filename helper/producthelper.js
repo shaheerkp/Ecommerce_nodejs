@@ -2,6 +2,8 @@ var db = require('../config/connection')
 var uuid = require('uuid');
 const objectId = require('mongodb').ObjectId;
 const { ObjectId } = require('bson');
+var moment = require('moment'); 
+
 
 module.exports = {
     addProduct: (product) => {
@@ -63,6 +65,28 @@ module.exports = {
 
          
             let result = await db.get().collection("product").find({ _id: id }).toArray()
+         
+            if (result) {
+                
+                resolve(result)
+
+            }
+            else {
+                
+                resolve("Invalid url")
+            }
+
+
+        })
+
+
+    },
+    findProductByName: (name) => {
+        console.log(name);
+        return new Promise(async (resolve, reject) => {
+
+         
+            let result = await db.get().collection("product").find({ sub_category: name }).toArray()
          
             if (result) {
                 
@@ -463,7 +487,7 @@ module.exports = {
             amount: total_amount.total,
             products: products,
             status: ok,
-            date:new Date()
+            date:moment().format('mmmm do yyyy, h:mm:ss a')
 
         }
         console.log("obj",orderObj);
@@ -492,7 +516,7 @@ module.exports = {
                 amount: total_amount.total,
                 products: products,
                 status: ok,
-                date:new Date()
+                date:moment().format('MMMM Do YYYY, h:mm:ss a')
 
             }
             console.log("VVVVVV{{{{",orderObj);
