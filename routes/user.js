@@ -71,10 +71,14 @@ function checkauth(req, res, next) {
 }
 
 
-router.post('/pay', (req, res) => {
+router.post('/pay', async(req, res) => {
+ 
   console.log(req.body);
-  let price=req.body.price
+  let total_amount = await getTotalAmount(req.body.userid)
+
+  let price=total_amount.total
   req.session.user.price=price
+  req.session.user.body=req.body
 
 
   const create_payment_json = {
@@ -110,8 +114,8 @@ paypal.payment.create(create_payment_json, function (error, payment) {
   } else {
       for(let i = 0;i < payment.links.length;i++){
         if(payment.links[i].rel === 'approval_url'){
-         
-          res.redirect(payment.links[i].href);
+          res.json({link:payment.links[i].href})
+        
         }
       }
   }
@@ -120,10 +124,21 @@ paypal.payment.create(create_payment_json, function (error, payment) {
 });
 
 router.get('/success', (req, res) => {
+    
+
   const payerId = req.query.PayerID;
   const paymentId = req.query.paymentId;
-  let total_amount =req.session.user.price
-  console.log(total_amount);
+  let total =req.session.user.price
+
+  console.log("session",req.session.user.body);
+  
+
+
+
+
+
+  
+
 
 
 
@@ -132,20 +147,30 @@ router.get('/success', (req, res) => {
     "transactions": [{
         "amount": {
             "currency": "USD",
-            "total":total_amount,
+            "total":total,
         }
     }]
   };
 
-  paypal.payment.execute(paymentId, execute_payment_json, function (error, payment) {
+  paypal.payment.execute(paymentId, execute_payment_json, async function  (error, payment) {
     if (error) {
         console.log(error.response);
         throw error;
     } else {
         console.log(JSON.stringify(payment));
         req.session.user.ordersuccess = true
+        let products = await getCartProductList(req.session.user.body.userid)
+  let total_amount = await getTotalAmount(req.session.user.body.userid)
+  let add = await getAddress(req.session.user.body.address, req.session.user.email);
+  console.log("kittiya address idhaaanu",add);
+    let selectedAddress = add.address.find((address) => address.id == req.session.user.body.address);
+    console.log(selectedAddress);  
+    req.session.user.ordersuccess = true;
+    placeOrder(selectedAddress, req.session.user.body, products, total_amount).then((result) => {
+      res.redirect('/suc')
+      
+    })
         
-        res.redirect('/suc')
     }
 });
 });
@@ -568,12 +593,11 @@ router.post('/place-order', async function (req, res) {
   if(req.body.prodid==''){
     let products = await getCartProductList(req.body.userid)
     let total_amount = await getTotalAmount(req.body.userid)
-    console.log(typeof (total_amount), total_amount);
+    
     let add = await getAddress(req.body.address, req.session.user.email);
     let selectedAddress = add.address.find((address) => address.id == req.body.address);
     if (selectedAddress) {
       console.log("selected", selectedAddress);
-      console.log(req.body);
       if (req.body.mode == "cod") {
         req.session.user.ordersuccess = true;
         placeOrder(selectedAddress, req.body, products, total_amount).then((result) => {

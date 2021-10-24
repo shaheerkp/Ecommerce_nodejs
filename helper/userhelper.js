@@ -164,8 +164,10 @@ module.exports = {
             
     },
     getAddress:(add_id,eml)=>{
+    console.log("adddid",add_id,eml);
         return new Promise(async(resolve,reject)=>{
             let address=await db.get().collection("address").findOne({email:eml},{address:{$eleMatch:{id:add_id}}})
+            console.log("addresss kittyyy",address);
             resolve(address)
         })
     },

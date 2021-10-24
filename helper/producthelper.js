@@ -501,7 +501,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             console.log("??????",sel,address,products,total_amount);
            
-            let ok = address.mode == "cod" ? 'placed' : 'pending'
+            let ok = address.mode == "cod"|| address.mode == "p_pal" ? 'placed' : 'pending'
             let orderObj = {
                 delivery_address: {
                     name: sel.name,
