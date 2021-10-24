@@ -172,7 +172,7 @@ if(name_val&&fname_val&&email_val&&pass_val&&number_val){
         }
         else{
           $('#inv').html("login")
-          alert("User exist please login")
+          document.getElementById('main_err').innerHTML=response.mes
           
         }
         

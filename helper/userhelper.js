@@ -41,8 +41,9 @@ module.exports = {
             
            console.log(data);
            data.blocked=false;
+           let phone_num=await db.get().collection("users").findOne({Number:data.Number})
             let users = await db.get().collection('users').findOne({ email: data.email })
-            if (!users) {
+            if (!users&&!phone_num) {
 
                 data.password = await bcrypt.hash(data.password, 10)
                 db.get().collection('users').insertOne(data).then((data) => {
@@ -59,7 +60,7 @@ module.exports = {
             else {
                 console.log("&&&&&exist***");
                 let message = {
-                    mes: "User exist",
+                    mes: "User exist Please Signin",
                     status: false
 
                 }

@@ -185,8 +185,14 @@
               method:"post",
                data: $("#checkout-form").serialize(),
                success:function(res){
+                   alert(res.status)
+                   if(!res.status){
+                        document.getElementById("addr_err").innerHTML = res.msg;
+                   }
+                   else{
                    location.href=res.link
-                   
+
+                   }
                }
           })
 

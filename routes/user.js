@@ -75,51 +75,62 @@ router.post('/pay', async(req, res) => {
  
   console.log(req.body);
   let total_amount = await getTotalAmount(req.body.userid)
-
-  let price=total_amount.total
-  req.session.user.price=price
-  req.session.user.body=req.body
-
-
-  const create_payment_json = {
-    "intent": "sale",
-    "payer": {
-        "payment_method": "paypal"
-    },
-    "redirect_urls": {
-        "return_url": "http://localhost:3000/success",
-        "cancel_url": "http://localhost:3000/cancel"
-    },
-    "transactions": [{
-        "item_list": {
-            "items": [{
-                "name": "Red Sox Hat",
-                "sku": "001",
-                "price": price,
+  let add = await getAddress(req.body.address, req.session.user.email);
+  let selectedAddress = add.address.find((address) => address.id == req.body.address);
+  if (selectedAddress) {
+    console.log("addresss undddd");
+      let price=total_amount.total
+      req.session.user.price=price
+      req.session.user.body=req.body
+    
+    
+      const create_payment_json = {
+        "intent": "sale",
+        "payer": {
+            "payment_method": "paypal"
+        },
+        "redirect_urls": {
+            "return_url": "http://localhost:3000/success",
+            "cancel_url": "http://localhost:3000/cancel"
+        },
+        "transactions": [{
+            "item_list": {
+                "items": [{
+                    "name": "Red Sox Hat",
+                    "sku": "001",
+                    "price": price,
+                    "currency": "USD",
+                    "quantity": 1
+                }]
+            },
+            "amount": {
                 "currency": "USD",
-                "quantity": 1
-            }]
-        },
-        "amount": {
-            "currency": "USD",
-            "total": price
-        },
-        "description": "Hat for the best team ever"
-    }]
-};
-
-paypal.payment.create(create_payment_json, function (error, payment) {
-  if (error) {
-      throw error;
-  } else {
-      for(let i = 0;i < payment.links.length;i++){
-        if(payment.links[i].rel === 'approval_url'){
-          res.json({link:payment.links[i].href})
-        
-        }
+                "total": price
+            },
+            "description": "Hat for the best team ever"
+        }]
+    };
+    
+    paypal.payment.create(create_payment_json, function (error, payment) {
+      if (error) {
+          throw error;
+      } else {
+          for(let i = 0;i < payment.links.length;i++){
+            if(payment.links[i].rel === 'approval_url'){
+              res.json({status:true,link:payment.links[i].href})
+            
+            }
+          }
       }
+    });
+
   }
-});
+  else{
+    console.log("no adddressss");
+    res.json({status:false,
+      msg:"Please select a address"})
+  }
+
 
 });
 
@@ -162,7 +173,6 @@ router.get('/success', (req, res) => {
         let products = await getCartProductList(req.session.user.body.userid)
   let total_amount = await getTotalAmount(req.session.user.body.userid)
   let add = await getAddress(req.session.user.body.address, req.session.user.email);
-  console.log("kittiya address idhaaanu",add);
     let selectedAddress = add.address.find((address) => address.id == req.session.user.body.address);
     console.log(selectedAddress);  
     req.session.user.ordersuccess = true;
@@ -330,7 +340,7 @@ router.post('/signup', function (req, res) {
 
     }
     else {
-      res.json({ status: false })
+      res.json({ status: false,mes:"User alredy exist Please login" })
     }
 
 
