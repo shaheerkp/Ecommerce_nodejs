@@ -601,6 +601,7 @@ router.post('/place-order', async function (req, res) {
 
 
   if(req.body.prodid==''){
+    
     let products = await getCartProductList(req.body.userid)
     let total_amount = await getTotalAmount(req.body.userid)
     

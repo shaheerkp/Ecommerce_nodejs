@@ -1,5 +1,6 @@
 var express = require('express');
 const baseModule = require('hbs');
+const fs = require('fs');
 const { Db } = require('mongodb');
 var router = express.Router();
 var producthelper = require('../helper/producthelper')
@@ -8,6 +9,7 @@ var handlebars = require('express-handlebars');
 const { viewCategory, deleteSubcategory, viewProduct, deleteCategory, getOrderDetials, viewSubcategory, deleteProduct, addCategory, getAllOrders, changestatus } = require('../helper/producthelper');
 let admin_email = "kpshaheer123@gmail.com"
 let admin_password = "123"
+
 
 
 const getCategory = async () => {
@@ -107,20 +109,20 @@ router.get('/updateProduct/:id', check, function (req, res, next) {
 
     } else {
       let data = result[0]
-      res.render('admin-pages/edit-product', {admin:true, data })
+      res.render('admin-pages/edit-product', { admin: true, data })
     }
   })
 });
 
 router.post('/updateProduct', check, function (req, res, next) {
-  req.body.price=parseInt(req.body.price)
-  req.body.qty=parseInt(req.body.qty)
+  req.body.price = parseInt(req.body.price)
+  req.body.qty = parseInt(req.body.qty)
 
   console.log(req.body);
   producthelper.updateProduct(req.body)
     .then((id) => {
       console.log(id);
-      console.log("fileeeeeeeeeeee" );
+      console.log("fileeeeeeeeeeee");
       if (!req.files) {
         res.redirect('/admin/product-mgmt')
 
@@ -209,7 +211,7 @@ router.post('/updateProduct', check, function (req, res, next) {
 
 router.get('/add-product', check, function (req, res, next) {
   viewCategory().then(async (result) => {
-    console.log(res);
+    console.log(result);
 
     res.render("admin-pages/add-product", { admin: true, result, category: await getCategory() })
 
@@ -218,54 +220,53 @@ router.get('/add-product', check, function (req, res, next) {
 });
 
 router.post('/add-product', check, function (req, res, next) {
-  let price=parseInt(req.body.price)
- let qty=parseInt(req.body.qty)
- console.log(req.body.id);
-  let product={
-    _id:req.body._id,
-    product_name:req.body.product_name,
-    category:req.body.category,
-    sub_category:req.body.sub_category,
-    description:req.body.description,
-    price:req.body.price,
-    qty:req.body.qty
+  console.log("I am hereeeeeeeeeeeeeeee");
+  let price = parseInt(req.body.price)
+  let qty = parseInt(req.body.qty)
+
+  console.log("fuccccccccccccccccccccckkkkkkkkkkkkkkkk");
+
+  let image1 = req.body.img1
+  let image2 = req.body.img2
+  let image3 = req.body.img3
+
+
+
+
+  let product = {
+    _id: req.body._id,
+    product_name: req.body.product_name,
+    category: req.body.category,
+    sub_category: req.body.sub_category,
+    description: req.body.description,
+    price: req.body.price,
+    qty: req.body.qty
   }
+
+
 
 
 
   producthelper.addProduct(product)
     .then((id) => {
-     
-      console.log(req.files.image);
-      let img1 = req.files.img1 
-      let img2 = req.files.img2
-      let img3 = req.files.img3
-      console.log(img1);
 
-      img1.mv('./public/product-images/' + id + "1" + '.jpg', (err, done) => {
+      let path1 = `./public/product-images/${id}1.jpg`
+      let path2 = `./public/product-images/${id}2.jpg`
+      let path3 = `./public/product-images/${id}3.jpg`
 
-        if (!err) {
+      console.log(path1);
 
-          img2.mv('./public/product-images/' + id + "2" + '.jpg', (err, done) => {
+      let img1 = image1.replace(/^data:([A-Za-z-+/]+);base64,/, "")
+      let img2 = image2.replace(/^data:([A-Za-z-+/]+);base64,/, "")
+      let img3 = image3.replace(/^data:([A-Za-z-+/]+);base64,/, "")
 
-            if (!err) {
-              img3.mv('./public/product-images/' + id + "3" + '.jpg', (err, done) => {
 
-                if (!err) {
-                  res.redirect('/admin/product-mgmt')
-                } else {
-                  console.log("errrrr");
-                }
-              })
+      fs.writeFileSync(path1, img1, { encoding: 'base64' })
+      fs.writeFileSync(path2, img2, { encoding: 'base64' })
+      fs.writeFileSync(path3, img3, { encoding: 'base64' })
 
-            } else {
-              console.log("errrrr");
-            }
-          })
-        } else {
-          console.log("errrrr");
-        }
-      })
+      res.redirect('/admin/product-mgmt')
+
     })
 });
 
@@ -279,7 +280,7 @@ router.get('/user-management', check, function (req, res, next) {
 
 router.get('/order-management', check, async (req, res) => {
   getAllOrders().then((result) => {
-    console.log("rrr",result);
+    console.log("rrr", result);
     res.render('admin-pages/order-mgmt', { result, admin: true })
   })
 
@@ -287,21 +288,21 @@ router.get('/order-management', check, async (req, res) => {
 })
 
 
-router.get('/view-order-details/:id', check, async (req, res) => { 
+router.get('/view-order-details/:id', check, async (req, res) => {
   producthelper.viewOrderDetails(req.params.id).then((result) => {
-    console.log("reusltttt",result);
+    console.log("reusltttt", result);
     res.render('admin-pages/order-details', { result, admin: true })
   })
 
 
 })
 
-router.post('/changestatus', check, async (req, res) => { 
-  console.log("changestatus post",req.body);
-  let result=await changestatus(req.body.proid,req.body.id,req.body.newVal)
-    console.log("reusltttt",result);
-   res.json({status:true})
-  })
+router.post('/changestatus', check, async (req, res) => {
+  console.log("changestatus post", req.body);
+  let result = await changestatus(req.body.proid, req.body.id, req.body.newVal)
+  console.log("reusltttt", result);
+  res.json({ status: true })
+})
 
 
 
