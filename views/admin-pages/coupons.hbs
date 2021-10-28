@@ -1,0 +1,158 @@
+<div class="container p-2">
+    <div class="row  d-flex justify-content-between">
+        
+        <div class="col-lg-4">
+            <h1>Product Offer</h1>
+
+
+            <div class="form-group col-md-6">
+                <label for="category">CATEGORY</label>
+                <select required name="category" id="category" class="form-select" aria-label="Default select example">
+                    <option>Select Category</option>
+                    {{#each this.category}}
+                    <option value={{this.category}}>{{this.category}}</option>
+                    {{/each}}
+                </select>
+            </div>
+
+
+            <div class="form-group mt-4    col-md-6">
+                <label for="subcategory">SUB CATEGORY</label>
+                <select name="sub_category" required id="myList" class="form-select"
+                    aria-label="Default select example">
+                    <option>Select SubCategory</option>
+                    {{#each result}}
+
+
+                    {{/each}}
+
+                </select>
+            </div>
+
+
+            <div class="me-5">
+
+                <table class="table mt-4">
+                    <thead>
+                    </thead>
+                    <tbody id="subcat">
+
+
+                    </tbody>
+                </table>
+            </div>
+            </label>
+
+
+        </div>
+
+        <div class="col-lg-4">
+            <h3 id="ofrd" style="display: none;" >Offered Products</h3>
+            <div class="me-5">
+
+                <table class="table mt-4">
+                    <thead>
+                    </thead>
+                    <tbody id="offer">
+
+
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+        <div class="col-lg-4" >
+
+        </div>
+
+
+
+    </div>
+
+
+</div>
+
+<script>
+    document.getElementById("category").onchange = e => {
+        let id = e.target.value
+        $.ajax({
+            url: "/admin/get-subcategory",
+            method: 'POST',
+            data: { id },
+            success: function (response) {
+                console.log(response);
+                document.getElementById("myList").innerHTML = "";
+                document.getElementById("myList").innerHTML += ` <option>Select SubCategory</option>`
+                for (let i = 0; i < response.data.length; i++) {
+
+                    var innerCode = ` <option value='${response.data[i].name}'' onchange="getItem('{{this.sub_category}}')" id="one">${response.data[i].name}</option>`
+
+                    document.getElementById("myList").innerHTML += innerCode;
+
+                }
+               
+            },
+            error: function (err) {
+                alert("Something Error")
+
+            }
+
+        })
+
+
+    }
+
+    document.getElementById("myList").onchange = e => {
+        sub_cat = e.target.value
+        $.ajax({
+            url: "/admin/get-offer-product",
+            method: "post",
+            data: { sub_cat },
+            success: function (response) {
+                console.log("123", response.data)
+                let no_offer = []
+                let offer = []
+                for (let i = 0; i < response.data.length; i++) {
+                    if (response.data[i].offer) {
+                        offer.push(response.data[i])
+
+                    }
+                    else {
+                        no_offer.push(response.data[i])
+
+                    }
+                }
+                 document.getElementById("ofrd").style.display=""
+
+
+
+                document.getElementById("offer").innerHTML = "";
+                for (let i = 0; i < offer.length; i++) {
+                    var innerCode = `<tr><td><label   id="inp${i}" value=${offer[i]._id}>${offer[i].product_name}</label></td><td><label   id="inp${i}" value=${offer[i]._id}>${offer[i].off}%off</label></td><td>
+                        <a   href="/admin/delete-offer?id=${offer[i]._id}" onclick="return confirm('Do u want to delete offer')"  class='btn btn-danger'>Delete Offer</a>
+                        </td></tr>`
+                    document.getElementById("offer").innerHTML += innerCode;
+
+                }
+
+
+                document.getElementById("subcat").innerHTML = "";
+                for (let i = 0; i < no_offer.length; i++) {
+                    var innerCode = `<tr><td><label   id="inp${i}" value=${no_offer[i]._id}>${no_offer[i].product_name}</label></td><td>
+                        <a   href="/admin/add-offer?id=${no_offer[i]._id}" class='btn btn-danger'>Add Offer</a>
+                        </td></tr>`
+                    document.getElementById("subcat").innerHTML += innerCode;
+
+                }
+
+
+            }
+
+        })
+    }
+
+
+
+
+
+</script>

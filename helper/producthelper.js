@@ -298,23 +298,44 @@ module.exports = {
                 },
                 {
                     $project: {
-                        item: 1, quantity: 1, products: 1,subtotal:{$multiply:['$quantity','$products.price']}
+                        item: 1, quantity: 1, products: 1,subtotal:{$multiply:['$quantity','$products.price']},off_subtotal:{$multiply:['$quantity','$products.offer_price']}
                     }
-                }
+                },
+                
+
 
 
             ]).toArray()
-            console.log(cartitem);
+
+            let offer_total=0
+           
+            for(let i=0;i<cartitem.length;i++){
+            
+                if (cartitem[i].off_subtotal) {
+                    offer_total+=cartitem[i].off_subtotal
+                    
+                }
+                else{
+                    offer_total+=cartitem[i].subtotal
+                }
+              
+
+
+            }
+           
+           
+
          
             if (cartitem) {
 
-                resolve(cartitem)
+                resolve([cartitem,offer_total])
             } else (
                 reject(false)
             )
         })
 
     },
+
 
     getTotalAmount: (userid) => {
         console.log("user id vannuuu " + userid);
@@ -347,21 +368,45 @@ module.exports = {
                         item: 1, quantity: 1, products: { $arrayElemAt: ['$product', 0] }
                     }
                 },
-                {
-                    $group: {
+                // {
+                //     $group: {
 
-                        _id: null,
-                        total: { $sum: { $multiply: ['$quantity', '$products.price'] } }
-                    }
+                //         _id: null,
+                //         total: { $sum: { $multiply: ['$quantity', '$products.price'] } }
+                //     }
 
-                }
-
-
+                // }
+                
+                
             ]).toArray()
-          
+            
+            console.log("cart totalll",total);
+            let offer_total=0
+           
+            for(let i=0;i<total.length;i++){
+            
+                if (total[i].products.offer_price) {
+                    offer_total+=(total[i].products.offer_price*total[i].quantity)
+                    
+                }
+                else{
+                    offer_total+=(total[i].products.price*total[i].quantity)
+                }
+              
+
+
+
+            }
+            console.log("$$$$",offer_total);
+            total={
+                _id:null,
+                total:offer_total,
+            }
+
+
             if (total) {
 
-                resolve(total[0])
+                resolve(total)
             } else (
                 reject(false)
             )
@@ -467,6 +512,7 @@ module.exports = {
 
     },
     placeOrder: (sel,address, products, total_amount) => {
+        console.log("sadddddd",products);
       
    if(sel.sudden){
     return new Promise((resolve, reject) => {
@@ -499,8 +545,8 @@ module.exports = {
        
    }else{
         return new Promise((resolve, reject) => {
-            console.log("??????",sel,address,products,total_amount);
-           
+            console.log("??????",products);
+           console.log("%%%%%%",total_amount);
             let ok = address.mode == "cod"|| address.mode == "p_pal" ? 'placed' : 'pending'
             let orderObj = {
                 delivery_address: {
@@ -608,6 +654,72 @@ module.exports = {
 
 
     },
+    getAllOrderDetials: () => {
+        return new Promise(async(resolve,reject)=>{
+           
+            let ordered_items=await db.get().collection('orders').aggregate([
+                {
+                    $match: { }
+                },
+                {
+                    $unwind: '$orderObj.products'
+                },
+                {
+                    $project: {
+                        item: '$orderObj.products.item',
+                        userId:'$orderObj.userid',
+                        payment:'$orderObj.payment',
+
+                        quantity: '$orderObj.products.quantity',
+                        status:'$orderObj.products.staus',
+                        isCanceled:'$orderObj.products.isCancel',
+                        isDelivered:'$orderObj.products.isDelivered',
+                        date:"$orderObj.date",
+                        amount:"$orderObj.amount"
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'product',
+                        localField: 'item',
+                        foreignField: '_id',
+                        as: 'product'
+                    }
+                },
+                {
+                    $project: {
+                        item: 1,userId:1,payment:1, quantity: 1,status:1,date:1,amount:1,isCanceled:1,isDelivered:1, products: { $arrayElemAt: ['$product', 0] }
+                    }
+                }
+                // {
+                //     $group: {
+
+                //         _id: null,
+                //         total: { $sum: { $multiply: ['$quantity', '$products.price'] } }
+                //     }
+
+                // }
+
+
+            ]).toArray()
+            console.log("oooooo",ordered_items);
+          
+            if(ordered_items){
+
+                resolve(ordered_items)
+            }
+            else{
+                resolve(false)
+
+            }
+
+
+        })
+
+
+
+    },
+
     getAllOrders:()=>{
         return new Promise(async(resolve,reject)=>{
             let all_orders= await db.get().collection('orders').find({}).sort({}).toArray()
@@ -657,6 +769,101 @@ module.exports = {
         })
 
     },
+    getOfferProducts:(id)=>{
+        console.log("iddd",id);
+        return new Promise (async(resolve,reject)=>{
+            let result= await db.get().collection('product').find({_id:id}).toArray()
+            console.log(result);
+            resolve(result[0])
+        })
+
+    },
+    deleteOffer:(id)=>{
+        console.log("iddd",id);
+        return new Promise (async(resolve,reject)=>{
+           db.get().collection('product').updateOne({_id:id},{$unset:{exp_date:1,off:1,offer:1,offer_price:1}}).then((result)=>{
+               console.log(("delete aaayii",result));
+               resolve(true)
+           })
+        })
+
+    },
+    addOffer:(id,price,per,date)=>{
+      
+        
+        let off_price=price-(price*per/100)
+
+        console.log("offer",off_price);
+        return new Promise((resolve,reject)=>{
+            db.get().collection('product').update({_id:id},{$set:{offer:true,off:per,offer_price:off_price,exp_date:date}}).then((res)=>{
+                
+                console.log(res);
+                resolve(res)
+            })
+        })
+
+    },
+    addCatOffer:async(sub,per,date)=>{
+        exp_date=new Date(date)
+        console.log("date2",date);
+
+
+       return new Promise(async(resolve,reject)=>{
+         let products=await db.get().collection('product').find({sub_category:sub}).toArray()
+         console.log("sadasd",products);
+         console.log("###",sub,per,date);
+         for(let i=0;i<products.length;i++){
+             if (products[i].offer) {
+                if(products[i].off<per){
+                    products[i].off=per
+                    
+                    let off=products[i].price*per/100
+                    console.log("price",off);
+                    products[i].exp_date=exp_date
+                    
+                    products[i].offer_price+=off
+                }   
+              
+
+             }
+             else{
+                 products[i].offer=true
+                products[i].off=per
+                products[i].offer_price=products[i].price-products[i].price*per/100
+                products[i].exp_date=exp_date
+             }
+              db.get().collection('product').updateOne({_id:products[i]._id},{$set:{exp_date:products[i].exp_date,off:products[i].off,offer:true,offer_price:products[i].offer_price}})
+             
+             
+            }
+            
+
+
+        })  
+  
+    },
+    validateCoupon:(code,total)=>{
+        return new Promise (async(resolve,reject)=>{
+        let coupon=await db.get().collection('coupon').find({code:code}).toArray()
+        if(coupon[0]){
+            console.log(coupon[0]);
+            console.log(coupon[0].min,total);
+            if (coupon[0].min_amount<=total) {
+                off_price=total-total*coupon[0].off/100
+                resolve({coupon:true,amount:off_price,mes:"Coupon Applied"})
+            }
+            else{
+                resolve({coupon:false,mes:`Valid for Minimum ${coupon[0].min_amount} ` })
+            }
+
+        }else{
+            resolve({coupon:false,mes:"Invalid Coupon"})
+        }
+        })
+    },
+
+
+
     viewOrderDetails:(id)=>{
         console.log("iddd",id);
         return new Promise (async(resolve,reject)=>{

@@ -1,0 +1,33 @@
+<h3 class="text-center p-3" >Sales report</h3>
+  <div class="table-responsive">
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>SL.NO</th>
+          <th>Order Id</th>
+          <th>User Id</th>
+          <th>Products</th>
+          <th>Payment</th>
+          <th>Date</th>
+          <th>Amount</th>
+    
+        </tr>
+      </thead>
+      <tbody>
+        {{#each result}}
+        <tr>
+          <td>{{calculation @index}} </td>
+          <td>{{this._id}}</td>
+          <td>{{this.userId}}</td>
+          <td>{{this.products.product_name}}</td>
+          <td>{{this.payment}}</td>
+          <td>{{this.date}}</td>
+          <td>{{this.amount}}</td>
+          {{/each}}
+          
+         
+    
+        </tr>
+      </tbody>
+    </table>
+  </div>

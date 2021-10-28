@@ -33,7 +33,11 @@
               <img class="col-lg-4 img-box " src="/product-images/{{this.products._id}}1.jpg" alt="klj">
             </div>
           </td>
-          <td>{{this.products.price}}</td>
+          {{#if this.products.offer_price }}
+          <td>{{this.products.offer_price}}</td>
+          {{else}}
+           <td>{{this.products.price}}</td>
+          {{/if}}
           <td class="text-success" id="{{this.status}}">{{this.status}}</td>
           <td>
             {{#if this.isCanceled }}

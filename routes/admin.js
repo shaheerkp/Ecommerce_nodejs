@@ -6,7 +6,8 @@ var router = express.Router();
 var producthelper = require('../helper/producthelper')
 var userhelper = require('../helper/userhelper')
 var handlebars = require('express-handlebars');
-const { viewCategory, deleteSubcategory, viewProduct, deleteCategory, getOrderDetials, viewSubcategory, deleteProduct, addCategory, getAllOrders, changestatus } = require('../helper/producthelper');
+const { viewCategory, deleteSubcategory, viewProduct, deleteCategory, getOrderDetials, viewSubcategory, deleteProduct, addCategory, getAllOrders, changestatus,getOfferProducts, findProductByName, addOffer, deleteOffer, addCatOffer, getAllOrderDetials, validateCoupon } = require('../helper/producthelper');
+const { addListener } = require('process');
 let admin_email = "kpshaheer123@gmail.com"
 let admin_password = "123"
 
@@ -224,7 +225,7 @@ router.post('/add-product', check, function (req, res, next) {
   let price = parseInt(req.body.price)
   let qty = parseInt(req.body.qty)
 
-  console.log("fuccccccccccccccccccccckkkkkkkkkkkkkkkk");
+ 
 
   let image1 = req.body.img1
   let image2 = req.body.img2
@@ -302,6 +303,15 @@ router.post('/changestatus', check, async (req, res) => {
   let result = await changestatus(req.body.proid, req.body.id, req.body.newVal)
   console.log("reusltttt", result);
   res.json({ status: true })
+})
+
+router.get('/coupons',check,async(req,res)=>{
+  producthelper.viewCategory().then(async (result) => {
+    console.log("sortcheyanda ",result);
+    res.render('admin-pages/coupons',{admin:true,result,category: await getCategory()})
+  })
+
+
 })
 
 
@@ -396,9 +406,85 @@ router.post('/delete-subcategory', check, function (req, res) {
     res.json({ success: true, mes: "Sucessfull deleted subcategory" })
   })
 
-
-
 })
 
+router.post('/get-offer-product',check,(req,res)=>{
+  findProductByName(req.body.sub_cat).then((data)=>{
+    res.json({data})
+  })
+  
+})
+
+router.get('/add-offer',check,async(req,res)=>{
+  console.log("asdasdasd",req.query.id);
+  getOfferProducts(req.query.id).then((result)=>{
+    res.render("admin-pages/offer-details",{admin:true,result})
+  })
+ 
+})
+router.get('/delete-offer',check,async(req,res)=>{
+  console.log("deletee",req.query.id);
+  deleteOffer(req.query.id).then((result)=>{
+   res.redirect("/admin/coupons")
+  })
+ 
+})
+
+
+
+router.get('/category-offer',check,async(req,res)=>{
+
+  producthelper.viewCategory().then(async (result) => {
+    console.log("sortcheyanda ",result);
+    res.render('admin-pages/categoryoffer-details',{admin:true,result,category: await getCategory()})
+  })
+  })
+
+
+
+  router.post('/add-category-offer',check,(req,res)=>{
+
+    console.log("asdasdasd",req.body);
+    let per=parseInt(req.body.perentage)
+    let date=req.body.exp_date
+    addCatOffer(req.body.sub_category,per,date)
+    
+  })
+
+
+
+
+
+router.post("/add-offer",check,(req,res)=>{
+  console.log(req.body);
+  id=req.body._id
+  price=parseInt(req.body.price)
+  per=parseInt(req.body.perentage)
+  date=new Date(req.body.exp_date)
+  addOffer(id,price,per,date).then((result)=>{
+    res.json({status:true})
+  })
+
+  
+})
+
+router.get('/salesreport',check,(req,res)=>{
+  getAllOrderDetials().then((result)=>{
+    res.render("admin-pages/salesreport",{admin:true,result})
+    
+})
+})
+
+
+router.post('/apply_coupon',(req,res)=>{
+  let total= parseInt(req.body.total)
+  
+  console.log("it comming");
+  console.log(req.body);
+  validateCoupon(req.body.code,total).then((response)=>{
+    res.json(response)
+  })
+  
+})
 
 module.exports = router;

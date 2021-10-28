@@ -42,9 +42,20 @@
                                                     {{this.products.sub_category}}
                                                 </p>
                                             </h6>
+                                            {{#if this.products.offer}}
+                                            <p style="color: rgb(121, 120, 120);" class="small">
+                                               RS : {{this.products.offer_price}}
+                                            </p>
+                                            <p style="color: rgb(237, 65, 65);text-decoration: line-through;" class="small">
+                                               RS : {{this.products.price}}
+                                            </p>
+
+                                            {{else}}
+                                            
                                             <p style="color: rgb(121, 120, 120);" class="small">
                                                RS : {{this.products.price}}
                                             </p>
+                                            {{/if}}
 
                                             <div class="m-t-sm">
                                                 <a href="#" class="text-muted"><i class="fa fa-gift"></i> Add gift
@@ -58,8 +69,8 @@
                                         </td>
 
 
-                                        <td class="pl-0">
-                                            <div class="quantity buttons_added">
+                                        <td class="">
+                                            <div class="quantity buttons_added me-3">
                                                 <input type="button"
                                                     onclick="changeQuantity('{{this._id}}','{{this.products._id}}',-1)"
                                                     value="-" id="qtyminus" class="minus">
@@ -77,9 +88,20 @@
 
                                         <td>
 
-                                            <p class="fs-6">
-                                                RS : {{this.subtotal}}
+                                             {{#if this.products.offer}}
+                                            <p  style="color: rgb(4, 4, 4);font-size: small;" class="small">
+                                               RS : {{this.off_subtotal}}
                                             </p>
+                                            <p style="color: rgb(237, 65, 65);text-decoration: line-through;font-size: small;" class="small me-2">
+                                               RS : {{this.subtotal}}
+                                            </p>
+
+                                            {{else}}
+                                            
+                                            <p style="color: rgb(121, 120, 120);" class="small">
+                                               RS : {{this.subtotal}}
+                                            </p>
+                                            {{/if}}
                                         </td>
 
                                     </tr>
@@ -114,9 +136,18 @@
                         <span>
                             Total
                         </span>
+                          {{#if offer_total}}
+                            <h2 class="font-bold">
+                            RS : {{offer_total}}
+                        </h2>
+
+                          {{else}}
                         <h2 class="font-bold">
                             RS : {{total.total}}
+
                         </h2>
+
+                          {{/if}}
 
                         <hr>
                         <span class="text-muted small">

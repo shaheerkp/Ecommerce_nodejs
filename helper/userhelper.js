@@ -4,6 +4,8 @@ const objectId = require('mongodb').ObjectId
 const { LoopDetected } = require('http-errors')
 const Razorpay=require('razorpay')
 const { ObjectId } = require('bson')
+const { resolve } = require('path')
+const { response } = require('express')
 var instance = new Razorpay({
     key_id: 'rzp_test_5hQK7ZeFBkNf4X',
     key_secret: 'OdlCOk6TWmdnr2nykmAUSaaW',
@@ -66,6 +68,52 @@ module.exports = {
                 }
                 resolve(message)
             }
+        })
+
+    },
+    saveChanges:(eml,data)=>{
+        return new Promise(async(resolve,reject)=>{
+
+           console.log("sdasdasdasda",data);
+           console.log("maiin hereeee");
+            ph=await db.get().collection('users').find({Number:data.number}).toArray()
+            console.log("ph",ph);
+            if(ph[0]){
+                resolve({status:false,mes:"number already Exsist"})
+                
+            }
+            else{
+
+                if(data.first_name&&data.second_name&&data.number){
+                db.get().collection('users').update({email:eml},{$set:{firstname:data.first_name,lastname:data.second_name,Number:data.number}})
+                resolve({status:true})
+                }
+                else if(data.first_name&&data.second_name){
+                    db.get().collection('users').update({email:eml},{$set:{firstname:data.first_name,lastname:data.second_name}})
+                    resolve({status:true})
+                    }
+                   else if(data.second_name&&data.number){
+                        db.get().collection('users').update({email:eml},{$set:{lastname:data.second_name,Number:data.number}})
+                        resolve({status:true})
+                        }
+                else if(data.first_name){
+                    db.get().collection('users').update({email:eml},{$set:{firstname:data.first_name}})
+                    resolve({status:true})
+                }
+                else if(data.second_name){
+                    db.get().collection('users').update({email:eml},{$set:{lastname:data.second_name}})
+                    resolve({status:true})
+                }
+                else if(data.number){
+                    db.get().collection('users').update({email:eml},{$set:{Number:data.number}})
+                    resolve({status:true})
+                }
+                else{
+                    resolve({status:false,mes:"Please input fields correctly"})
+                }
+
+            }
+
         })
 
     },
@@ -280,6 +328,15 @@ module.exports = {
                 resolve()
             })
         })
+
+    },
+    getUserById:(id)=>{
+        return new Promise(async (resolve, reject) => {
+            user=await db.get().collection('users').find({_id:ObjectId(id)}).toArray()
+            resolve(user[0])
+        })
+
+
 
     }
 

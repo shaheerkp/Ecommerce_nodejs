@@ -1,0 +1,220 @@
+<div class="wrapper bg-white" style="margin-top: 150px;">
+    <h4 class="pb-4 border-bottom">Account settings</h4>
+    <div class="d-flex justify-content-center align-items-start py-3 border-bottom"> <img
+            src="https://media.istockphoto.com/vectors/user-icon-flat-isolated-on-white-background-user-symbol-vector-vector-id1300845620?b=1&k=20&m=1300845620&s=170667a&w=0&h=JbOeyFgAc6-3jmptv6mzXpGcAd_8xqkQa_oUK2viFr8="
+            class="img" alt="">
+        <div class="row">
+
+            <p id="edit_profile" style="color: #0779e4;" onclick="editProfile()">Edit Profile </p>
+        </div>
+    </div>
+
+    <div class="py-2">
+        <p id="Change password" style="color: #0779e4;">Change Password </p>
+        <span class="text-danger" id="err"></span>
+        <div class="row py-2">
+            <div class="col-md-6"> <label for="firstname">First Name</label> <input id="fname" type="text"
+                    class="bg-light form-control" placeholder="{{user_details.firstname}}"> </div>
+            <div class="col-md-6 pt-md-0 pt-3"> <label for="lastname">Last Name</label> <input id="lname" type="text"
+                    class="bg-light form-control" placeholder="{{user_details.lastname}}"> </div>
+        </div>
+        <div class="row py-2">
+            <div class="col-md-6"> <label for="email">Email Address</label> <input id="uemail" type="text"
+                    class="bg-light form-control" placeholder="{{user_details.email}}"> </div>
+            <div class="col-md-6 pt-md-0 pt-3"> <label for="phone">Phone Number</label> <input id="unumber" type="tel"
+                    class="bg-light form-control" placeholder="{{user_details.Number}}"> </div>
+        </div>
+        <div class="py-3 pb-4 border-bottom"> <button id="save_changes" onclick="saveChanges()"
+                class="btn btn-primary mr-3">Save Changes</button> </div>
+        <h5 class="pb-4 mt-4 border-bottom">Address</h5>
+
+        {{#each add}}
+        <div class="form-check">
+            
+            <label class="form-check-label" id="{{this.id}}" for="flexRadioDefault1">
+                {{this.name}} , {{this.address}}<br>{{this.city}},{{this.state}}<br>{{this.pin}}
+            </label>
+            <a onclick="return confirm('Are you sure you want to delete this item?');"
+                href="/delete-address?prodid={{../productId}}&&id={{this.id}}">
+                <i class="ms-5 fas fa-trash-alt"></i>
+
+            </a>
+        </div>
+
+        {{/each}}
+
+         <a type="button" href="/add-address?id={{productId}}"
+                            class="btn-sm btn-primary mb-5 mt-5">Add</a>
+
+
+    </div>
+</div>
+
+
+
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box
+    }
+
+    body {
+        font-family: 'Poppins', sans-serif;
+        background-color: aliceblue
+    }
+
+    .wrapper {
+        padding: 30px 50px;
+        border: 1px solid #ddd;
+        border-radius: 15px;
+        margin: 10px auto;
+        max-width: 600px
+    }
+
+    h4 {
+        letter-spacing: -1px;
+        font-weight: 400
+    }
+
+    .img {
+        width: 70px;
+        height: 70px;
+        border-radius: 6px;
+        object-fit: cover
+    }
+
+    #img-section p,
+    #deactivate p {
+        font-size: 12px;
+        color: #777;
+        margin-bottom: 10px;
+        text-align: justify
+    }
+
+    #img-section b,
+    #img-section button,
+    #deactivate b {
+        font-size: 14px
+    }
+
+    label {
+        margin-bottom: 0;
+        font-size: 14px;
+        font-weight: 500;
+        color: #777;
+        padding-left: 3px
+    }
+
+    .form-control {
+        border-radius: 10px
+    }
+
+    input[placeholder] {
+        font-weight: 500
+    }
+
+    .form-control:focus {
+        box-shadow: none;
+        border: 1.5px solid #0779e4
+    }
+
+    select {
+        display: block;
+        width: 100%;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        height: 40px;
+        padding: 5px 10px
+    }
+
+    select:focus {
+        outline: none
+    }
+
+    .button {
+        background-color: #fff;
+        color: #0779e4
+    }
+
+    .button:hover {
+        background-color: #0779e4;
+        color: #fff
+    }
+
+    .btn-primary {
+        background-color: #0779e4
+    }
+
+    .danger {
+        background-color: #fff;
+        color: #e20404;
+        border: 1px solid #ddd
+    }
+
+    .danger:hover {
+        background-color: #e20404;
+        color: #fff
+    }
+
+    @media(max-width:576px) {
+        .wrapper {
+            padding: 25px 20px
+        }
+
+        #deactivate {
+            line-height: 18px
+        }
+    }
+</style>
+<script>
+    window.onload = function () {
+        document.getElementById("fname").disabled = true;
+        document.getElementById("lname").disabled = true;
+        document.getElementById("uemail").disabled = true;
+        document.getElementById("unumber").disabled = true;
+        document.getElementById("save_changes").style.display = "none";
+
+    };
+
+    function editProfile() {
+        document.getElementById("fname").disabled = false;
+        document.getElementById("lname").disabled = false;
+        document.getElementById("unumber").disabled = false;
+        document.getElementById("save_changes").style.display = "";
+    }
+
+
+
+
+
+    function saveChanges() {
+        alert("asd")
+        let first_name = document.getElementById("fname").value
+        let second_name = document.getElementById("lname").value
+        let email = document.getElementById("uemail").value
+        let number = document.getElementById("unumber").value
+
+        $.ajax({
+            url: "/change-profile",
+            data: { first_name, second_name, email, number },
+            method: "post",
+            success: function (response) {
+                if (!response.status) {
+                    document.getElementById('err').innerHTML = response.mes
+                    window.location.reload()
+                }
+                else {
+                    alert("updates Successufully")
+                    window.location.reload()
+                }
+
+            }
+        })
+
+    }
+
+</script>

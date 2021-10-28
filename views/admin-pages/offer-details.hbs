@@ -1,0 +1,106 @@
+<div class="container">
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="col-lg-6 ">
+                <div class="card">
+                    <a href="/product-detail?id={{result._id}}" class="fill-div" style="text-decoration: none;">
+                        <img src="/product-images/{{result._id}}1.jpg" data-NZoomscale="2" class="zoom card-img-top"
+                            alt="...">
+                        <div class="card-body">
+                            <p style="font-size: 15px;" class="card-title cardtitle">{{result.product_name}}</p>
+                            <p class="text-center price" style="font-weight: lighter;color: rgb(119, 119, 119);">
+                                {{result.sub_category}} </p>
+
+
+
+
+                            <p class="text-center price">RS: {{result.price}} </p>
+
+                        </div>
+                        <div class="row mb-3">
+
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-lg-6">
+            <form id="add_offer">
+                <div class="row p-2">
+                    <h4>Offer Detalis</h4>
+                    <div class="col">
+                        <span id="offer_err" class="text-danger"></span>
+                        <label  > Offer %</label>
+                        <input  type="number" style="display: none;" name="price" value="{{result.price}}" placeholder="" >
+                        <input id="offer_per" type="number" name="perentage" value="" placeholder="Offer %">
+                    </div>
+                    <div class="col">
+                    <label>Expiry Date</label>
+                    <input  name="_id" style="display: none;"  value="{{result._id}}" placeholder="" >
+                   <input style="width: 200px;" required type="datetime-local" id="exp_date" name="exp_date">
+                        </div>
+                   <input class="m-3" style="width: 200px;"  type="submit">
+                </div>
+
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    let offer_val=false;
+
+  document.getElementById('add_offer').onsubmit=e=>{
+      e.preventDefault()
+   if(offer_val){
+      $.ajax({
+          url:"/admin/add-offer",
+          method:"post",
+          data:$("#add_offer").serialize(),
+          success:function(response){
+              if(response.status){
+                  alert("Offer updated succesfully")
+                  location.replace('/admin/coupons')
+              }
+
+          },
+          error:function(){
+
+          }
+
+      })
+
+   }
+  }
+document.getElementById('offer_per').oninput=e=>{
+    let val=e.target.value  
+    if(val.length>2){
+        offer_val=false;
+        document.getElementById('offer_err').innerHTML="Max 99% offer"
+       
+
+    }
+    else{
+        offer_val=true;
+        document.getElementById('offer_err').innerHTML=""
+        
+    }
+
+ /*   $("#pass").on('input', function () {
+  if(this.value.length<4){
+    $(this).css({ borderColor: "red" })
+    pass_val = false;
+  }
+  else{
+    $(this).css({ borderColor: "green" })
+    pass_val=true;
+  }
+})*/
+    
+    
+}
+
+</script>

@@ -90,7 +90,7 @@
 
     <div class="  col-lg-8 float-end float-lg-start ">
         <h1 class="d-flex justify-content-center p-2 mt-3">{{cat}}</h1>
-        <div class="row d-flex justify-content-start">
+        <div class="row d-flex ">
             {{#each result}}
             <div class="col-lg-4 ">
                 <div class="card">
@@ -99,7 +99,23 @@
                         <div class="card-body">
                             <p style="font-size: 15px;" class="card-title cardtitle">{{this.product_name}}</p>
                             <p class="text-center price" style="font-weight: lighter;color: rgb(119, 119, 119);">{{this.sub_category}} </p>
-                            <p class="text-center price">RS: {{this.price}} </p>
+                            {{#if offer}}
+                            <div class="row">
+                                <div class="col-7">
+                             <p style="text-decoration: line-through;color: rgb(225, 34, 34);" class="text-center price">RS: {{this.price}} </p>
+                               <p  class="text-center price">RS: {{this.offer_price}} </p>
+
+                                </div>
+                                 <div class="col-5">
+                              <p  class="text-center price">{{this.off}}% off </p>
+                                    
+                                </div>
+
+                            </div>
+
+                            {{else}}
+                            <p  class="text-center price">RS: {{this.price}} </p>
+                            {{/if}}
                         </div>
                         <div class="row mb-3">
 

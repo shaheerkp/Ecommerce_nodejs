@@ -11,7 +11,7 @@ $.ajax({
      method: "POST",
     data:{id},
   success: function (response) {
-      console.log(response);
+
       if (response.status) {
 
     // Swal.fire({
@@ -35,12 +35,15 @@ $.ajax({
      
       }
       else{
-        $("#err").html(response.message)
+        alert("{Please Signin to add to cart}")
+      
        
       }
       
     },
     error: function (err) {
+      console.log("asdasd")
+
       alert("{Please Signin to add to cart}")
 
     }

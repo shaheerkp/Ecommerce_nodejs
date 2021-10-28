@@ -12,7 +12,7 @@
 
 
 
-<form class="ms=5 me=5 " id="add_product" method="POST" action="/admin/add-product"
+<form class="ms=5 me=5 " id="add_product" onsubmit="return checkValid()" method="POST" action="/admin/add-product"
   enctype="multipart/form-data"> 
 
 
@@ -79,7 +79,7 @@
             <h4 class="title"> Image 1</h4>
             <div class="fileinput fileinput-new text-center">
                 <div class="fileinput-new thumbnail">
-                    <img width="150px" height="150px" src="../../assets/img/image_placeholder.jpg" id="chekPreview1" alt="...">
+                    <img width="150px" height="150px" src="https://png.pngtree.com/png-vector/20190330/ourmid/pngtree-img-file-document-icon-png-image_897560.jpg" id="chekPreview1" alt="...">
 
                 </div>
                 <div>
@@ -101,7 +101,7 @@
             <h4 class="title"> Image 2</h4>
             <div class="fileinput fileinput-new text-center">
                 <div class="fileinput-new thumbnail">
-                    <img  width="150px" height="150px" src="../../assets/img/image_placeholder.jpg" id="chekPreview2" alt="...">
+                    <img  width="150px" height="150px" src="https://png.pngtree.com/png-vector/20190330/ourmid/pngtree-img-file-document-icon-png-image_897560.jpg" id="chekPreview2" alt="...">
 
                 </div>
                 <div>
@@ -122,7 +122,7 @@
             <h4 class="title"> Image 3</h4>
             <div class="fileinput fileinput-new text-center">
                 <div class="fileinput-new thumbnail">
-                    <img  width="150px" height="150px" src="../../assets/img/image_placeholder.jpg" id="chekPreview3" alt="...">
+                    <img  width="150px" height="150px" src="https://png.pngtree.com/png-vector/20190330/ourmid/pngtree-img-file-document-icon-png-image_897560.jpg" id="chekPreview3" alt="...">
 
                 </div>
                 <div>
@@ -161,7 +161,7 @@
             </div>
             <div class="modal-body container">
                 <div class="img-container">
-                            <img height="300px" style="object-fit: contain;"  src="" id="sampleImage1" />
+                            <img style="max-height: 300px;" src="" id="sampleImage1" />
                     <div class="row">
                         
                         
@@ -197,7 +197,7 @@
             </div>
             <div class="modal-body">
                 <div class="img-container">
-                   <img height="300px" style="object-fit: contain;"  src="" id="sampleImage2" />
+                   <img style="max-height: 300px;"  src="" id="sampleImage2" />
                     <div class="row">
                         <div >
                            
@@ -234,7 +234,7 @@
             <div class="modal-body">
                 <div class="img-container">
                     <div class="row">
-                       <img height="300px" style="object-fit: contain;"  src="" id="sampleImage3" />
+                       <img style="max-height: 300px;"  src="" id="sampleImage3" />
                         <div>
                            
                         </div>
@@ -263,19 +263,6 @@
 
 
 
-<style>
-  .preview {
-    overflow: hidden;
-    width: 160px;
-    height: 160px;
-    margin: 10px;
-    border: 1px solid red;
-  }
-
-  .modal-lg {
-    max-width: 1000px !important;
-  }
-</style>
 
 
 
@@ -449,7 +436,9 @@
     $('#crop1').click(function () {
       canvas = cropper1.getCroppedCanvas({
         width: 400,
-        height: 400
+        height: 400,
+        
+        
       });
 
       canvas.toBlob(function (blob) {
