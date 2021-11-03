@@ -1,10 +1,4 @@
-/*!-----------------------------------------------------
- * xZoom v1.0.15
- * (c) 2013 by Azat Ahmedov & Elman Guseynov
- * https://github.com/payalord
- * https://dribbble.com/elmanvebs
- * Apache License 2.0
- *------------------------------------------------------*/
+
 window.requestAnimFrame = (function(){
   return window.requestAnimationFrame ||
   window.webkitRequestAnimationFrame ||

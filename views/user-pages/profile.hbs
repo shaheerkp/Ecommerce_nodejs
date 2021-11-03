@@ -10,7 +10,8 @@
     </div>
 
     <div class="py-2">
-        <p id="Change password" style="color: #0779e4;">Change Password </p>
+        <button class="btn-sm" type="button" class="btn btn-primary" data-bs-toggle="modal"
+            data-bs-target="#exampleModal" id="Change password" style="color: #0779e4;">Change Password </button>
         <span class="text-danger" id="err"></span>
         <div class="row py-2">
             <div class="col-md-6"> <label for="firstname">First Name</label> <input id="fname" type="text"
@@ -22,7 +23,7 @@
             <div class="col-md-6"> <label for="email">Email Address</label> <input id="uemail" type="text"
                     class="bg-light form-control" placeholder="{{user_details.email}}"> </div>
             <div class="col-md-6 pt-md-0 pt-3"> <label for="phone">Phone Number</label> <input id="unumber" type="tel"
-                    class="bg-light form-control" placeholder="{{user_details.Number}}"> </div>
+                    class="bg-light form-control" maxlength="10" required placeholder="{{user_details.Number}}"> </div>
         </div>
         <div class="py-3 pb-4 border-bottom"> <button id="save_changes" onclick="saveChanges()"
                 class="btn btn-primary mr-3">Save Changes</button> </div>
@@ -30,12 +31,12 @@
 
         {{#each add}}
         <div class="form-check">
-            
+
             <label class="form-check-label" id="{{this.id}}" for="flexRadioDefault1">
                 {{this.name}} , {{this.address}}<br>{{this.city}},{{this.state}}<br>{{this.pin}}
             </label>
             <a onclick="return confirm('Are you sure you want to delete this item?');"
-                href="/delete-address?prodid={{../productId}}&&id={{this.id}}">
+                href="/delete-address?prodid={{../productId}}&&id={{this.id}}&&profile=true">
                 <i class="ms-5 fas fa-trash-alt"></i>
 
             </a>
@@ -43,12 +44,51 @@
 
         {{/each}}
 
-         <a type="button" href="/add-address?id={{productId}}"
-                            class="btn-sm btn-primary mb-5 mt-5">Add</a>
+        <a type="button" href="/add-address?id={{productId}}&&profile=true" class="btn-sm btn-primary mb-5 mt-5">Add</a>
 
 
     </div>
+
 </div>
+
+
+<!-- Button trigger modal -->
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Change Password</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body row">
+                <span class="text-danger" id="passerr"></span>
+                <div class="col-lg-12 m-2">
+                    <input type="password" id="oldpass" name="oldpassword" placeholder="Old Password">
+
+                </div>
+                <div class="col-lg-12 m-2">
+                    <input type="password" id="newpass" name="newpassword" placeholder="New Password">
+
+                </div>
+                          <div class="col-lg-12 m-2">
+                    <input type="password" id="conpass" name="confirmpassword" placeholder="Confirm Password">
+
+                </div>
+            </div>
+            <div class="modal-footer">
+
+                <button type="button" onclick="changePassword()" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
 
 
 
@@ -171,6 +211,71 @@
     }
 </style>
 <script>
+    let old=false
+    let newp =false
+    let con=false
+
+
+
+    document.getElementById('oldpass').oninput=e=>{
+        old=true
+
+    }
+      document.getElementById('newpass').oninput=e=>{
+        newp=true
+
+    }
+      document.getElementById('conpass').oninput=e=>{
+          console.log(document.getElementById('newpass').value)
+          console.log(e.target.value)
+          if(document.getElementById('newpass').value==e.target.value){
+        con=true
+        document.getElementById('passerr').innerHTML=""
+
+          }
+          else{
+              con=false
+              document.getElementById('passerr').innerHTML="passs word not match"
+      }
+
+    }
+
+    function changePassword(){
+        if(newp&&old&con){
+            let old_password=document.getElementById('oldpass').value
+            let new_password=document.getElementById('newpass').value
+
+          
+            $.ajax({
+            url: "/change-password",
+                method:"post",
+                data:{old_password,new_password},
+                success:function(response){
+                console.log(response)
+                 if(response.status){
+                     alert(response.mes)
+                     location.reload()
+                 }
+                 else{
+                      document.getElementById('passerr').innerHTML=response.mes
+
+                 }
+
+                }
+               
+
+            })
+
+        }
+        else{
+            
+              document.getElementById('passerr').innerHTML="Enter all fields correctly"
+
+        }
+    }
+    
+
+
     window.onload = function () {
         document.getElementById("fname").disabled = true;
         document.getElementById("lname").disabled = true;
@@ -205,7 +310,7 @@
             success: function (response) {
                 if (!response.status) {
                     document.getElementById('err').innerHTML = response.mes
-                    window.location.reload()
+
                 }
                 else {
                     alert("updates Successufully")

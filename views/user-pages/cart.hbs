@@ -43,7 +43,7 @@
                                                 </p>
                                             </h6>
                                             {{#if this.products.offer}}
-                                            <p style="color: rgb(121, 120, 120);" class="small">
+                                            <p style="color: rgb(121, 120, 120);" id="offprice+{{this.products._id}}" class="small">
                                                RS : {{this.products.offer_price}}
                                             </p>
                                             <p style="color: rgb(237, 65, 65);text-decoration: line-through;" class="small">
@@ -89,16 +89,16 @@
                                         <td>
 
                                              {{#if this.products.offer}}
-                                            <p  style="color: rgb(4, 4, 4);font-size: small;" class="small">
+                                            <p  style="color: rgb(4, 4, 4);font-size: small;" id="offprice{{this.products._id}}"  class="small">
                                                RS : {{this.off_subtotal}}
                                             </p>
-                                            <p style="color: rgb(237, 65, 65);text-decoration: line-through;font-size: small;" class="small me-2">
+                                            <p style="color: rgb(237, 65, 65);text-decoration: line-through;font-size: small;" id="price{{this.products._id}}"  class="small me-2">
                                                RS : {{this.subtotal}}
                                             </p>
 
                                             {{else}}
                                             
-                                            <p style="color: rgb(121, 120, 120);" class="small">
+                                            <p style="color: rgb(121, 120, 120);" id="price{{this.products._id}}" class="small">
                                                RS : {{this.subtotal}}
                                             </p>
                                             {{/if}}

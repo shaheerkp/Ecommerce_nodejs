@@ -14,6 +14,7 @@
                 <div class="form-group">
                     <label class="text-muted">Name</label>
                     <span id="name_err" class="text-danger"></span>
+                    <input disabled style="display: none;"  id="profile" type="text" name="profile" value={{profile}}>
                         <input disabled style="display: none;" id="prodid" type="text" name="prodid" value={{productId}} >
                     <div class="d-flex jusify-content-start align-items-center rounded p-2">
                         <input id="user_name" type="text" name="name" value="" >
@@ -251,15 +252,22 @@ $("#state_val").on('input', function () {
 
     $("#address-form").submit((e) => {
       let id=document.getElementById('prodid').value
+      let profile=document.getElementById('profile').value
+    
       alert(id)
         e.preventDefault()
 if(city_val&&state_val&&name_val&&add_val&&number_val){
         $.ajax({
-            url: '/add-address',
+            url: `/add-address?pro=${profile}`,
             data: $("#address-form").serialize(),
             method: "post",
             success:function(result){
-              if(!id==""){
+              if(result.profile){
+                location.replace('/profile')
+
+
+              }
+              else if(!id==""){
               location.reload()
                 location.replace(`/address?sudden=true&&prodid=${id}`)
 

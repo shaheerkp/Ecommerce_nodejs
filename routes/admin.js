@@ -6,10 +6,12 @@ var router = express.Router();
 var producthelper = require('../helper/producthelper')
 var userhelper = require('../helper/userhelper')
 var handlebars = require('express-handlebars');
-const { viewCategory, deleteSubcategory, viewProduct, deleteCategory, getOrderDetials, viewSubcategory, deleteProduct, addCategory, getAllOrders, changestatus,getOfferProducts, findProductByName, addOffer, deleteOffer, addCatOffer, getAllOrderDetials, validateCoupon } = require('../helper/producthelper');
+const { viewCategory, deleteSubcategory, viewProduct, deleteCategory, getOrderDetials, viewSubcategory, deleteProduct, addCategory, getAllOrders, changestatus,getOfferProducts, findProductByName, addOffer, deleteOffer, addCatOffer, getAllOrderDetials, validateCoupon, getAllCoupons, addCoupon, delCoupon, thisMonthIncome, searchBetween } = require('../helper/producthelper');
 const { addListener } = require('process');
 let admin_email = "kpshaheer123@gmail.com"
 let admin_password = "123"
+var moment = require('moment');
+const { response } = require('express');
 
 
 
@@ -47,9 +49,41 @@ router.get('/', function (req, res, next) {
 });
 
 router.get('/dashboard', check, async function (req, res, next) {
+  let products=await producthelper.getAllProducts()
+  products=products.length
+  let orders=await getAllOrderDetials()
+  orders=orders.length
+  let monthStatus=await thisMonthIncome()
+  console.log("month ",monthStatus);
+ 
+  await producthelper.getWeeklySales()
 
-  res.render("admin-pages/dashboard", { admin: true, category: await getCategory() })
+
+  res.render("admin-pages/dashboard", {monthStatus,orders, products,admin: true, category: await getCategory() })
 });
+
+
+router.post('/weeklySalesReport',async function(req,res){
+ let sales =await producthelper.getWeeklySales()
+ let payment=await producthelper.getPaymentCount()
+ let ord_status=await producthelper.getWeeklyStatus()
+
+ res.json({data:sales,pay:payment,status:ord_status})
+
+
+ 
+})
+
+
+router.post('/search-by-date',(req,res)=>{
+ 
+  searchBetween(req.body).then((response)=>{
+    console.log(response);
+    res.json({response})
+  })
+
+
+})
 
 
 router.post('/dashboard', function (req, res, next) {
@@ -119,63 +153,79 @@ router.post('/updateProduct', check, function (req, res, next) {
   req.body.price = parseInt(req.body.price)
   req.body.qty = parseInt(req.body.qty)
 
+
+
+  let image1 = req.body.img1
+  let image2 = req.body.img2
+  let image3 = req.body.img3
+
+
+
+  let product = {
+    _id: req.body._id,
+    product_name: req.body.product_name,
+    category: req.body.category,
+    sub_category: req.body.sub_category,
+    description: req.body.description,
+    price: req.body.price,
+    qty: req.body.qty
+  }
+
   console.log(req.body);
-  producthelper.updateProduct(req.body)
+  producthelper.updateProduct(product)
     .then((id) => {
       console.log(id);
       console.log("fileeeeeeeeeeee");
-      if (!req.files) {
-        res.redirect('/admin/product-mgmt')
+
+      let path1 = `./public/product-images/${id}1.jpg`
+      let path2 = `./public/product-images/${id}2.jpg`
+      let path3 = `./public/product-images/${id}3.jpg`
 
 
-      } else {
-        let img1 = req.files.img1
+      console.log(path1);
 
-        let img2 = req.files.img2
-        let img3 = req.files.img3
+      let img1 = image1.replace(/^data:([A-Za-z-+/]+);base64,/, "")
+      let img2 = image2.replace(/^data:([A-Za-z-+/]+);base64,/, "")
+      let img3 = image3.replace(/^data:([A-Za-z-+/]+);base64,/, "")
+
+      if(img1&&img2&&img3){
 
 
-        if (img1 && img2 && img3) {
-          console.log("#####mOOOOOOONAAm");
-          img1.mv('./public/product-images/' + id + "1" + '.jpg')
-          img2.mv('./public/product-images/' + id + "2" + '.jpg')
-          let result = img3.mv('./public/product-images/' + id + "3" + '.jpg')
-          res.redirect('/admin/product-mgmt')
-        }
-        else if (img1 && img2) {
-          img1.mv('./public/product-images/' + id + "1" + '.jpg')
-          img2.mv('./public/product-images/' + id + "2" + '.jpg')
-          res.redirect('/admin/product-mgmt')
-        }
-        else if (img2 && img3) {
-          img3.mv('./public/product-images/' + id + "3" + '.jpg')
-          img2.mv('./public/product-images/' + id + "2" + '.jpg')
-          res.redirect('/admin/product-mgmt')
-        }
-        else if (img1 && img3) {
-          img3.mv('./public/product-images/' + id + "3" + '.jpg')
-          img1.mv('./public/product-images/' + id + "1" + '.jpg')
-          res.redirect('/admin/product-mgmt')
-        }
-        else if (img1) {
-          console.log("image one");
-          img1.mv('./public/product-images/' + id + "1" + '.jpg')
-          res.redirect('/admin/product-mgmt')
-        }
-        else if (img2) {
-          img2.mv('./public/product-images/' + id + "2" + '.jpg')
-          res.redirect('/admin/product-mgmt')
-        }
-        else if (img3) {
-          img3.mv('./public/product-images/' + id + "3" + '.jpg')
-          res.redirect('/admin/product-mgmt')
-        }
-        else {
-          res.redirect('/admin/product-mgmt')
+      fs.writeFileSync(path1, img1, { encoding: 'base64' })
+      fs.writeFileSync(path2, img2, { encoding: 'base64' })
+      fs.writeFileSync(path3, img3, { encoding: 'base64' })
+    }else if(img1&&img2){
+      fs.writeFileSync(path1, img1, { encoding: 'base64' })
+      fs.writeFileSync(path2, img2, { encoding: 'base64' })
 
-        }
+    }else if(img2&&img3){
+      fs.writeFileSync(path2, img2, { encoding: 'base64' })
+      fs.writeFileSync(path3, img3, { encoding: 'base64' })
 
-      }
+    }
+    else if(img1&&img3){
+      fs.writeFileSync(path1, img1, { encoding: 'base64' })
+      fs.writeFileSync(path3, img3, { encoding: 'base64' })
+
+    }
+    else if(img1){
+      fs.writeFileSync(path1, img1, { encoding: 'base64' })
+     
+    }
+    else if(img2){
+      fs.writeFileSync(path2, img2, { encoding: 'base64' })
+     
+
+    }
+    else if(img3){
+      fs.writeFileSync(path3, img3, { encoding: 'base64' })
+    }     
+
+    
+
+      res.redirect('/admin/product-mgmt')
+
+ 
 
 
 
@@ -311,6 +361,56 @@ router.get('/coupons',check,async(req,res)=>{
     res.render('admin-pages/coupons',{admin:true,result,category: await getCategory()})
   })
 
+
+})
+
+router.post('/filter',(req,res)=>{
+  
+  console.log(req.body);
+  let date=moment().format('MMMM do yyyy, h:mm:ss a')
+  filtered_item=[]
+  if(req.body.day=="month") {
+  value=date.split(' ')
+  console.log("month");
+  getAllOrderDetials().then((result)=>{
+    result.forEach(element => {
+      console.log(element.date);
+      elem=element.date.split(' ')
+      console.log("month",elem);
+      if(value[0]==elem[0]){
+        filtered_item.push(element)
+      }
+      
+    });
+    
+    console.log("filtered_item",filtered_item);
+    res.json({filtered_item})
+  })
+
+}
+else if(req.body.day=="year"){
+
+}
+else if(req.body.day=="day"){
+  console.log("day");
+  value=date.split(',')
+  
+  getAllOrderDetials().then((result)=>{
+    result.forEach(element => {
+      console.log(element.date);
+      elem=element.date.split(',')
+
+      if(value[0]==elem[0]){
+        filtered_item.push(element)
+      }
+      
+    });
+    
+    console.log("filtered_item",filtered_item);
+    res.json({filtered_item})
+  })
+}
+  
 
 })
 
@@ -470,21 +570,37 @@ router.post("/add-offer",check,(req,res)=>{
 
 router.get('/salesreport',check,(req,res)=>{
   getAllOrderDetials().then((result)=>{
+  
+    console.log("order details",result)
     res.render("admin-pages/salesreport",{admin:true,result})
     
 })
 })
 
 
-router.post('/apply_coupon',(req,res)=>{
-  let total= parseInt(req.body.total)
-  
-  console.log("it comming");
-  console.log(req.body);
-  validateCoupon(req.body.code,total).then((response)=>{
-    res.json(response)
-  })
-  
+router.get('/coupon-offer',check,(req,res)=>{
+ getAllCoupons().then((result)=>{
+   console.log(result);
+    res.render("admin-pages/coupon-offer",{admin:true,result})
+    
 })
+})
+
+router.post('/add-coupons',(req,res)=>{
+ addCoupon(req.body).then((response)=>{
+   res.json({status:true,mes:"Coupon Added"})
+ })
+
+})
+router.post('/del-coupons',(req,res)=>{
+  console.log("deleted "); 
+  delCoupon(req.body.id).then((response)=>{
+    res.json({status:true,mes:"Coupon Deleted"})
+  })
+ 
+ })
+
+
+
 
 module.exports = router;

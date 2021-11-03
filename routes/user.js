@@ -2,9 +2,9 @@ var express = require('express');
 var router = express.Router();
 var db = require('../helper/userhelper')
 const { OAuth2Client } = require('google-auth-library');
-const { viewCategory, findProduct, addtoCart, getCartProducts, getTotalAmount, cartCount, deletecart, changeQuantity, changestatus, placeOrder, getCartProductList, getOrderDetials, orderStatus, buynowplaceOrder, deleteFinalcart, findProductByName, deleteOffer, } = require('../helper/producthelper');
+const { viewCategory, findProduct, addtoCart, getCartProducts, getTotalAmount, cartCount, deletecart, changeQuantity, changestatus, placeOrder, getCartProductList, getOrderDetials, orderStatus, buynowplaceOrder, deleteFinalcart, findProductByName, deleteOffer, validateCoupon, } = require('../helper/producthelper');
 const { token } = require('morgan');
-const { googleSign, googleSignin, userSignup, getNumber, getuserAddress, getAddress, addAddress, deleteAddress, saveChanges, getUserById } = require('../helper/userhelper');
+const { googleSign, googleSignin, userSignup, getNumber, getuserAddress, getAddress, addAddress, deleteAddress, saveChanges, getUserById, changePassword } = require('../helper/userhelper');
 const userhelper = require('../helper/userhelper');
 const CLIENT_ID = "360791234082-kap1r32c2bjt3fg3ip28qvp6fplu26ui.apps.googleusercontent.com"
 const client = new OAuth2Client(CLIENT_ID);
@@ -204,6 +204,10 @@ router.get('/', checkauth, async function (req, res, next) {
   let tshirt = await findProductByName("Tshirt")
   let Pantss = await findProductByName("Pantss")
   let Shorts = await findProductByName("Shorts")
+  shirts=shirts[5]._id
+  tshirt=tshirt[0]._id
+  Pantss=Pantss[1]._id
+  Shorts=Shorts[0]._id
   console.log(shirts);
   let count = null
   if (req.session.user) {
@@ -211,7 +215,7 @@ router.get('/', checkauth, async function (req, res, next) {
       cart_count = await cartCount(req.session.user._id)
       req.session.user.isLoggedin = true
       user = req.session.user
-      res.render('user-pages/user-home', { Shorts, Pantss, tshirt, shirts, user, cart_count, category: await getCategory() });
+      res.render('user-pages/user-home', {shirts, Shorts, Pantss, tshirt, shirts, user, cart_count, category: await getCategory() });
     })
   }
   else {
@@ -259,9 +263,10 @@ router.post('/addtocart', checkLogin, (req, res) => {
   let userid = req.session.user._id
   let productid = req.body.id
   if (userid) {
-    addtoCart(userid, productid).then((result) => {
+    addtoCart(userid, productid).then(async(result) => {
+      let cart_count = await cartCount(req.session.user._id)
       if (result) {
-        res.json({ status: true })
+        res.json({ status: true,count:cart_count })
 
       }
 
@@ -308,6 +313,19 @@ router.get('/cart', checkLogin, async (req, res) => {
 
 })
 
+
+
+
+router.post('/apply_coupon',(req,res)=>{
+  let total= parseInt(req.body.total)
+  
+  console.log("it comming");
+  console.log(req.session.user._id);
+  validateCoupon(req.body.code,total,req.session.user._id).then((response)=>{
+    res.json(response)
+  })
+  
+})
 
 
 
@@ -608,13 +626,20 @@ router.post('/buynow-place-order', async function (req, res) {
 
 
 router.post('/place-order', async function (req, res) {
-  console.log(req.body);
+  console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$",req.query);
 
 
   if (req.body.prodid == '') {
 
     let products = await getCartProductList(req.body.userid)
     let total_amount = await getTotalAmount(req.body.userid)
+    console.log(total_amount);
+    if(req.query.coupon=="true"){
+      let result=await validateCoupon(req.query.code,total_amount.total,req.session.user._id)
+      total_amount.total=result.amount
+    }else{
+
+    }
 
     let add = await getAddress(req.body.address, req.session.user.email);
     let selectedAddress = add.address.find((address) => address.id == req.body.address);
@@ -622,7 +647,7 @@ router.post('/place-order', async function (req, res) {
       console.log("selected", selectedAddress);
       if (req.body.mode == "cod") {
         req.session.user.ordersuccess = true;
-        placeOrder(selectedAddress, req.body, products, total_amount).then((result) => {
+        placeOrder(selectedAddress, req.body, products, total_amount,req.query.code).then((result) => {
           console.log(result);
           res.json({ codSuccess: true })
         })
@@ -706,7 +731,7 @@ router.post('/place-order', async function (req, res) {
 router.get('/address', checkLogin, async (req, res) => {
   console.log(req.query);
   if (req.query.sudden == "true") {
-    console.log("suddeeeeennnn");
+   
     let user = req.session.user._id;
     let email = req.session.user.email
 
@@ -802,8 +827,13 @@ router.get('/buynow-add-address/:id', checkLogin, (req, res) => {
 
 
 router.get('/add-address', checkLogin, (req, res) => {
-  console.log(req.query);
+  console.log("fromprofile",req.query);
+  let profile
   if (!req.query.id == '') {
+    if(req.query.profile=='true'){
+      profile=req.query.profile
+    }
+    console.log("profile",profile);
 
     let productId = req.query.id
     console.log(req.body);
@@ -811,14 +841,18 @@ router.get('/add-address', checkLogin, (req, res) => {
     email = req.session.user.email
     let random = Math.floor(1000 + Math.random() * 9000)
     console.log(random);
-    res.render("user-pages/add-address", { productId, random, email, user, noheader: true, })
+    res.render("user-pages/add-address", { productId,profile, random, email, user, noheader: true, })
   }
   else {
+    if(req.query.profile=='true'){
+      profile=req.query.profile
+    }
+    console.log("profile",profile);
     user = req.session.user._id
     email = req.session.user.email
     let random = Math.floor(1000 + Math.random() * 9000)
     console.log(random);
-    res.render("user-pages/add-address", { random, email, user, noheader: true, })
+    res.render("user-pages/add-address", { random,profile, email, user, noheader: true, })
 
   }
 
@@ -828,9 +862,18 @@ router.get('/add-address', checkLogin, (req, res) => {
 
 router.post('/add-address', (req, res) => {
 
+  
+   console.log(req.query);
   addAddress(req.body).then((result) => {
     console.log("result vannuuu", result)
-    res.json({ status: result })
+    if (req.query.pro=='true') {
+      console.log(req.query,"true");
+      res.json({ status: result,profile:true })
+    
+    }else{
+      res.json({ status: result })
+      
+    }
   })
 
 
@@ -901,18 +944,19 @@ router.get('/buynow/:id', checkLogin, async (req, res) => {
   }
 
 })
+router.post('/change-password',async(req,res)=>{
+  let response= await changePassword(req.body.old_password,req.body.new_password,req.session.user.email)
+  if(response){
+    res.json({status:true,mes:"Password changed successfully"})
+    
+  }else{
+    res.json({status:false,mes:"password not match"})
 
-router.post('/buynow-add-address', (req, res) => {
-  console.log("result vannuuu")
-  console.log(req.body.proid);
-
-  addAddress(req.body).then((result) => {
-    console.log(result);
-    res.redirect(`buynow/${req.body.proid}`)
-  })
-
-
+  }
+    
 })
+
+
 
 router.post('/add-address', (req, res) => {
 
@@ -925,9 +969,12 @@ router.post('/add-address', (req, res) => {
 })
 
 router.get('/delete-address', (req, res) => {
-
-
+  let profile
   let id = req.query.id
+  if(req.query.profile=='true'){
+    profile=req.query.profile
+  }
+  console.log("profile",profile);
   let prodid = req.query.prodid
   if (!prodid == " ") {
 
@@ -947,7 +994,14 @@ router.get('/delete-address', (req, res) => {
     console.log(email, id);
 
     deleteAddress(email, id).then((result) => {
-      res.redirect('/address');
+      if(req.query.profile=='true'){
+        res.redirect('/profile');
+
+      }else{
+
+        res.redirect('/address');
+      }
+      
 
     })
 

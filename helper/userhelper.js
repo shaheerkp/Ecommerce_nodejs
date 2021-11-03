@@ -42,6 +42,7 @@ module.exports = {
         return new Promise(async (resolve, reject) => {
             
            console.log(data);
+           data.coupons=[]
            data.blocked=false;
            let phone_num=await db.get().collection("users").findOne({Number:data.Number})
             let users = await db.get().collection('users').findOne({ email: data.email })
@@ -68,6 +69,31 @@ module.exports = {
                 }
                 resolve(message)
             }
+        })
+
+    },
+    changePassword:(oldp,newp,email)=>{
+        return new Promise(async(resolve,reject)=>{
+          
+            var d = await db.get().collection("users").findOne({ "email": email })
+            let res=await bcrypt.compare(oldp, d.password)
+              
+                if (!res) {
+                    console.log("Passwoorddd thettanuuuuu");
+                    resolve(res)
+                }
+                else {
+                    console.log("Email inndd password correcr");
+                   new_password = await bcrypt.hash(newp, 10)
+                   db.get().collection('users').updateOne({"email":email},{$set:{password:new_password}})
+                   resolve(res)
+
+
+
+                    
+                }
+            resolve()
+            
         })
 
     },

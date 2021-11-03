@@ -11,8 +11,10 @@ $.ajax({
      method: "POST",
     data:{id},
   success: function (response) {
+   console.log(response)
 
       if (response.status) {
+        document.getElementById('cart_count').innerHTML=response.count
 
     // Swal.fire({
     //   title: 'Item added to cart',
@@ -30,7 +32,7 @@ $.ajax({
       showConfirmButton: false,
       timer: 1000
     }).then((res)=>{
-      window.location.reload()
+     
     })
      
       }

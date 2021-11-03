@@ -1,33 +1,231 @@
-<h3 class="text-center p-3" >Sales report</h3>
-  <div class="table-responsive">
-    <table class="table table-bordered">
-      <thead>
-        <tr>
-          <th>SL.NO</th>
-          <th>Order Id</th>
-          <th>User Id</th>
-          <th>Products</th>
-          <th>Payment</th>
-          <th>Date</th>
-          <th>Amount</th>
-    
-        </tr>
-      </thead>
-      <tbody>
-        {{#each result}}
-        <tr>
-          <td>{{calculation @index}} </td>
-          <td>{{this._id}}</td>
-          <td>{{this.userId}}</td>
-          <td>{{this.products.product_name}}</td>
-          <td>{{this.payment}}</td>
-          <td>{{this.date}}</td>
-          <td>{{this.amount}}</td>
-          {{/each}}
-          
-         
-    
-        </tr>
-      </tbody>
-    </table>
-  </div>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.7.0/css">
+
+
+<div class="div container">
+
+<h3 class="text-center p-3">Sales report</h3>
+
+<div class="row p-3">
+<input class="m-2" style="width: 200px;" required type="datetime-local" id="date1" name="exp_date">
+
+<input class="m-2" style="width: 200px;" required type="datetime-local" id="date2" name="exp_date">
+<button  class="m-2 btn btn-success" onclick="search()" style="width: 100px;">Search</button>
+
+
+</div>
+
+
+<button class="btn btn-success ms-3" onclick="filterDay()">day</button>
+<button class="btn btn-success " onclick="filterMonth()">month</button>
+<div class="p-3 table-responsive">
+
+  <table id="myTable" class="table table-bordered">
+    <thead>
+      <tr>
+        <th>SL.NO</th>
+        <th>Order Id</th>
+        <th>User Id</th>
+        <th>Products</th>
+        <th>Payment</th>
+        <th>Date</th>
+        <th>Amount</th>
+
+      </tr>
+    </thead>
+    <tbody id="myList">
+      {{#each result}}
+      <tr>
+        <td>{{calculation @index}} </td>
+        <td>{{this._id}}</td>
+        <td>{{this.userId}}</td>
+        <td>{{this.products.product_name}}</td>
+        <td>{{this.payment}}</td>
+        <td>{{this.date}}</td>
+        <td>{{this.amount}}</td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>
+</div>
+
+
+
+
+<script>
+
+  function search(){
+    let date1=document.getElementById("date1").value
+     let date2=document.getElementById("date2").value
+    $.ajax({
+      url:'/admin/search-by-date',
+      method:'post',
+      data:{date1,date2},
+       success: function (response) {
+        console.log(response)
+        document.getElementById("myList").innerHTML = "";
+        for (let i = 0; i < response.response.length; i++) {
+          newelement = `  <tr>
+             <td>${i + 1} </td>
+          <td>${response.response[i]._id}</td>
+          <td>${response.response[i].orderObj.userid}</td>
+          <td>${response.response[i].orderObj.products[0].item}</td>
+          <td>${response.response[i].orderObj.payment}</td>
+          <td>${response.response[i].orderObj.date}</td>
+          <td>${response.response[i].orderObj.amount}</td>
+        </tr> `
+          document.getElementById("myList").innerHTML +=newelement
+
+        }
+      console.log(newelement)
+
+
+      }
+
+    })
+
+
+  }
+
+
+
+  function filterDay() {
+
+
+    $.ajax({
+      url: '/admin/filter',
+      method: 'post',
+      data: { day: "day" },
+      success: function (response) {
+        console.log(response)
+        document.getElementById("myList").innerHTML = "";
+        for (let i = 0; i < response.filtered_item.length; i++) {
+
+          newelement = `  <tr>
+          <td>${i + 1} </td>
+          <td>${response.filtered_item[i]._id}</td>
+          <td>${response.filtered_item[i].userId}</td>
+          <td>${response.filtered_item[i].products.product_name}</td>
+          <td>${response.filtered_item[i].payment}</td>
+          <td>${response.filtered_item[i].date}</td>
+          <td>${response.filtered_item[i].products.price}</td>
+        </tr>  
+        `
+          document.getElementById("myList").innerHTML += newelement;
+
+        }
+
+
+      }
+
+    })
+
+  }
+
+
+  function filterMonth() {
+    $.ajax({
+      url: '/admin/filter',
+      method: 'post',
+      data: { day: "month" },
+      success: function (response) {
+        console.log(response)
+        document.getElementById("myList").innerHTML = "";
+        for (let i = 0; i < response.filtered_item.length; i++) {
+
+          newelement = ` <tr>
+          <td>${i + 1} </td>
+          <td>${response.filtered_item[i]._id}</td>
+          <td>${response.filtered_item[i].userId}</td>
+          <td>${response.filtered_item[i].products.product_name}</td>
+          <td>${response.filtered_item[i].payment}</td>
+          <td>${response.filtered_item[i].date}</td>
+          <td>${response.filtered_item[i].products.price}</td>
+        </tr>  
+        `
+          document.getElementById("myList").innerHTML += newelement;
+
+        }
+
+
+      }
+
+    })
+
+  }
+
+
+
+  function myFunction() {
+    // Declare variables
+    var input, filter, table, tr, td, i, txtValue;
+    input = document.getElementById("myInput");
+    filter = input.value.toUpperCase();
+    table = document.getElementById("myTable");
+    tr = table.getElementsByTagName("tr");
+
+    // Loop through all table rows, and hide those who don't match the search query
+    for (i = 0; i < tr.length; i++) {
+      td = tr[i].getElementsByTagName("td")[5];
+      if (td) {
+        txtValue = td.textContent || td.innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+          tr[i].style.display = "";
+        } else {
+          tr[i].style.display = "none";
+        }
+      }
+    }
+  }
+</script>
+
+
+
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.7.0/js/dataTables.buttons.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+
+<script src="https://cdn.datatables.net/buttons/1.7.0/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.7.0/js/buttons.print.min.js"></script>
+<script>
+  $(document).ready(function () {
+    $('#myTable').DataTable({
+      "footerCallback": function (row, data, start, end, display) {
+        var api = this.api(), data;
+
+        // Remove the formatting to get integer data for summation
+        var intVal = function (i) {
+          return typeof i === 'string' ?
+            i.replace(/[\$,]/g, '') * 1 :
+            typeof i === 'number' ?
+              i : 0;
+        };
+
+        // Total over all pages
+        total = api
+          .column(4)
+          .data()
+          .reduce(function (a, b) {
+            return intVal(a) + intVal(b);
+          }, 0);
+
+
+        // Update footer
+        $(api.column(4).footer()).html(
+          ' ( $' + total + ' total)'
+        );
+      },
+      dom: 'Bfrtip',
+      buttons: [
+        'excel', 'pdf', 'print'
+      ],
+    });
+  });
+</script>

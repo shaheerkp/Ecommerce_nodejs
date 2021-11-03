@@ -1,0 +1,220 @@
+<div class="row container d-flex justify-content-center ">
+
+    <div class="col-lg-6 ">
+        <h1>Active Coupons</h1>
+        <table class="table mt-4">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>%</th>
+                    <th>Min </th>
+                    <th>Exp Date</th>
+                    <th>Action</th>
+
+
+                </tr>
+            </thead>
+            <tbody id="myList1">
+                {{#each result}}
+
+                <tr>
+                    <td>
+                        <label>
+                            {{this.code}}
+                        </label>
+
+                    </td>
+                    <td>
+                        <label>
+                            {{this.off}}
+                        </label>
+
+                    </td>
+                    <td>
+                        <label>
+                            {{this.min_amount}}
+                        </label>
+
+                    </td>
+                    <td>
+                        <label>
+                            {{this.exp_date}}
+                        </label>
+
+                    </td>
+                    <td>
+                        <button onclick="deleteoff('{{this._id}}')" class="btn btn-danger">Delete</button>
+
+                    </td>
+                </tr>
+                {{/each}}
+
+
+            </tbody>
+        </table>
+
+
+
+    </div>
+
+    <div class="col-lg-6">
+        <form id="add_coupon">
+            <h1 class="">Add coupon</h1>
+            <div class="form-group mt-4    col-md-6">
+
+            </div>
+
+            <div class="col-lg-6">
+
+                <div class="row p-2">
+                    <h4>Offer Detalis</h4>
+        <span id="offer_err" class="text-danger"></span>
+                    <span class="text-danger" id="offer_err" ></span>
+                    <div class="col">
+                        <label> Coupon name</label>
+                        <input id="cname" type="text" name="code" value="" placeholder="Name">
+                    </div>
+                    <div class="col">
+                        <label> Offer %</label>
+                        <input type="number" style="display: none;" name="price" value="" placeholder="">
+                        <input id="coff" type="number" name="off" value="" placeholder="Offer %">
+                    </div>
+                    <div class="col">
+                        <label>Min Amount</label>
+                        
+                        <input id="camount" type="number" name="min_amount" value="" placeholder="Amount">
+                    </div>
+                    <div class="col">
+                        <label>Expiry Date</label>
+                        
+                        <input style="width: 200px;" required type="datetime-local" min=0 id="exp_date" name="exp_date">
+                    </div>
+                    <input class="m-3" style="width: 200px;" type="submit">
+                </div>
+
+
+        </form>
+
+
+    </div>
+
+</div>
+
+<script>
+
+    var today = new Date();
+                     var hh= (String(today.getHours())).padStart(2, '0');
+
+                     var MM=(String(today.getMinutes())).padStart(2,'0')
+                     var dd = String(today.getDate()).padStart(2, '0');
+                    var mm = String(today.getMonth() + 1).padStart(2, '0');
+                    var yyyy = today.getFullYear();
+
+                    today = yyyy + '-' + mm + '-' + dd+'T'+hh+':'+MM;
+                    $('#exp_date').attr('min',today);
+                    console.log(today)
+
+
+let c_name=false 
+let c_off=false
+let c_per=false
+
+
+document.getElementById('cname').oninput=e=>{
+    document.getElementById('cname').value=e.target.value.toUpperCase()
+    c_name=true
+
+}
+
+document.getElementById('coff').oninput=e=>{
+    document.getElementById('coff').value  = e.target.value.replace(/[^0-9]/, '').replace(/(\..*)\./, '$1');;
+    let val=e.target.value  
+    if(val.length>2){
+        c_off=false;
+        document.getElementById('offer_err').innerHTML="Max 99% offer"
+       
+
+    }
+    else{
+        c_off=true;
+        document.getElementById('offer_err').innerHTML=""
+        
+    }
+
+
+ 
+    
+    
+}
+
+   document.getElementById('camount').oninput=e=>{
+    document.getElementById('camount').value  = e.target.value.replace(/[^0-9]/, '').replace(/(\..*)\./, '$1');;
+    let val=e.target.value  
+    if(val.length>4){
+        c_per=false;
+        document.getElementById('offer_err').innerHTML="Max offer 9999"
+       
+
+    }
+    else{
+        c_per=true;
+        document.getElementById('offer_err').innerHTML=""
+        
+    }
+    }
+
+
+
+
+
+
+    document.getElementById('add_coupon').onsubmit = e => {
+        e.preventDefault()
+        
+
+        if(c_per&&c_off&&c_name){
+
+        $.ajax({
+            url: "/admin/add-coupons",
+            method:"POST",
+            data:$("#add_coupon").serialize(),
+            success:function(response){
+                if(response.status){
+                    alert(response.mes)
+                    window.location.reload()
+                }
+            }
+           
+        })
+        }else{
+            document.getElementById('offer_err').innerHTML="Enter all fields Correctly"
+        }
+    }
+
+
+
+    function deleteoff(id){
+        return confirm( "Delete ?")
+       
+           $.ajax({
+            url: "/admin/del-coupons",
+            method:"POST",
+           data: { id },
+           success:function(response){
+                  if(response.status){
+                   
+                    window.location.reload()
+                }
+
+           },
+           error:function(){
+             
+
+           }
+           
+        })
+        
+
+
+    }
+</script>

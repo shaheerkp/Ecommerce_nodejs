@@ -4,7 +4,6 @@
   }
   
   .nav-cus{
-    height: 5.5rem;
     box-shadow: 0px 3px #efefef;
     background-color: azure;
   }
@@ -95,55 +94,12 @@
   margin-top: 5px;
   font-family: Georgia, 'Times New Roman', Times, serif;
   }
+
   
-  .social-login {
-    font-size: 14px;
-    display: inline-flex;
-    margin-bottom: 18px;
-    width: 100%;
-    padding-left: 80px;
-  }
-  
-  .social-login .fb-login, .social-login .google-login {
-    width: 170px;
-    height: 46px;
-    border: 2px solid #3b5998;
-    font: 700 14px SourceSansPro;
-    color: #3b5998;
-    text-transform: uppercase;
-    margin-right: 16px;
-    text-align: center;
-    display: inline-block;
-    cursor: pointer;
-  }
-  
-  .social-login .social-txt {
-    display: inline-block;
-    vertical-align: middle;
-    padding-bottom: 24px;
-  }
-  
-  .social-login .fb-icon, .social-login .google-icon {
-    display: inline-block;
-    background-image: url(https://assets.ajio.com/static/img/fb.png);
-    background-repeat: no-repeat;
-    width: 35px;
-    height: 35px;
-    margin-right: 6px;
-    margin-top: 2px;
-  }
-  
-  .social-login .google-icon {
-    background-image: url(https://assets.ajio.com/static/img/google.png);
-  }
-  
-  
-  .social-login .google-login {
-    border: 2px solid #df4a32;
-    color: #df4a32;
-    margin-right: 0;
-    background: #fff;
-  }
+
+
+
+
   
   .or-separator {
     text-align: center;

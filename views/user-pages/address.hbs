@@ -157,13 +157,15 @@
 
 
 <script>
+    let coupon_applied
+     let code 
 
 
     function coupon(total) {
-        let code = document.getElementById("coupon_code").value
+         code = document.getElementById("coupon_code").value
         alert(code + total)
         $.ajax({
-            url: "/admin/apply_coupon",
+            url: "/apply_coupon",
             method: "post",
             data: { code, total },
             success: function (response) {
@@ -171,11 +173,12 @@
                     document.getElementById("total_amount").innerHTML = response.amount
                     document.getElementById("total_amount").value = response.amount
                     document.getElementById("succ_message").innerHTML = response.mes
-
-
-
-                }else{
+                    document.getElementById("err_message").innerHTML = ""
+                    coupon_applied=true
+                }
+                else{
                      document.getElementById("err_message").innerHTML = response.mes
+                      document.getElementById("succ_message").innerHTML = ""
 
                 }
 
@@ -194,10 +197,10 @@
 
     $("#checkout-form").submit((e) => {
         e.preventDefault()
+        code = document.getElementById("coupon_code").value
         if (mode == "rpay" || mode == "cod") {
-
             $.ajax({
-                url: "/place-order",
+                url: `/place-order/?coupon=${coupon_applied}&&code=${code}`,
                 data: $("#checkout-form").serialize(),
                 method: "post",
                 success: function (response) {
@@ -219,7 +222,8 @@
                 }
             })
 
-        } else if (mode == "p_pal") {
+        } 
+        else if (mode == "p_pal") {
             $.ajax({
                 url: '/pay',
                 method: "post",

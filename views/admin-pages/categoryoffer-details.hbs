@@ -3,52 +3,54 @@
         <div class="col-lg-3">
 
         </div>
-        <div class="col-lg-6">
-<form id="add_offer">
-            <h1>Category Offer</h1>
+        <div class="col-lg-6 bg-light">
+            <form id="add_offer">
+                <h1>Category Offer</h1>
 
 
-            <div class="form-group col-md-6">
-                <label for="category">CATEGORY</label>
-                <select required name="category" id="category" class="form-select" aria-label="Default select example">
-                    <option>Select Category</option>
-                    {{#each this.category}}
-                    <option value={{this.category}}>{{this.category}}</option>
-                    {{/each}}
-                </select>
-            </div>
-
-
-            <div class="form-group mt-4    col-md-6">
-                <label for="subcategory">SUB CATEGORY</label>
-                <select name="sub_category" required id="myList" class="form-select"
-                    aria-label="Default select example">
-                    <option  >Select SubCategory</option>
-                    {{#each result}}
-
-
-                    {{/each}}
-
-                </select>
-            </div>
-
-              <div class="col-lg-6">
-            
-                <div class="row p-2">
-                    <h4>Offer Detalis</h4>
-                    <div class="col">
-                        <span id="offer_err" class="text-danger"></span>
-                        <label  > Offer %</label>
-                        <input  type="number" style="display: none;" name="price" value="{{result.price}}" placeholder="" >
-                        <input id="offer_per" type="number" name="perentage" value="" placeholder="Offer %">
-                    </div>
-                    <div class="col">
-                    <label>Expiry Date</label>
-                    <input  name="_id" style="display: none;"  value="{{result._id}}" placeholder="" >
-                   <input style="width: 200px;" required type="datetime-local" id="exp_date" name="exp_date">
-                        </div>
-                   <input class="m-3" style="width: 200px;"  type="submit">
+                <div class="form-group col-md-6">
+                    <label for="category">CATEGORY</label>
+                    <select required name="category" id="category" class="form-select"
+                        aria-label="Default select example">
+                        <option>Select Category</option>
+                        {{#each this.category}}
+                        <option value={{this.category}}>{{this.category}}</option>
+                        {{/each}}
+                    </select>
                 </div>
+
+
+                <div class="form-group mt-4    col-md-6">
+                    <label for="subcategory">SUB CATEGORY</label>
+                    <select name="sub_category" required id="myList" class="form-select"
+                        aria-label="Default select example">
+                        <option>Select SubCategory</option>
+                        {{#each result}}
+
+
+                        {{/each}}
+
+                    </select>
+                </div>
+
+                <div class="col-lg-6">
+
+                    <div class="row p-2">
+                        <h4>Offer Detalis</h4>
+                        <div class="col">
+                            <span id="offer_err" class="text-danger"></span>
+                            <label> Offer %</label>
+                            <input type="number" style="display: none;" name="price" value="{{result.price}}"
+                                placeholder="">
+                            <input id="offer_per" type="number" name="perentage" value="" placeholder="Offer %">
+                        </div>
+                        <div class="col">
+                            <label>Expiry Date</label>
+                            <input name="_id" style="display: none;" value="{{result._id}}" placeholder="">
+                            <input style="width: 200px;" required type="datetime-local" id="exp_date" name="exp_date">
+                        </div>
+                        <input class="m-3" style="width: 200px;" type="submit">
+                    </div>
 
 
             </form>
@@ -56,21 +58,21 @@
         </div>
 
 
-     
-         
 
-
-        </div>
-
-            <div class="col-lg-3">
-            
-        </div>
-
-    
 
 
 
     </div>
+
+    <div class="col-lg-3">
+
+    </div>
+
+
+
+
+
+</div>
 
 
 </div>
@@ -127,9 +129,9 @@
                 }
 
 
-               
 
-        
+
+
 
 
             }
@@ -138,66 +140,66 @@
     }
 
 
-      let offer_val=false;
+    let offer_val = false;
 
-  document.getElementById('add_offer').onsubmit=e=>{
-      e.preventDefault()
+    document.getElementById('add_offer').onsubmit = e => {
+        e.preventDefault()
 
 
-    
 
-   if(offer_val){
-      alert("asd")
-      $.ajax({
-          url:"/admin/add-category-offer",
-          method:"post",
-          data:$("#add_offer").serialize(),
-          success:function(response){
-              if(response.status){
-                  alert("Offer updated succesfully")
-                  location.replace('/admin/coupons')
-              }
 
-          },
-          error:function(){
+        if (offer_val) {
+            alert("asd")
+            $.ajax({
+                url: "/admin/add-category-offer",
+                method: "post",
+                data: $("#add_offer").serialize(),
+                success: function (response) {
+                    if (response.status) {
+                        alert("Offer updated succesfully")
+                        location.replace('/admin/coupons')
+                    }
 
-          }
+                },
+                error: function () {
 
-      })
+                }
 
-   }
-   else{
-       alert("Enter all fields correctly")
-   }
-  }
+            })
 
-document.getElementById('offer_per').oninput=e=>{
-    let val=e.target.value  
-    if(val.length>2){
-        offer_val=false;
-        document.getElementById('offer_err').innerHTML="Max 99% offer"
-       
-
-    }
-    else{
-        offer_val=true;
-        document.getElementById('offer_err').innerHTML=""
-        
+        }
+        else {
+            alert("Enter all fields correctly")
+        }
     }
 
- /*   $("#pass").on('input', function () {
-  if(this.value.length<4){
-    $(this).css({ borderColor: "red" })
-    pass_val = false;
-  }
-  else{
-    $(this).css({ borderColor: "green" })
-    pass_val=true;
-  }
-})*/
-    
-    
-}
+    document.getElementById('offer_per').oninput = e => {
+        let val = e.target.value
+        if (val.length > 2) {
+            offer_val = false;
+            document.getElementById('offer_err').innerHTML = "Max 99% offer"
+
+
+        }
+        else {
+            offer_val = true;
+            document.getElementById('offer_err').innerHTML = ""
+
+        }
+
+        /*   $("#pass").on('input', function () {
+         if(this.value.length<4){
+           $(this).css({ borderColor: "red" })
+           pass_val = false;
+         }
+         else{
+           $(this).css({ borderColor: "green" })
+           pass_val=true;
+         }
+       })*/
+
+
+    }
 
 
 
