@@ -1,181 +1,280 @@
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+<!DOCTYPE html>
+<html lang="en">
 
-<div class="row container m-5">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Dashboard - SB Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" />
+    <link href="/css/styles.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"
+        crossorigin="anonymous"></script>
+</head>
+
+<body class="sb-nav-fixed">
+    <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+        <!-- Navbar Brand-->
+        <a class="navbar-brand ps-3" href="index.html">Cart</a>
+        <!-- Sidebar Toggle-->
+        <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i
+                class="fas fa-bars"></i></button>
+        <!-- Navbar Search-->
+        <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
+            <div class="input-group">
+                <input class="form-control" type="text" placeholder="Search for..." aria-label="Search for..."
+                    aria-describedby="btnNavbarSearch" />
+                <button class="btn btn-primary" id="btnNavbarSearch" type="button"><i
+                        class="fas fa-search"></i></button>
+            </div>
+        </form>
+        <!-- Navbar-->
+        <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown"
+                    aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                    <li><a class="dropdown-item" href="#!">Settings</a></li>
+                    <li><a class="dropdown-item" href="#!">Activity Log</a></li>
+                    <li>
+                        <hr class="dropdown-divider" />
+                    </li>
+                    <li><a class="dropdown-item" href="#!">Logout</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+    <div id="layoutSidenav">
+        <div id="layoutSidenav_nav">
+            <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+                <div class="sb-sidenav-menu">
+                    <div class="nav">
+                        <div class="sb-sidenav-menu-heading">Core</div>
+                        <a class="nav-link" href="/admin/dashboard">
+                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                            Dashboard
+                        </a>
+                        <a class="nav-link" href="/admin/salesreport">
+                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                            Report
+                        </a>
+                        <a class="nav-link" href="/admin/order-management">
+                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                            Order Management
+                        </a>
+                        <a class="nav-link" href="/admin/category-management">
+                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                            Category Management
+                        </a>
+                        <a class="nav-link" href="/admin/user-management">
+                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                            User Management
+                        </a>
+                        <a class="nav-link" href="/admin/product-mgmt">
+                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                            Produc Management
+                        </a>
+
+                        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse"
+                            data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+                            <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                            Offers/Coupons
+                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                        </a>
+                        <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne"
+                            data-bs-parent="#sidenavAccordion">
+                            <nav class="sb-sidenav-menu-nested nav">
+                                <a class="nav-link" href="/admin/coupons">Product-offer</a>
+                                <a class="nav-link" href="/admin/category-offer">Category-offer</a>
+                                <a class="nav-link" href="/admin/coupon-offer">Coupons</a>
+
+                            </nav>
+                        </div>
+
+                    </div>
+
+                </div>
+                <div class="sb-sidenav-footer">
+                    <div class="small">Logged in as:</div>
+                    Start Bootstrap
+                </div>
+            </nav>
+        </div>
+        <div id="layoutSidenav_content">
+            <main>
+                <div class="row  m-5">
 
 
-    <div class="col-lg-9">
+                    <div class="col-lg-9">
 
-        <canvas id="pie-chart" width="800" height="450"></canvas>
-        <canvas id="bar-chart1" width="800" height="450"></canvas>
+                        <canvas id="pie-chart" width="800" height="450"></canvas>
+                        <canvas id="bar-chart1" width="800" height="450"></canvas>
 
-       
+
+                    </div>
+                    <div class="col-lg-3 border">
+                        <div class="d-flex justify-content-center  py-3 border-bottom">
+                            <img src="https://media.istockphoto.com/vectors/user-icon-flat-isolated-on-white-background-user-symbol-vector-vector-id1300845620?b=1&k=20&m=1300845620&s=170667a&w=0&h=JbOeyFgAc6-3jmptv6mzXpGcAd_8xqkQa_oUK2viFr8="
+                                class="img" width="50px" height="50px" alt="">
+
+                            <div class="row">
+
+                            </div>
+                        </div>
+
+                        <p class="text-center">kpshaheer123@gmail.com </p>
+                        <div class="row">
+                            <div class="p-2 col-lg-4 bg-light border">
+                                <p class="text-center ">{{orders}}</p>
+                                <h6 class="text-center ">Orders</h6>
+                            </div>
+                            <div class="p-2 col-lg-4 bg-light border">
+                                <p class="text-center ">{{products}} </p>
+                                <h6 class="text-center ">Products</h6>
+                            </div>
+                            <div class="p-2 col-lg-4 bg-light border">
+                                <p class="text-center ">56658 </p>
+                                <h6 class="text-center ">Revenue</h6>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-4 p-3">
+                                <i class="fas fa-poll fa-3x"></i>
+                            </div>
+                            <div class="col-lg-8">
+                                <h4 class="p-1">{{monthStatus.tot}}</h4>
+                                <a> Income This month</a>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-4 p-3">
+                                <i class="fas fa-poll fa-3x"></i>
+                            </div>
+                            <div class="col-lg-8">
+                                <h4 class="p-1">{{monthStatus.ord}}</h4>
+                                <a>This month Orders </a>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-4 p-3">
+                                <i class="fas fa-poll fa-3x"></i>
+                            </div>
+                            <div class="col-lg-8">
+                                <h4 class="p-1">{{monthStatus.cust}}</h4>
+                                <a>Customers</a>
+                            </div>
+
+                        </div>
+
+                        <canvas id="bar-chart" width="800" height="450"></canvas>
+
+                    </div>
+
+
+
+
+
+                </div>
+
+
+            </main>
+            <footer class="py-4 bg-light mt-auto">
+
+            </footer>
+        </div>
     </div>
-    <div class="col-lg-3 border">
-        <div class="d-flex justify-content-center  py-3 border-bottom">
-            <img src="https://media.istockphoto.com/vectors/user-icon-flat-isolated-on-white-background-user-symbol-vector-vector-id1300845620?b=1&k=20&m=1300845620&s=170667a&w=0&h=JbOeyFgAc6-3jmptv6mzXpGcAd_8xqkQa_oUK2viFr8="
-                class="img" width="50px" height="50px" alt="">
-
-            <div class="row">
-
-            </div>
-        </div>
-
-        <p class="text-center">kpshaheer123@gmail.com </p>
-        <div class="row">
-            <div class="p-2 col-lg-4 bg-light border">
-                <p class="text-center ">{{orders}}</p>
-                <h6 class="text-center ">Orders</h6>
-            </div>
-            <div class="p-2 col-lg-4 bg-light border">
-                <p class="text-center ">{{products}} </p>
-                <h6 class="text-center ">Products</h6>
-            </div>
-            <div class="p-2 col-lg-4 bg-light border">
-                <p class="text-center ">56658 </p>
-                <h6 class="text-center ">Revenue</h6>
-            </div>
-
-        </div>
-        <div class="row">
-            <div class="col-lg-4 p-3">
-                <i class="fas fa-poll fa-3x"></i>
-            </div>
-            <div class="col-lg-8">
-                <h4 class="p-1">{{monthStatus.tot}}</h4>
-                <a> Income This month</a>
-            </div>
-
-        </div>
-        <div class="row">
-            <div class="col-lg-4 p-3">
-                <i class="fas fa-poll fa-3x"></i>
-            </div>
-            <div class="col-lg-8">
-                <h4 class="p-1">{{monthStatus.ord}}</h4>
-                <a>This month Orders </a>
-            </div>
-
-        </div>
-        <div class="row">
-            <div class="col-lg-4 p-3">
-                <i class="fas fa-poll fa-3x"></i>
-            </div>
-            <div class="col-lg-8">
-                <h4 class="p-1">{{monthStatus.cust}}</h4>
-                <a>Customers</a>
-            </div>
-
-        </div>
-
-         <canvas id="bar-chart" width="800" height="450"></canvas>
-
-    </div>
-
-
-
-
-
-</div>
-<script>
-    let _data = [];
-    $.ajax({
-        url: "/admin/weeklySalesReport",
-        method: 'post',
-        data: {},
-        success: function (response) {
-            if (response) {
-
-                const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-                let _labels = []
-                for (i = 0; i < 7; i++) {
-                    let index = (new Date().getDay() + i) % 7
-                    //if(index == )
-                    _labels.push(days[index])
-                }
-                const today = new Date().getDate()
-
-
-                _data = response.data
-                new Chart(document.getElementById("pie-chart"), {
-
-                    type: 'pie',
-                    data: {
-                        labels: [days[(new Date().getDay()) % 7], days[(new Date().getDay() + 1) % 7], days[(new Date().getDay() + 2) % 7], days[(new Date().getDay() + 3) % 7], days[(new Date().getDay() + 4) % 7], days[(new Date().getDay() + 5) % 7], days[(new Date().getDay() + 6) % 7], days[(new Date().getDay())]],
-                        datasets: [{
-                            label: "Population (millions)",
-                            backgroundColor: ["#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#c45850"],
-                            data: _data
-                        }]
-                    },
-                    options: {
-                        title: {
-                            display: true,
-                            text: 'Weekly sales Report'
-                        }
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        crossorigin="anonymous"></script>
+    <script src="/javascripts/js/scripts.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+    <script src="/assets/demo/chart-area-demo.js"></script>
+    <script src="/assets/demo/chart-bar-demo.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
+    <script src="/javascripts/js/datatables-simple-demo.js"></script>
+    <script>
+        let _data = [];
+        $.ajax({
+            url: "/admin/weeklySalesReport",
+            method: 'post',
+            data: {},
+            success: function (response) {
+                if (response) {
+                    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+                    let _labels = []
+                    for (i = 0; i < 7; i++) {
+                        let index = (new Date().getDay() + i) % 7
+                        //if(index == )
+                        _labels.push(days[index])
                     }
-                });
-
-
-
-
-                new Chart(document.getElementById("bar-chart"), {
-                    type: 'bar',
-                    data: {
-                        labels: ["COD", "P-PAL", "R_PAY"],
-                        datasets: [
-                            {
+                    const today = new Date().getDate()
+                    _data = response.data
+                    new Chart(document.getElementById("pie-chart"), {
+                        type: 'pie',
+                        data: {
+                            labels: [days[(new Date().getDay()) % 7], days[(new Date().getDay() + 1) % 7], days[(new Date().getDay() + 2) % 7], days[(new Date().getDay() + 3) % 7], days[(new Date().getDay() + 4) % 7], days[(new Date().getDay() + 5) % 7], days[(new Date().getDay() + 6) % 7], days[(new Date().getDay())]],
+                            datasets: [{
                                 label: "Population (millions)",
                                 backgroundColor: ["#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#c45850"],
-                                data: response.pay
+                                data: _data
+                            }]
+                        },
+                        options: {
+                            title: {
+                                display: true,
+                                text: 'Weekly sales Report'
                             }
-                        ]
-                    },
-                    options: {
-                        legend: { display: false },
-                        title: {
-                            display: true,
-                            text: 'Payment Method'
                         }
-                    }
-                });
-
-
-
-
-                new Chart(document.getElementById("bar-chart1"), {
-    type: 'bar',
-    data: {
-      labels: ["Delivered", "Placed", "Cancelled",  ],
-      datasets: [
-        {
-          label: "Population (millions)",
-          backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
-          data:response.status
-        }
-      ]
-    },
-    options: {
-      legend: { display: false },
-      title: {
-        display: true,
-        text: 'Order Status'
-      }
-    }
-});
-
-
-
-
-
-
-
-
-
-
-
-
+                    });
+                    new Chart(document.getElementById("bar-chart"), {
+                        type: 'bar',
+                        data: {
+                            labels: ["COD", "P-PAL", "R_PAY"],
+                            datasets: [
+                                {
+                                    label: "Population (millions)",
+                                    backgroundColor: ["#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#c45850"],
+                                    data: response.pay
+                                }
+                            ]
+                        },
+                        options: {
+                            legend: { display: false },
+                            title: {
+                                display: true,
+                                text: 'Payment Method'
+                            }
+                        }
+                    });
+                    new Chart(document.getElementById("bar-chart1"), {
+                        type: 'bar',
+                        data: {
+                            labels: ["Delivered", "Placed", "Cancelled",],
+                            datasets: [
+                                {
+                                    label: "Population (millions)",
+                                    backgroundColor: ["#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#c45850"],
+                                    data: response.status
+                                }
+                            ]
+                        },
+                        options: {
+                            legend: { display: false },
+                            title: {
+                                display: true,
+                                text: 'Order Status'
+                            }
+                        }
+                    });
+                }
             }
-        }
+        })
+    </script>
+</body>
 
-    })
-</script>
+</html>

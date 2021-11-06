@@ -1,129 +1,132 @@
- 
- <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
- <div class="row container-fluid " style="margin-top: 5rem;">
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<div id="full-div" class="row container-fluid " style="margin-top: 5rem;">
 
-    <div class="sidebar col-lg-4" >
-       
+    <div class="sidebar col-lg-4">
 
-            <!-- Section: Sidebar -->
+
+        <!-- Section: Sidebar -->
+        <section>
+
+            <!-- Section: Filters -->
             <section>
 
-                <!-- Section: Filters -->
-                <section>
+                <h5 class="mt-5 text-center "> Filters</h5>
 
-                    <h5 class="mt-5 text-center "> Filters</h5>
+                <!-- Section: Price -->
+                <section class="mb-4">
 
-                    <!-- Section: Price -->
-                    <section class="mb-4">
+                    <h6 class="font-weight-bold mb-3">Price</h6>
 
-                        <h6 class="font-weight-bold mb-3">Price</h6>
+                    <div class="form-check pl-0 mb-3">
+                        <input type="radio" class="form-check-input" id="under25" name="materialExampleRadios">
+                        <label class="form-check-label small text-uppercase card-link-secondary" for="under25">Under
+                            RS:200</label>
+                    </div>
+                    <div class="form-check pl-0 mb-3">
+                        <input type="radio" class="form-check-input" id="2550" name="materialExampleRadios">
+                        <label class="form-check-label small text-uppercase card-link-secondary" for="2550">RS:200 to
+                            RS:500</label>
+                    </div>
+                    <div class="form-check pl-0 mb-3">
+                        <input type="radio" class="form-check-input" id="50100" name="materialExampleRadios">
+                        <label class="form-check-label small text-uppercase card-link-secondary" for="50100">RS:500 to
+                            RS:1000</label>
+                    </div>
 
-                        <div class="form-check pl-0 mb-3">
-                            <input type="radio" class="form-check-input" id="under25" name="materialExampleRadios">
-                            <label class="form-check-label small text-uppercase card-link-secondary" for="under25">Under
-                                RS:25</label>
-                        </div>
-                        <div class="form-check pl-0 mb-3">
-                            <input type="radio" class="form-check-input" id="2550" name="materialExampleRadios">
-                            <label class="form-check-label small text-uppercase card-link-secondary" for="2550">RS:25 to
-                                RS:50</label>
-                        </div>
-                        <div class="form-check pl-0 mb-3">
-                            <input type="radio" class="form-check-input" id="50100" name="materialExampleRadios">
-                            <label class="form-check-label small text-uppercase card-link-secondary" for="50100">RS:50 to
-                                RS:100</label>
-                        </div>
-                        <div class="form-check pl-0 mb-3">
-                            <input type="radio" class="form-check-input" id="100200" name="materialExampleRadios">
-                            <label class="form-check-label small text-uppercase card-link-secondary" for="100200">RS:100
-                                to RS:200</label>
-                        </div>
-                        <div class="form-check pl-0 mb-3">
-                            <input type="radio" class="form-check-input" id="200above" name="materialExampleRadios">
-                            <label class="form-check-label small text-uppercase card-link-secondary" for="200above">RS:200
-                                & Above</label>
-                        </div>
-                        <form>
-                            <div class="d-flex align-items-center mt-4 pb-1">
-                                <div class="md-form md-outline my-0">
-                                    <input id="from" type="text" class="form-control mb-0">
-                                    <label for="form">RS: Min</label>
-                                </div>
-                                <p class="px-2 mb-0 text-muted"> - </p>
-                                <div class="md-form md-outline my-0">
-                                    <input id="to" type="text" class="form-control mb-0">
-                                    <label for="to">RS: Max</label>
-                                </div>
-                            </div>
-                        </form>
-
-                    </section>
-                    <!-- Section: Price -->
-
-                    <!-- Section: Price version 2 -->
-                    <section class="mb-4">
-
-                        <h6 class="font-weight-bold mb-3">Price</h6>
-
-                        <div class="slider-price d-flex align-items-center my-4">
-                            <span class="font-weight-normal small text-muted mr-2">RS:0</span>
-                            <form class="multi-range-field w-100 mb-1">
-                                <input id="multi" class="multi-range" type="range" />
-                            </form>
-                            <span class="font-weight-normal small text-muted ml-2">RS:100</span>
-                        </div>
-
-                    </section>
-                    <!-- Section: Price version 2 -->
-
-
-                    <!-- Section: Color -->
+                    <div class="form-check pl-0 mb-3">
+                        <input type="radio" class="form-check-input" id="200above" name="materialExampleRadios">
+                        <label class="form-check-label small text-uppercase card-link-secondary" for="200above">RS:1500
+                            & Above</label>
+                    </div>
+       
 
                 </section>
-                <!-- Section: Filters -->
+                <!-- Section: Price -->
+
+  
+
+
+                <!-- Section: Color -->
 
             </section>
-            <!-- Section: Sidebar -->
+            <!-- Section: Filters -->
 
-    
+        </section>
+        <!-- Section: Sidebar -->
+
+
     </div>
 
     <div class="  col-lg-8 float-end float-lg-start ">
-        <h1 class="d-flex justify-content-center p-2 mt-3">{{cat}}</h1>
-        <div class="row d-flex ">
+        <h1 class="d-flex p-2 mt-3">{{cat}}</h1>
+        <div class="row ">
             {{#each result}}
             <div class="col-lg-4 ">
                 <div class="card">
-                    <a href="/product-detail?id={{_id}}" class="fill-div" style="text-decoration: none;">
-                        <img src="/product-images/{{this._id}}1.jpg" data-NZoomscale="2" class="zoom card-img-top" alt="...">
-                        <div class="card-body">
-                            <p style="font-size: 15px;" class="card-title cardtitle">{{this.product_name}}</p>
-                            <p class="text-center price" style="font-weight: lighter;color: rgb(119, 119, 119);">{{this.sub_category}} </p>
+                    <img src="/product-images/{{this._id}}1.jpg" data-NZoomscale="2" class="zoom card-img-top"
+                        alt="...">
+                    <div style="z-index: 10;">
+
+
+                    </div>
+
+                    <div class="card-body">
+                        <div class="row">
+
                             {{#if offer}}
-                            <div class="row">
-                                <div class="col-7">
-                             <p style="text-decoration: line-through;color: rgb(225, 34, 34);" class="text-center price">RS: {{this.price}} </p>
-                               <p  class="text-center price">RS: {{this.offer_price}} </p>
+                            <p class="text-center price">{{this.off}}% off </p>
+                            {{else}}
+                            <p class="text-center text-white price">. </p>
+                            {{/if}}
+                            <a href="/product-detail?id={{_id}}" class="fill-div" style="text-decoration: none;">
+
+                                <div class="col-lg-12">
+                                    <p style="font-size: 15px;" class="card-title cardtitle">{{this.product_name}}</p>
 
                                 </div>
-                                 <div class="col-5">
-                              <p  class="text-center price">{{this.off}}% off </p>
-                                    
-                                </div>
+                            </a>
+                            <div class="col-lg-12">
+                                <p class="text-center price" style="font-weight: lighter;color: rgb(119, 119, 119);">
+                                    {{this.sub_category}} </p>
+
+                            </div>
+                            
+                                <button onclick="wishList('{{this._id}}')" class="btn btn-light">
+                                    <span id="heart">
+
+                                        <i class="far fa-heart"></i></span>
+                                </button>
+                           
+
+                        </div>
+                        {{#if offer}}
+                        <div class="row d-flex justify-content-center">
+                            <div class="col-4">
+                                <p style="text-decoration: line-through;color: rgb(225, 34, 34);"
+                                    class="text-center price">RS: {{this.price}} </p>
+
+                            </div>
+                            <div class="col-6">
+                                <p class="text-center price">RS: {{this.offer_price}} </p>
 
                             </div>
 
-                            {{else}}
-                            <p  class="text-center price">RS: {{this.price}} </p>
-                            {{/if}}
                         </div>
-                        <div class="row mb-3">
 
-                        <div class="col-6 ms-2"><a class="btn btn-info" onclick="addtoCart('{{this._id}}')"  style="width: 9rem;">ADD TO CART</a></div>
-                        <div class="col-4 ms-3"><a class="btn btn-success" href="/address/?sudden=true&&prodid={{this._id}}" style="=width:3rem">BUY</a></div>
-                        </div>
-                    </a>
-                </div>                                                        
+                        {{else}}
+                        <p class="text-center price">RS: {{this.price}} </p>
+
+                        {{/if}}
+                    </div>
+                    <div class="row mb-3">
+
+                        <div class="col-6 ms-2"><a class="btn btn-info" onclick="addtoCart('{{this._id}}')"
+                                style="width: 9rem;">ADD TO CART</a></div>
+                        <div class="col-4 ms-3"><a class="btn btn-success"
+                                href="/address/?sudden=true&&prodid={{this._id}}" style="=width:3rem">BUY</a></div>
+                    </div>
+
+                </div>
             </div>
 
             {{/each}}
@@ -139,5 +142,52 @@
     </div>
 
 </div>
+
+
+
+ <div id="searchdiv" class="  col-lg-12 float-end float-lg-start container justify-content-start ">
+        <h1 class="text-center p-2 mt-3">Search result  </h1>
+        <div id="searchrow" class="row d-flex ms-3 ">
+          
+            
+
+            
+
+
+
+
+
+
+        </div>
+
+
+    </div>
 <script src="/javascripts/user/cart.js"></script>
-<script src="/plugins/Nzoom.min.js" ></script>
+<script src="/plugins/Nzoom.min.js"></script>
+<script>
+    function wishList(id) {
+      
+      
+        $.ajax({
+            url: "/wishlist",
+            method: "post",
+            data: { id },
+            success: function (response) {
+                if(response.status){
+                Swal.fire(
+                    response.status
+                )
+
+                }else{
+                    location.replace('/login')
+                }
+
+            },
+            error: function (response) {
+
+            }
+        })
+    }
+
+
+</script>

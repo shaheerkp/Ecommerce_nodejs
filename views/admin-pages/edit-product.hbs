@@ -143,7 +143,7 @@
             <h4 class="title"> Image 3</h4>
             <div class="fileinput fileinput-new text-center">
                 <div class="fileinput-new thumbnail">
-                    <img  width="150px" height="150px" src="/product-images/{{data._id}}2.jpg" id="chekPreview3" alt="...">
+                    <img  width="150px" height="150px" src="/product-images/{{data._id}}3.jpg" id="chekPreview3" alt="...">
 
                 </div>
                 <div>
@@ -163,7 +163,7 @@
 </div>
 
 
-  <button type="submit" class=" mb-5 ms-5   btn btn-primary" onclick="return confirm('Add product ?') "  >Add Product</button>
+  <button type="submit" class=" mb-5 ms-5   btn btn-primary"   >Add Product</button>
 
   </div>
 </form>
@@ -281,9 +281,227 @@
 
 <script>
 
+   document.getElementById('image1').onchange = e => {
+    value = e.target.files[0]
+    value = value.type
+    console.log(value)
+    if (value == "image/jpeg" || value == "image/jpg" || value == "image/png") {
+      img1 = true
+      //modal1 and image 1
+      var image1 = document.getElementById('sampleImage1');
+      var modal1 = $('#modal1');
+      var cropper1;
+
+
+      var files = event.target.files;
+
+      var done = function (url) {
+        image1.src = url;
+        modal1.modal('show');
+      };
+
+      if (files && files.length > 0) {
+        reader = new FileReader();
+        reader.onload = function (event) {
+          done(reader.result);
+        };
+        reader.readAsDataURL(files[0]);
+      }
+
+      modal1.on('shown.bs.modal', function () {
+        cropper1 = new Cropper(image1, {
+          aspectRatio: 1,
+          viewMode: 3,
+          preview: '#preview1'
+        });
+      }).on('hidden.bs.modal', function () {
+        cropper1.destroy();
+        cropper1 = null;
+      });
+
+      $('#crop1').click(function () {
+        canvas = cropper1.getCroppedCanvas({
+          width: 400,
+          height: 400,
+
+
+        });
+
+        canvas.toBlob(function (blob) {
+          url = URL.createObjectURL(blob);
+          var reader = new FileReader();
+          reader.readAsDataURL(blob);
+          reader.onloadend = function () {
+            var base64data = reader.result;
+            modal1.modal('hide');
+            $("#imageValue1").val(base64data)
+            $('#chekPreview1').attr('src', base64data);
+          };
+        });
+      });
+
+    } else {
+      Swal.fire(
+        'Error!',
+        'Select correct format',
+
+      )
+      innerHTML = "Select Correct format"
+      img1 = false
+
+    }
+  }
+
+
+  document.getElementById('image2').onchange = e => {
+    value = e.target.value
+    parts = value.split('.')
+
+    if (parts[1] == "jpeg" || parts[1] == "jpg" || parts[1] == "png") {
+      img2 = true
+      
+      var image2 = document.getElementById('sampleImage2');
+      var modal2 = $('#modal2');
+      var cropper2;
+
+
+      var files = event.target.files;
+
+      var done = function (url) {
+        image2.src = url;
+        modal2.modal('show');
+      };
+
+      if (files && files.length > 0) {
+        reader = new FileReader();
+        reader.onload = function (event) {
+          done(reader.result);
+        };
+        reader.readAsDataURL(files[0]);
+      }
+
+
+      modal2.on('shown.bs.modal', function () {
+        cropper2 = new Cropper(image2, {
+          aspectRatio: 1,
+          viewMode: 3,
+          preview: '#preview2'
+        });
+      }).on('hidden.bs.modal', function () {
+        cropper2.destroy();
+        cropper2 = null;
+      });
+
+      $('#crop2').click(function () {
+        canvas = cropper2.getCroppedCanvas({
+          width: 400,
+          height: 400
+        });
+
+        canvas.toBlob(function (blob) {
+          url = URL.createObjectURL(blob);
+          var reader = new FileReader();
+          reader.readAsDataURL(blob);
+          reader.onloadend = function () {
+            var base64data = reader.result;
+            modal2.modal('hide');
+            $("#imageValue2").val(base64data)
+            $('#chekPreview2').attr('src', base64data);
+          };
+        });
+      });
+
+
+    } else {
+      Swal.fire(
+        'Error!',
+        'Select correct format',
+
+      )
+      img2 = false
+
+    }
+  }
+
+
+   document.getElementById('image3').onchange = e => {
+    value = e.target.value
+    parts = value.split('.')
+    console.log(parts[1])
+    if (parts[1] == "jpeg" || parts[1] == "jpg" || parts[1] == "png") {
+      img3 = true
+     
+      var image3 = document.getElementById('sampleImage3');
+      var modal3 = $('#modal3');
+      var cropper3;
+
+
+      var files = event.target.files;
+
+      var done = function (url) {
+        image3.src = url;
+        modal3.modal('show');
+      };
+
+      if (files && files.length > 0) {
+        reader = new FileReader();
+        reader.onload = function (event) {
+          done(reader.result);
+        };
+        reader.readAsDataURL(files[0]);
+      }
+
+
+      modal3.on('shown.bs.modal', function () {
+        cropper3 = new Cropper(image3, {
+          aspectRatio: 1,
+          viewMode: 3,
+          preview: '#preview3'
+        });
+      }).on('hidden.bs.modal', function () {
+        cropper3.destroy();
+        cropper3 = null;
+      });
+
+      $('#crop3').click(function () {
+        canvas = cropper3.getCroppedCanvas({
+          width: 400,
+          height: 400
+        });
+
+        canvas.toBlob(function (blob) {
+          url = URL.createObjectURL(blob);
+          var reader = new FileReader();
+          reader.readAsDataURL(blob);
+          reader.onloadend = function () {
+            var base64data = reader.result;
+            modal3.modal('hide');
+            $("#imageValue3").val(base64data)
+            $('#chekPreview3').attr('src', base64data);
+          };
+        });
+      });
+
+
+
+    } else {
+      Swal.fire(
+        'Error!',
+        'Select correct format',
+
+      )
+      img3 = false
+
+    }
+  }
+
+
    let p_name=true;
   let p_price=true;
   let inputqty=true;
+  let img1 = true;
+  let img2 = true;
+  let img3 = true;
 
 
   $("#p_name").on('input', function () {
@@ -363,238 +581,33 @@ qty.addEventListener('input', (e) => {
 
 
 
-  function checkValid(){
+ function checkValid() {
 
-    if(p_name&&p_price&&inputqty){
-    return true
+    if (p_name && p_price && inputqty && img1 && img2 && img3) {
+      Swal.fire({
+        position: 'top-bottom',
+        icon: 'success',
+        title: 'Product added Successfully',
+        showConfirmButton: false,
+        timer: 900
+      })
+
+
+      return true
+
+
+
 
     }
-    else{
-      alert("Enter all fields correctly")
+    else {
+      Swal.fire(
+        "Enter all fields correctly"
+      )
       return false
 
     }
 
   }
-
-   $('document').ready(function () {
-    //modal1 and image 1
-    var image1 = document.getElementById('sampleImage1');
-    var modal1 = $('#modal1');
-    var cropper1;
-
-    $('#image1').change(function (event) {
-      var files = event.target.files;
-
-      var done = function (url) {
-        image1.src = url;
-        modal1.modal('show');
-      };
-
-      if (files && files.length > 0) {
-        reader = new FileReader();
-        reader.onload = function (event) {
-          done(reader.result);
-        };
-        reader.readAsDataURL(files[0]);
-      }
-    });
-
-    modal1.on('shown.bs.modal', function () {
-      cropper1 = new Cropper(image1, {
-        aspectRatio: 1,
-        viewMode: 3,
-        preview: '#preview1'
-      });
-    }).on('hidden.bs.modal', function () {
-      cropper1.destroy();
-      cropper1 = null;
-    });
-
-    $('#crop1').click(function () {
-      canvas = cropper1.getCroppedCanvas({
-        width: 400,
-        height: 400,
-        
-        
-      });
-
-      canvas.toBlob(function (blob) {
-        url = URL.createObjectURL(blob);
-        var reader = new FileReader();
-        reader.readAsDataURL(blob);
-        reader.onloadend = function () {
-          var base64data = reader.result;
-          modal1.modal('hide');
-          $("#imageValue1").val(base64data)
-          $('#chekPreview1').attr('src', base64data);
-        };
-      });
-    });
-    //modal1 and image 1 end
-
-    //modal2 and image 2
-    var image2 = document.getElementById('sampleImage2');
-    var modal2 = $('#modal2');
-    var cropper2;
-
-    $('#image2').change(function (event) {
-      var files = event.target.files;
-
-      var done = function (url) {
-        image2.src = url;
-        modal2.modal('show');
-      };
-
-      if (files && files.length > 0) {
-        reader = new FileReader();
-        reader.onload = function (event) {
-          done(reader.result);
-        };
-        reader.readAsDataURL(files[0]);
-      }
-    });
-
-    modal2.on('shown.bs.modal', function () {
-      cropper2 = new Cropper(image2, {
-        aspectRatio: 1,
-        viewMode: 3,
-        preview: '#preview2'
-      });
-    }).on('hidden.bs.modal', function () {
-      cropper2.destroy();
-      cropper2 = null;
-    });
-
-    $('#crop2').click(function () {
-      canvas = cropper2.getCroppedCanvas({
-        width: 400,
-        height: 400
-      });
-
-      canvas.toBlob(function (blob) {
-        url = URL.createObjectURL(blob);
-        var reader = new FileReader();
-        reader.readAsDataURL(blob);
-        reader.onloadend = function () {
-          var base64data = reader.result;
-          modal2.modal('hide');
-          $("#imageValue2").val(base64data)
-          $('#chekPreview2').attr('src', base64data);
-        };
-      });
-    });
-    //image 2 and modal 2 end
-
-
-    //modal3 and image 3 start
-    var image3 = document.getElementById('sampleImage3');
-    var modal3 = $('#modal3');
-    var cropper3;
-
-    $('#image3').change(function (event) {
-      var files = event.target.files;
-
-      var done = function (url) {
-        image3.src = url;
-        modal3.modal('show');
-      };
-
-      if (files && files.length > 0) {
-        reader = new FileReader();
-        reader.onload = function (event) {
-          done(reader.result);
-        };
-        reader.readAsDataURL(files[0]);
-      }
-    });
-
-    modal3.on('shown.bs.modal', function () {
-      cropper3 = new Cropper(image3, {
-        aspectRatio: 1,
-        viewMode: 3,
-        preview: '#preview3'
-      });
-    }).on('hidden.bs.modal', function () {
-      cropper3.destroy();
-      cropper3 = null;
-    });
-
-    $('#crop3').click(function () {
-      canvas = cropper3.getCroppedCanvas({
-        width: 400,
-        height: 400
-      });
-
-      canvas.toBlob(function (blob) {
-        url = URL.createObjectURL(blob);
-        var reader = new FileReader();
-        reader.readAsDataURL(blob);
-        reader.onloadend = function () {
-          var base64data = reader.result;
-          modal3.modal('hide');
-          $("#imageValue3").val(base64data)
-          $('#chekPreview3').attr('src', base64data);
-        };
-      });
-    });
-    //image 3 and modal 3 end
-
-    //modal4 and image 4 start
-    var image4 = document.getElementById('sampleImage4');
-    var modal4 = $('#modal4');
-    var cropper4;
-
-    $('#image4').change(function (event) {
-      var files = event.target.files;
-
-      var done = function (url) {
-        image4.src = url;
-        modal4.modal('show');
-      };
-
-      if (files && files.length > 0) {
-        reader = new FileReader();
-        reader.onload = function (event) {
-          done(reader.result);
-        };
-        reader.readAsDataURL(files[0]);
-      }
-    });
-
-    modal4.on('shown.bs.modal', function () {
-      cropper4 = new Cropper(image4, {
-        aspectRatio: 1,
-        viewMode: 3,
-        preview: '#preview4'
-      });
-    }).on('hidden.bs.modal', function () {
-      cropper4.destroy();
-      cropper4 = null;
-    });
-
-    $('#crop4').click(function () {
-      canvas = cropper4.getCroppedCanvas({
-        width: 400,
-        height: 400
-      });
-
-      canvas.toBlob(function (blob) {
-        url = URL.createObjectURL(blob);
-        var reader = new FileReader();
-        reader.readAsDataURL(blob);
-        reader.onloadend = function () {
-          var base64data = reader.result;
-          modal4.modal('hide');
-          $("#imageValue4").val(base64data)
-          $('#chekPreview4').attr('src', base64data);
-        };
-      });
-    });
-
-    //image 4 and modal 4 end
-
-  });
 
 
 </script>

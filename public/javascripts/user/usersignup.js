@@ -2,7 +2,7 @@ let name_val = false;
 let fname_val = false;
 let email_val = false;
 let pass_val=false;
-let number_val = false;
+let number_val = true;
 
 
 $("#pass").on('input', function () {
@@ -166,7 +166,13 @@ if(name_val&&fname_val&&email_val&&pass_val&&number_val){
       success: function (response) {
         console.log(response);
         if (response.status) {
-            alert("Signed in successfully")
+            Swal.fire({
+              position: 'top-bottom',
+              icon: 'success',
+              title: 'Signed in successfully',
+              showConfirmButton: false,
+              timer: 900
+            })
         location.replace('/login');
           
         }

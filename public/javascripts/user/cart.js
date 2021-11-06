@@ -57,4 +57,29 @@ $.ajax({
 }
 
 
+function wishList(id) {
+      
+      
+  $.ajax({
+      url: "/wishlist",
+      method: "post",
+      data: { id },
+      success: function (response) {
+          if(response.status){
+          Swal.fire(
+              response.status
+          )
+
+          }else{
+              location.replace('/login')
+          }
+
+      },
+      error: function (response) {
+
+      }
+  })
+}
+
+
 

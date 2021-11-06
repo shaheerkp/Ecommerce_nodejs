@@ -268,6 +268,50 @@ module.exports = {
         })
 
     },
+    deletewishlist: (id) => {
+        return new Promise((resolve, request) => {
+            db.get().collection("wishlist").update({}, { $pull: { products: { item: id } } }, { multi: true }).then((result) => {
+                resolve(true)
+            })
+
+        })
+
+    },
+    getWishlistProducts: (userid) => {
+        return new Promise(async (resolve, reject) => {
+
+            let wishlist = await db.get().collection("wishlist").aggregate([
+                {
+                    $match: { user: userid }
+                },
+                {
+                    $unwind: '$products'
+                },
+                {
+                    $project: {
+                        item: '$products.item',
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'product',
+                        localField: 'item',
+                        foreignField: '_id',
+                        as: 'product'
+                    }
+                },
+                {
+                    $project: {
+                        item: 1, products: { $arrayElemAt: ['$product', 0] }
+                    }
+                },
+
+            ]).toArray()
+            console.log("wishlist", wishlist);
+            resolve(wishlist)
+        })
+
+    },
     getCartProducts: (userid) => {
         return new Promise(async (resolve, reject) => {
 
@@ -302,10 +346,6 @@ module.exports = {
                         item: 1, quantity: 1, products: 1, subtotal: { $multiply: ['$quantity', '$products.price'] }, off_subtotal: { $multiply: ['$quantity', '$products.offer_price'] }
                     }
                 },
-
-
-
-
             ]).toArray()
 
             let offer_total = 0
@@ -337,9 +377,83 @@ module.exports = {
 
     },
 
+    getSingle: (userId, cartId, prodId) => {
+        return new Promise(async (resolve, reject) => {
+            let single = await db.get().collection("cart").aggregate([
+                {
+                    $match: { user: userId }
+                },
+                {
+                    $unwind: '$products'
+                },
+                {
+                    $match: { 'products.item': prodId }
+                },
+                {
+                    $project: {
+                        item: '$products.item',
+                        quantity: '$products.quantity'
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'product',
+                        localField: 'item',
+                        foreignField: '_id',
+                        as: 'product'
+                    }
+                },
+                {
+                    $project: {
+                        item: 1,
+                        quantity: 1,
+                        product: { $arrayElemAt: ['$product', 0] }
+                    }
+                },
+                {
+                    $project: {
+                        total: { $multiply: ['$quantity', '$product.price'] },
+                        off_total: { $multiply: ['$quantity', '$product.offer_price'] },
+                    }
+                },
+                // {
+                //     $group: {
+                //         _id: null,
+                //         total: { $sum: { $multiply: ['$quantity', '$product.price'] } },
+                //         offertotal: { $sum: { $multiply: ['$quantity', '$product.offerprice'] } }
+                //     }
+                // },
+
+            ]).toArray()
+            console.log("___________________", single);
+            resolve(single)
+        })
+    },
+
+
+    getNewSalesReport: (type) => {
+        const numberOfDays = type === 'weekly' ? 7 : type === 'monthly' ? 31 : type === 'yearly' ? 365 : type == "daily" ? 1 : 0
+
+        console.log("number of days", numberOfDays);
+
+        return new Promise(async (resolve, reject) => {
+            const data = await db.get().collection('orders').aggregate([
+                {
+                    $match: {
+                        "orderObj.createdAt": { $gte: new Date(new Date() - numberOfDays * 60 * 60 * 24 * 1000) },
+                    },
+                },
+            ]).toArray()
+            console.log("___________", data);
+            resolve(data)
+
+        })
+    },
+
+
 
     getTotalAmount: (userid) => {
-        console.log("user id vannuuu " + userid);
+
 
         return new Promise(async (resolve, reject) => {
 
@@ -380,8 +494,8 @@ module.exports = {
 
 
             ]).toArray()
+            console.log("total" ,total);
 
-            console.log("cart totalll", total);
             let offer_total = 0
 
             for (let i = 0; i < total.length; i++) {
@@ -640,51 +754,51 @@ module.exports = {
     },
 
 
-    getPaymentCount:()=>{
+    getPaymentCount: () => {
 
         return new Promise(async (resolve, reject) => {
-            let cod= await db.get().collection('orders').find({"orderObj.payment":"cod"}).count()
-            let p_pal= await db.get().collection('orders').find({"orderObj.payment":"p_pal"}).count()
-            let rpay= await db.get().collection('orders').find({"orderObj.payment":"r_pay"}).count()
-            pay=[cod,p_pal,rpay]
+            let cod = await db.get().collection('orders').find({ "orderObj.payment": "cod" }).count()
+            let p_pal = await db.get().collection('orders').find({ "orderObj.payment": "p_pal" }).count()
+            let rpay = await db.get().collection('orders').find({ "orderObj.payment": "r_pay" }).count()
+            pay = [cod, p_pal, rpay]
             resolve(pay)
 
 
-            console.log("coddddddd",cod,p_pal,rpay);
+            console.log("coddddddd", cod, p_pal, rpay);
 
         })
 
 
     },
 
-    thisMonthIncome:()=>{
-        let total=0
-        let orders=0
-        date=moment().format('MMMM do yyyy, h:mm:ss a')
-        date=date.split(' ')
-        month=date[0]
-        year=date[2]
+    thisMonthIncome: () => {
+        let total = 0
+        let orders = 0
+        date = moment().format('MMMM do yyyy, h:mm:ss a')
+        date = date.split(' ')
+        month = date[0]
+        year = date[2]
         console.log(date);
         return new Promise(async (resolve, reject) => {
-            let cod= await db.get().collection('orders').find({}).toArray()
-            
-            let cus=await db.get().collection('users').find({}).count()
+            let cod = await db.get().collection('orders').find({}).toArray()
+
+            let cus = await db.get().collection('users').find({}).count()
             cod.forEach(element => {
-                val= element.orderObj.date.split(" ")
-                if(val[0]==month&&val[2]==year){
-                    total+=element.orderObj.amount
+                val = element.orderObj.date.split(" ")
+                if (val[0] == month && val[2] == year) {
+                    total += element.orderObj.amount
                     orders++
 
                 }
 
-                
+
             });
             console.log(total);
             console.log(orders);
-            resolve({tot:total,ord:orders,cust:cus})
+            resolve({ tot: total, ord: orders, cust: cus })
 
 
-            
+
         })
 
 
@@ -693,13 +807,13 @@ module.exports = {
 
     getWeeklyStatus: async () => {
         return new Promise(async (resolve, reject) => {
-            const delivered = await db.get().collection('orders').find({"orderObj.products":{$elemMatch:{staus:"Delivered"}}}).count()
-            const placed = await db.get().collection('orders').find({"orderObj.products":{$elemMatch:{staus:"placed"}}}).count()
-            const canceled = await db.get().collection('orders').find({"orderObj.products":{$elemMatch:{staus:"User cancelled"}}}).count()
-            const Shipped = await db.get().collection('orders').find({"orderObj.products":{$elemMatch:{staus:"Shipped"}}}).count()
-            console.log("shipped",delivered,placed,canceled,Shipped);
+            const delivered = await db.get().collection('orders').find({ "orderObj.products": { $elemMatch: { staus: "Delivered" } } }).count()
+            const placed = await db.get().collection('orders').find({ "orderObj.products": { $elemMatch: { staus: "placed" } } }).count()
+            const canceled = await db.get().collection('orders').find({ "orderObj.products": { $elemMatch: { staus: "User cancelled" } } }).count()
+            const Shipped = await db.get().collection('orders').find({ "orderObj.products": { $elemMatch: { staus: "Shipped" } } }).count()
+            console.log("shipped", delivered, placed, canceled, Shipped);
 
-            let ord_status=[delivered,placed,canceled,Shipped];
+            let ord_status = [delivered, placed, canceled, Shipped];
             resolve(ord_status)
 
 
@@ -745,25 +859,65 @@ module.exports = {
 
 
 
-    searchBetween:(date)=>{
-        console.log(date.date1,date.date2,"asdada");
+    searchBetween: (date) => {
+        console.log(date.date1, date.date2, "asdada");
 
         return new Promise(async (resolve, reject) => {
-            let orders= await db.get().collection('orders').aggregate([
+            let orders = await db.get().collection('orders').aggregate([
                 {
-                    $match:{"orderObj.createdAt":{$gte:new Date(date.date1),$lte:new Date(date.date2)}}
+                    $match: { "orderObj.createdAt": { $gte: new Date(date.date1), $lte: new Date(date.date2) } }
                 }
             ]).toArray()
-            console.log("filtered orders",orders[0].orderObj.products[0].item);
+
             resolve(orders)
 
         })
     },
 
 
+    searchProduct: (keyword) => {
+        return new Promise(async (resolve, reject) => {
+            key = keyword.toUpperCase();
+            console.log("asdas",key);
+            p_name=await db.get().collection("product").find({ "product_name": key }).toArray()
+            cat=await db.get().collection("product").find({ "category": key }).toArray()
+            sub=await db.get().collection("product").find({ "sub_category": key }).toArray()
+            console.log(p_name[0],cat[0],sub[0]);
+          
+                if(p_name[0]){
+                    console.log("p_name");
+
+                    resolve(p_name)
+                }
+                else if(cat[0]){
+                    console.log("cat");
 
 
-  
+                    resolve(cat)
+                }
+                else if(sub[0]){
+                    console.log("sub");
+
+
+                    resolve(sub)
+                }
+                else{
+                    console.log("false");
+
+                    resolve(false)
+                }
+
+           
+
+
+        })
+
+    },
+
+
+
+
+
 
     getOrderDetials: (user) => {
         return new Promise(async (resolve, reject) => {

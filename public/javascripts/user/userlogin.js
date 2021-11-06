@@ -1,22 +1,22 @@
 
 
 $("#login-form").submit((e) => {
-    e.preventDefault()
-$.ajax({
+  e.preventDefault()
+  $.ajax({
     url: "/login",
     data: $("#login-form").serialize(),
     method: "post",
     success: function (response) {
       console.log(response);
       if (response.status) {
-      location.replace('/');
-        
+        location.replace('/');
+
       }
-      else{
+      else {
         $("#err").html(response.message)
-       
+
       }
-      
+
     },
     error: function (err) {
       alert("Something Error")
@@ -26,26 +26,26 @@ $.ajax({
 
 })
 
-  let number_val=false
-  var email_val = false
-  var u_number = document.getElementById("otp_number")
+let number_val = false
+var email_val = false
+var u_number = document.getElementById("otp_number")
 u_number.addEventListener('input', (e) => {
-    u_number.value = u_number.value.replace(/[^0-9]/, '').replace(/(\..*)\./, '$1');;
+  u_number.value = u_number.value.replace(/[^0-9]/, '').replace(/(\..*)\./, '$1');;
 
 
-    if (u_number.value.length != 10) {
-        number_err.innerHTML = "Enter 10 numbers"
-        number_val = false;
- email_val = false;
+  if (u_number.value.length != 10) {
+    number_err.innerHTML = "Enter 10 numbers"
+    number_val = false;
+    email_val = false;
 
 
-    }
-    else {
-        number_err.innerHTML = " "
-        number_val = true;
-        email_val=true;
+  }
+  else {
+    number_err.innerHTML = " "
+    number_val = true;
+    email_val = true;
 
-    }
+  }
 })
 
 $("#login_email").on('input', function () {
@@ -87,67 +87,99 @@ $("#login_email").on('input', function () {
 
 
 
-document.getElementById("ver_submit_btn").onclick=e=>{
+document.getElementById("ver_submit_btn").onclick = e => {
   e.preventDefault()
-  let oneTime=$('#ver_otp').val()
-  let number=$('#otp_number').val()
+  let oneTime = $('#ver_otp').val()
+  let number = $('#otp_number').val()
   $.ajax({
-    url:"/verify-otp",
-    method:"post",
-    data:{oneTime,number},
-    success:function(response){
-      if(response.status){
-       window.location.reload()
+    url: "/verify-otp",
+    method: "post",
+    data: { oneTime, number },
+    success: function (response) {
+      if (response.status) {
+        window.location.reload()
 
       }
-      else{
-        document.getElementById('number_err').innerHTML="Incorrect Otp"
+      else {
+        document.getElementById('number_err').innerHTML = "Incorrect Otp"
       }
-      
 
-    },error:function(){
+
+    }, error: function () {
 
     }
   })
 
-  
+
 }
 
 
 
-$('#otp-form').submit((e)=>{
+$('#otp-form').submit((e) => {
   e.preventDefault()
-  if (number_val&&email_val){
-    let number=$('#otp_number').val()
+  if (number_val && email_val) {
+    let number = $('#otp_number').val()
     console.log(number);
-    alert(number)
+    
     $.ajax({
-      url:"/mobile_otp",
-      method:"post",
-      data:{number},
-      success:function(response){
+      url: "/mobile_otp",
+      method: "post",
+      data: { number },
+      success: function (response) {
         console.log(response)
-        if(response.status=="nonum"){
+        if (response.status == "nonum") {
           alert("number not registered")
 
         }
 
-        else if(response.status){
-         
-          document.getElementById('otp_div').style.display=""
-     
+        else if (response.status) {
+
+          document.getElementById('otp_div').style.display = ""
+          document.getElementById('sent-otp').style.display = 'none'
+          document.getElementById('countdown').style.display=''
+
+          const startingMinutes = 5;
+          let time = startingMinutes * 60;
+
+          const countdownEl = document.getElementById('countdown')
+          
+          stop=setInterval(updateCountdown, 1000);
+
+          function updateCountdown() {
+            const minutes = Math.floor(time / 60);
+            let seconds = time % 60;
+
+            if(minutes==0&&seconds==0){
+              clearInterval(stop)
+              document.getElementById('resent-otp').style.display=""
+              document.getElementById('countdown').style.display="none"
+
+            }
+            else{
+              document.getElementById('resent-otp').style.display="none"
+             
+
+            }
+            seconds = seconds < 10 ? '0' + seconds : seconds;
+            countdownEl.innerHTML = `${minutes}:${seconds}`;
+            time--;
+          }
+
+
+
+
 
         }
 
       },
-      error:function(err){
+      error: function (err) {
 
       }
     })
-    
+
 
   }
-  else{
+  else {
     $("#email_err").html("Enter all values correctly")
   }
 

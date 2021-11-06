@@ -6,7 +6,7 @@ var router = express.Router();
 var producthelper = require('../helper/producthelper')
 var userhelper = require('../helper/userhelper')
 var handlebars = require('express-handlebars');
-const { viewCategory, deleteSubcategory, viewProduct, deleteCategory, getOrderDetials, viewSubcategory, deleteProduct, addCategory, getAllOrders, changestatus,getOfferProducts, findProductByName, addOffer, deleteOffer, addCatOffer, getAllOrderDetials, validateCoupon, getAllCoupons, addCoupon, delCoupon, thisMonthIncome, searchBetween } = require('../helper/producthelper');
+const { viewCategory, deleteSubcategory, viewProduct, deleteCategory, getOrderDetials, viewSubcategory, deleteProduct, addCategory, getAllOrders, changestatus,getOfferProducts, findProductByName, addOffer, deleteOffer, addCatOffer, getAllOrderDetials, validateCoupon, getAllCoupons, addCoupon, delCoupon, thisMonthIncome, searchBetween, getNewSalesReport } = require('../helper/producthelper');
 const { addListener } = require('process');
 let admin_email = "kpshaheer123@gmail.com"
 let admin_password = "123"
@@ -171,7 +171,6 @@ router.post('/updateProduct', check, function (req, res, next) {
     qty: req.body.qty
   }
 
-  console.log(req.body);
   producthelper.updateProduct(product)
     .then((id) => {
       console.log(id);
@@ -365,52 +364,16 @@ router.get('/coupons',check,async(req,res)=>{
 })
 
 router.post('/filter',(req,res)=>{
-  
+  console.log("_____________________");
   console.log(req.body);
-  let date=moment().format('MMMM do yyyy, h:mm:ss a')
-  filtered_item=[]
-  if(req.body.day=="month") {
-  value=date.split(' ')
-  console.log("month");
-  getAllOrderDetials().then((result)=>{
-    result.forEach(element => {
-      console.log(element.date);
-      elem=element.date.split(' ')
-      console.log("month",elem);
-      if(value[0]==elem[0]){
-        filtered_item.push(element)
-      }
-      
-    });
-    
-    console.log("filtered_item",filtered_item);
-    res.json({filtered_item})
+  getNewSalesReport(req.body.day).then((response)=>{
+    res.json({filtered_item:response})
+
   })
-
-}
-else if(req.body.day=="year"){
-
-}
-else if(req.body.day=="day"){
-  console.log("day");
-  value=date.split(',')
   
-  getAllOrderDetials().then((result)=>{
-    result.forEach(element => {
-      console.log(element.date);
-      elem=element.date.split(',')
 
-      if(value[0]==elem[0]){
-        filtered_item.push(element)
-      }
-      
-    });
-    
-    console.log("filtered_item",filtered_item);
-    res.json({filtered_item})
-  })
-}
-  
+
+
 
 })
 

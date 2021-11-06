@@ -2,9 +2,9 @@ var express = require('express');
 var router = express.Router();
 var db = require('../helper/userhelper')
 const { OAuth2Client } = require('google-auth-library');
-const { viewCategory, findProduct, addtoCart, getCartProducts, getTotalAmount, cartCount, deletecart, changeQuantity, changestatus, placeOrder, getCartProductList, getOrderDetials, orderStatus, buynowplaceOrder, deleteFinalcart, findProductByName, deleteOffer, validateCoupon, } = require('../helper/producthelper');
+const { viewCategory, findProduct, addtoCart, getCartProducts, getTotalAmount, cartCount, deletecart, changeQuantity, changestatus, placeOrder, getCartProductList, getOrderDetials, orderStatus, buynowplaceOrder, deleteFinalcart, findProductByName, deleteOffer, validateCoupon, getSubAmount, getSingle, getWishlistProducts, deletewishlist, searchProduct, } = require('../helper/producthelper');
 const { token } = require('morgan');
-const { googleSign, googleSignin, userSignup, getNumber, getuserAddress, getAddress, addAddress, deleteAddress, saveChanges, getUserById, changePassword } = require('../helper/userhelper');
+const { googleSign, googleSignin, userSignup, getNumber, getuserAddress, getAddress, addAddress, deleteAddress, saveChanges, getUserById, changePassword, addtoWishList, editAddress } = require('../helper/userhelper');
 const userhelper = require('../helper/userhelper');
 const CLIENT_ID = "360791234082-kap1r32c2bjt3fg3ip28qvp6fplu26ui.apps.googleusercontent.com"
 const client = new OAuth2Client(CLIENT_ID);
@@ -148,7 +148,7 @@ router.get('/success', (req, res) => {
   let total = req.session.user.price
 
   console.log("session", req.session.user.body);
- 
+
   const execute_payment_json = {
     "payer_id": payerId,
     "transactions": [{
@@ -204,10 +204,10 @@ router.get('/', checkauth, async function (req, res, next) {
   let tshirt = await findProductByName("Tshirt")
   let Pantss = await findProductByName("Pantss")
   let Shorts = await findProductByName("Shorts")
-  shirts=shirts[5]._id
-  tshirt=tshirt[0]._id
-  Pantss=Pantss[1]._id
-  Shorts=Shorts[0]._id
+  shirts = shirts[5]._id
+  tshirt = tshirt[0]._id
+  Pantss = Pantss[1]._id
+  Shorts = Shorts[0]._id
   console.log(shirts);
   let count = null
   if (req.session.user) {
@@ -215,7 +215,7 @@ router.get('/', checkauth, async function (req, res, next) {
       cart_count = await cartCount(req.session.user._id)
       req.session.user.isLoggedin = true
       user = req.session.user
-      res.render('user-pages/user-home', {shirts, Shorts, Pantss, tshirt, shirts, user, cart_count, category: await getCategory() });
+      res.render('user-pages/user-home', { shirts, Shorts, Pantss, tshirt, shirts, user, cart_count, category: await getCategory() });
     })
   }
   else {
@@ -259,14 +259,21 @@ router.get('/viewProducts/:sub', async function (req, res) {
   })
 });
 
+
+
+
+
+
+
+
 router.post('/addtocart', checkLogin, (req, res) => {
   let userid = req.session.user._id
   let productid = req.body.id
   if (userid) {
-    addtoCart(userid, productid).then(async(result) => {
+    addtoCart(userid, productid).then(async (result) => {
       let cart_count = await cartCount(req.session.user._id)
       if (result) {
-        res.json({ status: true,count:cart_count })
+        res.json({ status: true, count: cart_count })
 
       }
 
@@ -289,6 +296,17 @@ router.post('/removecart', (req, res) => {
       res.json({ status: true, mes: "removed from cart" })
     }
   })
+})
+
+  router.post('/removewishlist', (req, res) => {
+
+    let productid = req.body.id
+    deletewishlist(req.body.id).then((result) => {
+  
+      if (result) {
+        res.json({ status: true, mes: "removed from  wishlist" })
+      }
+    })
 
 
 
@@ -303,7 +321,6 @@ router.get('/cart', checkLogin, async (req, res) => {
   items = item[0]
   offer_total = item[1]
 
-
   let cart_count = await cartCount(req.session.user._id)
   let total = await getTotalAmount(req.session.user._id)
   user = req.session.user
@@ -314,18 +331,60 @@ router.get('/cart', checkLogin, async (req, res) => {
 })
 
 
+router.get('/wishlist', checkLogin, async (req, res) => {
 
-
-router.post('/apply_coupon',(req,res)=>{
-  let total= parseInt(req.body.total)
+   let item = await getWishlistProducts(req.session.user._id)
+   console.log("itemmmmmmmmmmmmm",item);
+  // items = item[0]
+  // offer_total = item[1]
+  let cart_count = await cartCount(req.session.user._id)
+  // let total = await getTotalAmount(req.session.user._id)
+  user = req.session.user
   
+
+
+  res.render('user-pages/wishlist', {item, user, cart_count, category: await getCategory() });
+
+})
+
+router.post('/wishlist', (req, res) => {
+
+  console.log("wishassdf", req.body);
+ 
+  console.log("else ifffff");
+  if(req.session.user){
+    userid=req.session.user._id
+    console.log("if");
+    addtoWishList(userid, req.body.id).then((response)=>{
+      console.log(response);
+      res.json(response)
+  
+  
+    })
+
+  }else{
+    console.log("else");
+    res.json({status:false})
+  }
+
+
+})
+
+
+
+
+
+router.post('/apply_coupon', (req, res) => {
+  let total = parseInt(req.body.total)
+
   console.log("it comming");
   console.log(req.session.user._id);
-  validateCoupon(req.body.code,total,req.session.user._id).then((response)=>{
+  validateCoupon(req.body.code, total, req.session.user._id).then((response) => {
     res.json(response)
   })
-  
+
 })
+
 
 
 
@@ -337,9 +396,17 @@ router.post('/changequantity', (req, res) => {
   console.log(cartId);
   console.log(prodId);
   console.log(count);
-  changeQuantity(cartId, prodId, count, qty).then((result) => {
+  changeQuantity(cartId, prodId, count, qty).then(async (result) => {
+
+    let subtotal = await getSingle(req.session.user._id, cartId, prodId)
+
+    let tot = await getTotalAmount(req.session.user._id)
+
+    console.log("total$$", tot);
+
+
     if (result) {
-      res.json({ status: true })
+      res.json({ status: true, total: tot, sub: subtotal[0] })
     }
   })
 
@@ -361,6 +428,9 @@ router.get('/signup', function (req, res) {
 });
 
 router.post('/signup', function (req, res) {
+  
+
+
   db.userSignup(req.body).then((data) => {
     if (data.status) {
 
@@ -537,6 +607,57 @@ router.post('/mobile_otp', (req, res) => {
 
 })
 
+router.post('/signin-mobile_otp', (req, res) => {
+  console.log(req.body.number);
+  getNumber(req.body.number).then((result) => {
+    console.log("resukt", result);
+
+    if (!result) {
+
+      twilio.verify.services(serviceSID)
+        .verifications.create({
+          to: `+91${req.body.number}`,
+          channel: "sms",
+          message: "thsfasd"
+        }).then((response) => {
+          let status = response.status
+          if (status == "pending") {
+            res.json({ status: true })
+          }
+
+        })
+
+    }
+    else {
+      res.json({ status: "nonum", mes: "Number already registered" })
+
+    }
+  }
+
+  )
+
+})
+
+
+router.post('/search-product',(req,res)=>{
+
+  searchProduct(req.body.keyword).then((result)=>{
+    if(result){
+
+      res.json({body:result})
+    }
+    else{
+      res.json({body:false})
+    }
+    
+
+  })
+
+
+
+})
+
+
 router.post('/verify-otp', (req, res) => {
 
   let otp = req.body.oneTime
@@ -562,7 +683,38 @@ router.post('/verify-otp', (req, res) => {
       }
       else {
         res.json({ status: false })
-        console.log("declined");
+
+      }
+
+    }).catch((error) => {
+      console.log(error);
+
+    })
+
+})
+
+
+router.post('/signin-verify-otp', (req, res) => {
+
+  let otp = req.body.oneTime
+  let number = req.body.number
+  console.log("verify_otp");
+  console.log(otp, number);
+  twilio.verify.services(serviceSID)
+    .verificationChecks.create({
+      to: `+91${number}`,
+      code: otp
+    }).then((response) => {
+      let status = response.status
+      let valid = response.valid
+      console.log(response);
+      if (status == "approved" && valid == true) {
+        res.json({status:true})
+
+      }
+      else {
+        res.json({ status: false })
+
       }
 
     }).catch((error) => {
@@ -626,7 +778,7 @@ router.post('/buynow-place-order', async function (req, res) {
 
 
 router.post('/place-order', async function (req, res) {
-  console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$",req.query);
+  console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$", req.query);
 
 
   if (req.body.prodid == '') {
@@ -634,10 +786,10 @@ router.post('/place-order', async function (req, res) {
     let products = await getCartProductList(req.body.userid)
     let total_amount = await getTotalAmount(req.body.userid)
     console.log(total_amount);
-    if(req.query.coupon=="true"){
-      let result=await validateCoupon(req.query.code,total_amount.total,req.session.user._id)
-      total_amount.total=result.amount
-    }else{
+    if (req.query.coupon == "true") {
+      let result = await validateCoupon(req.query.code, total_amount.total, req.session.user._id)
+      total_amount.total = result.amount
+    } else {
 
     }
 
@@ -647,7 +799,7 @@ router.post('/place-order', async function (req, res) {
       console.log("selected", selectedAddress);
       if (req.body.mode == "cod") {
         req.session.user.ordersuccess = true;
-        placeOrder(selectedAddress, req.body, products, total_amount,req.query.code).then((result) => {
+        placeOrder(selectedAddress, req.body, products, total_amount, req.query.code).then((result) => {
           console.log(result);
           res.json({ codSuccess: true })
         })
@@ -731,7 +883,7 @@ router.post('/place-order', async function (req, res) {
 router.get('/address', checkLogin, async (req, res) => {
   console.log(req.query);
   if (req.query.sudden == "true") {
-   
+
     let user = req.session.user._id;
     let email = req.session.user.email
 
@@ -827,13 +979,13 @@ router.get('/buynow-add-address/:id', checkLogin, (req, res) => {
 
 
 router.get('/add-address', checkLogin, (req, res) => {
-  console.log("fromprofile",req.query);
+  console.log("fromprofile", req.query);
   let profile
   if (!req.query.id == '') {
-    if(req.query.profile=='true'){
-      profile=req.query.profile
+    if (req.query.profile == 'true') {
+      profile = req.query.profile
     }
-    console.log("profile",profile);
+    console.log("profile", profile);
 
     let productId = req.query.id
     console.log(req.body);
@@ -841,18 +993,18 @@ router.get('/add-address', checkLogin, (req, res) => {
     email = req.session.user.email
     let random = Math.floor(1000 + Math.random() * 9000)
     console.log(random);
-    res.render("user-pages/add-address", { productId,profile, random, email, user, noheader: true, })
+    res.render("user-pages/add-address", { productId, profile, random, email, user, noheader: true, })
   }
   else {
-    if(req.query.profile=='true'){
-      profile=req.query.profile
+    if (req.query.profile == 'true') {
+      profile = req.query.profile
     }
-    console.log("profile",profile);
+    console.log("profile", profile);
     user = req.session.user._id
     email = req.session.user.email
     let random = Math.floor(1000 + Math.random() * 9000)
     console.log(random);
-    res.render("user-pages/add-address", { random,profile, email, user, noheader: true, })
+    res.render("user-pages/add-address", { random, profile, email, user, noheader: true, })
 
   }
 
@@ -862,17 +1014,17 @@ router.get('/add-address', checkLogin, (req, res) => {
 
 router.post('/add-address', (req, res) => {
 
-  
-   console.log(req.query);
+
+  console.log(req.query);
   addAddress(req.body).then((result) => {
     console.log("result vannuuu", result)
-    if (req.query.pro=='true') {
-      console.log(req.query,"true");
-      res.json({ status: result,profile:true })
-    
-    }else{
+    if (req.query.pro == 'true') {
+      console.log(req.query, "true");
+      res.json({ status: result, profile: true })
+
+    } else {
       res.json({ status: result })
-      
+
     }
   })
 
@@ -944,16 +1096,16 @@ router.get('/buynow/:id', checkLogin, async (req, res) => {
   }
 
 })
-router.post('/change-password',async(req,res)=>{
-  let response= await changePassword(req.body.old_password,req.body.new_password,req.session.user.email)
-  if(response){
-    res.json({status:true,mes:"Password changed successfully"})
-    
-  }else{
-    res.json({status:false,mes:"password not match"})
+router.post('/change-password', async (req, res) => {
+  let response = await changePassword(req.body.old_password, req.body.new_password, req.session.user.email)
+  if (response) {
+    res.json({ status: true, mes: "Password changed successfully" })
+
+  } else {
+    res.json({ status: false, mes: "password not match" })
 
   }
-    
+
 })
 
 
@@ -971,10 +1123,10 @@ router.post('/add-address', (req, res) => {
 router.get('/delete-address', (req, res) => {
   let profile
   let id = req.query.id
-  if(req.query.profile=='true'){
-    profile=req.query.profile
+  if (req.query.profile == 'true') {
+    profile = req.query.profile
   }
-  console.log("profile",profile);
+  console.log("profile", profile);
   let prodid = req.query.prodid
   if (!prodid == " ") {
 
@@ -994,19 +1146,52 @@ router.get('/delete-address', (req, res) => {
     console.log(email, id);
 
     deleteAddress(email, id).then((result) => {
-      if(req.query.profile=='true'){
+      if (req.query.profile == 'true') {
         res.redirect('/profile');
 
-      }else{
+      } else {
 
         res.redirect('/address');
       }
-      
+
 
     })
 
   }
 
+
+})
+
+router.get('/edit-address',async(req,res)=>{
+  let add
+  user=req.session.user.email
+
+  console.log(user);
+  console.log(req.query);
+  id=req.query.id
+  getAddress(req.query.id,user).then((response)=>{
+    response.address.find((elem)=>{
+      if(elem.id==req.query.id){
+        add=elem
+
+      }
+    })
+    console.log("adddresss",add);
+    res.render('user-pages/editaddress',{id,user,add,noheader:true})
+    
+
+  })
+
+
+})
+
+
+router.post('/edit',(req,res)=>{
+
+  console.log("edit addressss",req.body);
+  editAddress(req.body).then((response)=>{
+    res.json({status:true})
+  })
 
 })
 

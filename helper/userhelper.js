@@ -72,6 +72,53 @@ module.exports = {
         })
 
     },
+    addtoWishList:(userid,prodid)=>{
+  
+        console.log("dataaaaaaaa",userid,prodid);
+
+        let proOb = {
+            item: prodid,
+        }
+
+
+        return new Promise(async (resolve, reject) => {
+
+            let user = await db.get().collection("wishlist").findOne({ user: userid })
+
+
+
+            if (user) {
+                let proExsist = user.products.findIndex(product => product.item == prodid)
+
+                if (proExsist != -1) {
+                    resolve({status:"Already in wish list"})
+                   
+                }
+                else {
+
+
+                    db.get().collection("wishlist").updateOne({ user: userid }, {
+                        $push: { products: proOb }
+                    }).then(() => {
+                        resolve({status:"Added to wishlist"})
+                    })
+                }
+
+            }
+            else {
+                let cartobj = {
+                    user: userid,
+                    products: [proOb]
+                }
+
+                db.get().collection("wishlist").insertOne(cartobj).then((result) => {
+                    resolve({status:"Added to wishlist"})
+                })
+            }
+        })
+        
+
+    },
     changePassword:(oldp,newp,email)=>{
         return new Promise(async(resolve,reject)=>{
           
@@ -239,12 +286,24 @@ module.exports = {
             
     },
     getAddress:(add_id,eml)=>{
-    console.log("adddid",add_id,eml);
+   
         return new Promise(async(resolve,reject)=>{
             let address=await db.get().collection("address").findOne({email:eml},{address:{$eleMatch:{id:add_id}}})
-            console.log("addresss kittyyy",address);
+           
             resolve(address)
         })
+    },
+    editAddress:(data)=>{
+        return new Promise(async(resolve,reject)=>{
+            db.get().collection("address").updateOne({email:data.email,"address.id":data.id},{$set:{"address.$.name":data.name,"address.$.email":data.email,"address.$.id":data.id,"address.$.city":data.city,"address.$.pin":data.pin,"address.$.address":data.address,"address.$.state":data.state}}).then((response)=>{
+                console.log("set set set",response);
+                resolve(true)
+
+            })
+
+
+        })
+
     },
     addAddress:(data)=>{
         return new Promise(async(resolve,reject)=>{

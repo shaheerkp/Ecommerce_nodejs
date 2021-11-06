@@ -15,7 +15,7 @@
                         <h5>items in your cart [ {{cart_count}}]</h5>
                     </div>
                     {{#each items}}
-                                        
+
 
                     <div class="ibox-content">
                         <div class="table-responsive">
@@ -37,23 +37,26 @@
                                                     {{this.products.product_name}}
                                                 </a>
                                             </h3>
-                                             <h6 >
+                                            <h6>
                                                 <p style="color: rgb(121, 120, 120);" href="#" class="text-navy">
                                                     {{this.products.sub_category}}
                                                 </p>
                                             </h6>
                                             {{#if this.products.offer}}
-                                            <p style="color: rgb(121, 120, 120);" id="offprice+{{this.products._id}}" class="small">
-                                               RS : {{this.products.offer_price}}
+                                            <p style="color: rgb(121, 120, 120);" id="offprice+{{this.products._id}}"
+                                                class="small">
+                                                RS : {{this.products.offer_price}}
                                             </p>
-                                            <p style="color: rgb(237, 65, 65);text-decoration: line-through;" class="small">
-                                               RS : {{this.products.price}}
+                                            <p style="color: rgb(237, 65, 65);text-decoration: line-through;"
+                                                id="price+{{this.products._id}}" class="small">
+                                                RS : {{this.products.price}}
                                             </p>
 
                                             {{else}}
-                                            
-                                            <p style="color: rgb(121, 120, 120);" class="small">
-                                               RS : {{this.products.price}}
+
+                                            <p style="color: rgb(121, 120, 120);" id="price+{{this.products._id}}"
+                                                class="small">
+                                                RS : {{this.products.price}}
                                             </p>
                                             {{/if}}
 
@@ -88,24 +91,27 @@
 
                                         <td>
 
-                                             {{#if this.products.offer}}
-                                            <p  style="color: rgb(4, 4, 4);font-size: small;" id="offprice{{this.products._id}}"  class="small">
-                                               RS : {{this.off_subtotal}}
+                                            {{#if this.products.offer}}
+                                            <p style="color: rgb(4, 4, 4);font-size: small;"
+                                                id="offprice{{this.products._id}}" class="small">
+                                                RS : {{this.off_subtotal}}
                                             </p>
-                                            <p style="color: rgb(237, 65, 65);text-decoration: line-through;font-size: small;" id="price{{this.products._id}}"  class="small me-2">
-                                               RS : {{this.subtotal}}
+                                            <p style="color: rgb(237, 65, 65);text-decoration: line-through;font-size: small;"
+                                                id="price{{this.products._id}}" class="small me-2">
+                                                RS : {{this.subtotal}}
                                             </p>
 
                                             {{else}}
-                                            
-                                            <p style="color: rgb(121, 120, 120);" id="price{{this.products._id}}" class="small">
-                                               RS : {{this.subtotal}}
+
+                                            <p style="color: rgb(121, 120, 120);" id="price{{this.products._id}}"
+                                                class="small">
+                                                RS : {{this.subtotal}}
                                             </p>
                                             {{/if}}
                                         </td>
 
                                     </tr>
-                                  
+
                                     {{/each}}
                                 </tbody>
                             </table>
@@ -136,18 +142,18 @@
                         <span>
                             Total
                         </span>
-                          {{#if offer_total}}
-                            <h2 class="font-bold">
+                        {{#if offer_total}}
+                        <h2 id="_total" class="font-bold">
                             RS : {{offer_total}}
                         </h2>
 
-                          {{else}}
-                        <h2 class="font-bold">
+                        {{else}}
+                        <h2 id="_total" class="font-bold">
                             RS : {{total.total}}
 
                         </h2>
 
-                          {{/if}}
+                        {{/if}}
 
                         <hr>
                         <span class="text-muted small">
@@ -213,8 +219,8 @@
 </div>
 {{else}}
 <div>
-    <h1  class="mt-5 p-5 ms-5">NO Products In Cart</h1>
-    <a href="/" class=" ms-5 btn btn-primary" >Go to home</a>
+    <h1 class="mt-5 p-5 ms-5">NO Products In Cart</h1>
+    <a href="/" class=" ms-5 btn btn-primary">Go to home</a>
 
 </div>
 {{/if}}

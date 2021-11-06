@@ -1,5 +1,5 @@
 <div class="login">
-  <div class="bg-light p-3">
+  <div style="background-color:  rgb(205, 153, 153);" class="p-3">
     <div>
       <h5 class="model-text pt-5">Welcome to cart</h5>
     </div>
@@ -7,40 +7,44 @@
     <p class="model-text pt-4" id="exampleModalLabel">Join/sign using to cart</p>
 
     <div class="g-signin2 ps-4" data-onsuccess="onSignIn"></div>
+  
+
+    <form action="" style="display: none; " class="mt-3" role="form" id="otp-form">
+
+      <span class="text-danger" id="number_err"></span>
+      <input type="number" style="width: 250px;" class="form-control" name="email" id="otp_number">
+
+      <button type="submit" id="sent-otp" class="btn-sm mt-2 ms-2  btn-primary">Sent Otp</button>
+      <button type="submit" style="display: none;" id="resent-otp" class="btn-sm mt-2 ms-2  btn-primary">Resent
+        Otp</button>
+
+      <p class="ms-2 text-danger" style="display: none;" id="countdown">000</p>
+    </form>
+
+    <div style="display: none;" id="otp_div" class=" row  input-group ms-2 mt-3 mb-3">
+      <input type="text" id="ver_otp" class="form-control" placeholder="Enter Otp" aria-label="Recipient's username"
+        aria-describedby="basic-addon2">
+      <div class=" col-lg-6 input-group-append">
+        <button id="ver_submit_btn" class="btn btn-outline-secondary" type="button">Submit</button>
+      </div>
+    </div>
+
+     <button id="otpbtn" style="margin-left: 24px;margin-top: 15px;" class="btn btn-success">OTP login</button>
+
+
+
     <div class="or-separator">
-      <hr> <span class="or-text-desktop"> Or </span>
+      <hr> <span class="or-text-desktop text-dark"> Or </span>
     </div>
 
-    <form action="" role="form" id="otp-form">
-
-        <label  class="form-label ms-2">Otp Login</label>
-         <span class="text-danger" id="number_err" ></span>
-        <input type="number"  class="form-control" name="email" id="otp_number" >
-
-        <button type="submit" class="btn-sm mt-2 ms-2  btn-primary">Sent Otp</button>
-     </form>
-
-      <div style="display: none;"  id="otp_div"  class=" row  input-group ms-2 mt-3 mb-3">
-  <input type="text" id="ver_otp" class="form-control" placeholder="Enter Otp" aria-label="Recipient's username" aria-describedby="basic-addon2">
-  <div  class=" col-lg-6 input-group-append">
-    <button id="ver_submit_btn" class="btn btn-outline-secondary" type="button">Submit</button>
-  </div>
-</div>
-
-    
-
-
-     <div class="or-separator">
-      <hr> <span class="or-text-desktop"> Or </span>
-    </div>
 
 
     <form class="p-3 pb-5 form" role="form" id="login-form">
       <span id="err" class="text-center text-danger"> </span>
       <div class="mb-3">
-       
+
         <label for="exampleInputEmail1" class="form-label">Email address</label>
-         <span id="email_err" class="text-center text-danger"> </span>
+        <span id="email_err" class="text-center text-danger"> </span>
         <input type="email" class="form-control" name="email" id="login_email" aria-describedby="emailHelp">
       </div>
       <div class="mb-3">
@@ -52,7 +56,9 @@
 
       </div>
       <a href="/signup">Create an account</a>
+   
     </form>
+
   </div>
 </div>
 
@@ -61,3 +67,12 @@
 
 <script src="/javascripts/user/userlogin.js"></script>
 <script src="/javascripts/user/googleauth.js"></script>
+
+
+<script>
+  document.getElementById('otpbtn').onclick=e=>{
+    document.getElementById('otp-form').style.display=""
+    document.getElementById('otpbtn').style.display='none'
+
+  }
+</script>

@@ -40,6 +40,11 @@
                 <i class="ms-5 fas fa-trash-alt"></i>
 
             </a>
+              <a onclick="return confirm('Are you sure you want to delete this item?');"
+                href="/edit-address?id={{this.id}}">
+                <i class="fas fa-edit ms-2"></i>
+
+            </a>
         </div>
 
         {{/each}}

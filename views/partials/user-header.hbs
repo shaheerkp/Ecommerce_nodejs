@@ -1,8 +1,5 @@
-
-
-
-
-<nav style="max-height: 100px;" class="navbar container-fluid navbar-expand-lg nav-cus  navbar-light bg-white fixed-top ">
+<nav style="max-height: 100px;"
+  class="navbar container-fluid navbar-expand-lg nav-cus  navbar-light bg-white fixed-top ">
   <div class="container-fluid mt-lg-4">
 
     <a class="navbar-brand cart" href="#">CART</a>
@@ -26,7 +23,7 @@
           </a>
           <ul class="dropdown-menu dropdown-menu1 mt-4" aria-labelledby="navbarDropdown">
             {{#each this.subcategories }}
-            <li><a class="dropdown-item"  href="/viewProducts/{{this.name}}" >{{this.name }}</a></li>
+            <li><a class="dropdown-item" href="/viewProducts/{{this.name}}">{{this.name }}</a></li>
             {{/each}}
 
           </ul>
@@ -41,8 +38,9 @@
             <h6 class="ms-5 d-flex justify-content-center">Welcome to CART</b> </h6>
             {{/if}}
 
-            <form class="d-flex justify-content-center">
-              <input class="form-control me-2 search-field" type="search" placeholder="Search" aria-label="Search">
+            <form id="search-form" class="d-flex justify-content-center">
+              <input class="form-control me-2 search-field" id="searchkey" type="search" placeholder="Search"
+                aria-label="Search">
             </form>
 
           </div>
@@ -57,6 +55,8 @@
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
               {{#if user.isLoggedin}}
               <li><a class="dropdown-item" href="/signout" id="signout">SIGN OUT</a></li>
+              <hr>
+              <li><a class="dropdown-item" href="/profile">Profile</a></li>
               {{else }}
 
               <li><a class="dropdown-item" href="/login">SIGN IN</a></li>
@@ -74,21 +74,23 @@
 
         <li class="nav-item dropdown ">
 
-           
+
 
           <div class="navbar-btns rounded-circle text-white text-center dropdown mt-4">
 
             <i class=" dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown"
               aria-expanded="false">
-              <i class="fas fa-cart-plus cart-icon"></i> <span class=" badge badge-success text-danger" id="cart_count">{{cart_count}}</span>
+              <i class="fas fa-cart-plus cart-icon"></i> <span class=" badge badge-success text-danger"
+                id="cart_count">{{cart_count}}</span>
             </i>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-               {{#if user.isLoggedin}}
+              {{#if user.isLoggedin}}
               <li><a class="dropdown-item" href="/cart">Cart</a></li>
               <hr>
-              <li><a class="dropdown-item" href="/order-details">Order Details</a></li>
+              <li><a class="dropdown-item" href="/wishlist">Wishlist</a></li>
               <hr>
-              <li><a class="dropdown-item" href="/profile">Profile</a></li>
+              <li><a class="dropdown-item" href="/order-details">Order Details</a></li>
+
               {{else}}
               <li><a class="dropdown-item" href="/login">Login</a></li>
               {{/if}}
@@ -109,6 +111,109 @@
 
 <script>
 
+  document.getElementById('search-form').onsubmit = e => {
+    e.preventDefault()
+    let keyword = document.getElementById("searchkey").value
+
+    alert(keyword)
+    $.ajax({
+      url: '/search-product',
+      method: 'post',
+      data: { keyword },
+      success: function (response) {
+
+        document.getElementById('full-div').style.display = "none"
+          document.getElementById("searchrow").innerHTML = ""
+        if (response.body) {
+  
+          let elem
+          for (let i = 0; i < response.body.length; i++) {
+            elem = ` <div class="col-lg-3 ">
+                <div class="card">
+                    <img src="/product-images/${response.body[i]._id}1.jpg" data-NZoomscale="2" class="zoom card-img-top"
+                        alt="...">
+                    <div style="z-index: 10;">
+
+
+                    </div>
+
+                    <div class="card-body">
+                        <div class="row">
+
+                            {{#if offer}}
+                            <p class="text-center price">${response.body[i].off}% off </p>
+                            {{else}}
+                            <p class="text-center text-white price">. </p>
+                            {{/if}}
+                            <a href="/product-detail?id=${response.body[i]._id}" class="fill-div" style="text-decoration: none;">
+
+                                <div class="col-lg-12">
+                                    <p style="font-size: 15px;" class="card-title cardtitle">${response.body[i].product_name}</p>
+
+                                </div>
+                            </a>
+                            <div class="col-lg-9">
+                                <p class="text-center price" style="font-weight: lighter;color: rgb(119, 119, 119);">
+                                    ${response.body[i].sub_category}</p>
+
+                            </div>
+                            <div class="col-lg-3">
+                                <button onclick="wishList('${response.body[i]._id}')" class="btn btn-light">
+                                    <span id="heart">
+
+                                        <i class="far fa-heart"></i></span>
+                                </button>
+                            </div>
+
+                        </div>
+                        {{#if offer}}
+                        <div class="row d-flex justify-content-center">
+                            <div class="col-4">
+                                <p style="text-decoration: line-through;color: rgb(225, 34, 34);"
+                                    class="text-center price">RS: ${response.body[i].price} </p>
+
+                            </div>
+                            <div class="col-6">
+                                <p class="text-center price">RS: ${response.body[i].offer_price} </p>
+
+                            </div>
+
+                        </div>
+
+                        {{else}}
+                        <p class="text-center price">RS: ${response.body[i].price} </p>
+
+                        {{/if}}
+                    </div>
+                    <div class="row mb-3">
+
+                        <div class="col-6 ms-2"><a class="btn btn-info" onclick="addtoCart('${response.body[i]._id}')"
+                                style="width: 9rem;">ADD TO CART</a></div>
+                        <div class="col-4 ms-3"><a class="btn btn-success"
+                                href="/address/?sudden=true&&prodid=${response.body[i]._id}" style="=width:3rem">BUY</a></div>
+                    </div>
+
+                </div>
+            </div>`
+
+            document.getElementById("searchrow").innerHTML += elem
+          }
+          document.getElementById("searchdiv").style.display = ''
+        }
+        else{
+    
+           document.getElementById("searchdiv").innerHTML = "noproducts"
+
+        }
+
+
+
+
+      }
+    })
+  }
+
+
 
   function signOut() {
     var auth2 = gapi.auth2.getAuthInstance();
@@ -119,5 +224,8 @@
 
 
 
- </script>
- <script src="/javascripts/user/cart.js" ></script>
+
+
+
+</script>
+<script src="/javascripts/user/cart.js"></script>
