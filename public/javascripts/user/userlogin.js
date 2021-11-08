@@ -9,7 +9,13 @@ $("#login-form").submit((e) => {
     success: function (response) {
       console.log(response);
       if (response.status) {
-        location.replace('/');
+        if(response.guest){
+          location.href=`/addtocart/${response.guest}`
+
+        }else{
+          
+          location.replace('/');
+        }
 
       }
       else {

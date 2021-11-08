@@ -29,7 +29,14 @@
      -webkit-transition-duration: 0.5s;
      -moz-transition-duration: 0.5s;
      -o-transition-duration: 0.5s;
+
  }
+
+
+tr:nth-child(even) {background-color: #f2f2f2;}
+tr {
+  font-size: small;
+}
 
 </style>
 </head>
@@ -112,6 +119,10 @@
 
                             </nav>
                         </div>
+                          <a class="nav-link" href="/admin/banners">
+              <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+              Banners
+            </a>
 
                     </div>
 
@@ -172,12 +183,10 @@
         <td>
 
               <a href="/admin/updateProduct/{{this._id}}"  class="btn btn-primary a-btn-slide-text">
-        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-        <span><strong>Edit</strong></span>            
+        <i class="fas fa-edit"></i>    
     </a>
         <a href="/admin/deleteProduct/{{this._id}}" onclick="return confirm('Delete {{this.firstName}} ?')" class="btn btn-danger a-btn-slide-text">
-       <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-        <span><strong>Delete</strong></span>            
+      <i class="fas fa-trash-alt"></i>     
     </a>
          
       

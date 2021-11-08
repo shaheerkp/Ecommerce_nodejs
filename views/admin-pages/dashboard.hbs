@@ -75,7 +75,7 @@
                         </a>
                         <a class="nav-link" href="/admin/product-mgmt">
                             <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                            Produc Management
+                            Product Management
                         </a>
 
                         <a class="nav-link collapsed" href="#" data-bs-toggle="collapse"
@@ -94,12 +94,17 @@
                             </nav>
                         </div>
 
+                        <a class="nav-link" href="/admin/banners">
+                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                            Banners
+                        </a>
+
                     </div>
 
                 </div>
                 <div class="sb-sidenav-footer">
-                    <div class="small">Logged in as:</div>
-                    Start Bootstrap
+                    <div class="small">Logged in as:Shaheer kp</div>
+
                 </div>
             </nav>
         </div>
@@ -112,6 +117,41 @@
 
                         <canvas id="pie-chart" width="800" height="450"></canvas>
                         <canvas id="bar-chart1" width="800" height="450"></canvas>
+
+                        <h3>Latest Orders</h3>
+
+                        <div>
+
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">payment</th>
+                                        <th scope="col">amount</th>
+                                        <th scope="col">Place</th>
+                                        <th scope="col">Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    {{#each latest}}
+
+
+                                    <tr class="table-primary">
+                                        <td scope="row">{{this.orderObj.delivery_address.name}}</td>
+                                        <td>{{this.orderObj.payment}}</td>
+                                        <td>{{this.orderObj.amount}}</td>
+                                        <td>{{this.orderObj.delivery_address.city}}</td>
+                                        <td>{{this.orderObj.date}}</td>
+                                    </tr>
+                                    {{/each}}
+
+
+
+                                </tbody>
+                            </table>
+                        </div>
+
 
 
                     </div>
@@ -219,7 +259,7 @@
                         data: {
                             labels: [days[(new Date().getDay()) % 7], days[(new Date().getDay() + 1) % 7], days[(new Date().getDay() + 2) % 7], days[(new Date().getDay() + 3) % 7], days[(new Date().getDay() + 4) % 7], days[(new Date().getDay() + 5) % 7], days[(new Date().getDay() + 6) % 7], days[(new Date().getDay())]],
                             datasets: [{
-                                label: "Population (millions)",
+                                label: "daily orders",
                                 backgroundColor: ["#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#c45850"],
                                 data: _data
                             }]
@@ -237,7 +277,7 @@
                             labels: ["COD", "P-PAL", "R_PAY"],
                             datasets: [
                                 {
-                                    label: "Population (millions)",
+                                    label: "Payment",
                                     backgroundColor: ["#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#c45850"],
                                     data: response.pay
                                 }
@@ -257,7 +297,7 @@
                             labels: ["Delivered", "Placed", "Cancelled",],
                             datasets: [
                                 {
-                                    label: "Population (millions)",
+                                    label: "Order status",
                                     backgroundColor: ["#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#c45850"],
                                     data: response.status
                                 }

@@ -6,7 +6,7 @@ var router = express.Router();
 var producthelper = require('../helper/producthelper')
 var userhelper = require('../helper/userhelper')
 var handlebars = require('express-handlebars');
-const { viewCategory, deleteSubcategory, viewProduct, deleteCategory, getOrderDetials, viewSubcategory, deleteProduct, addCategory, getAllOrders, changestatus,getOfferProducts, findProductByName, addOffer, deleteOffer, addCatOffer, getAllOrderDetials, validateCoupon, getAllCoupons, addCoupon, delCoupon, thisMonthIncome, searchBetween, getNewSalesReport } = require('../helper/producthelper');
+const { viewCategory, deleteSubcategory, viewProduct, deleteCategory, getOrderDetials, viewSubcategory, deleteProduct, addCategory, getAllOrders, changestatus, getOfferProducts, findProductByName, addOffer, deleteOffer, addCatOffer, getAllOrderDetials, validateCoupon, getAllCoupons, addCoupon, delCoupon, thisMonthIncome, searchBetween, getNewSalesReport, getLatestorders } = require('../helper/producthelper');
 const { addListener } = require('process');
 let admin_email = "kpshaheer123@gmail.com"
 let admin_password = "123"
@@ -49,37 +49,40 @@ router.get('/', function (req, res, next) {
 });
 
 router.get('/dashboard', check, async function (req, res, next) {
-  let products=await producthelper.getAllProducts()
-  products=products.length
-  let orders=await getAllOrderDetials()
-  orders=orders.length
-  let monthStatus=await thisMonthIncome()
-  console.log("month ",monthStatus);
- 
+  let products = await producthelper.getAllProducts()
+  products = products.length
+  let orders = await getAllOrderDetials()
+  orders = orders.length
+  let monthStatus = await thisMonthIncome()
+  let latest = await getLatestorders()
+
+
+
+
   await producthelper.getWeeklySales()
 
 
-  res.render("admin-pages/dashboard", {monthStatus,orders, products,admin: true, category: await getCategory() })
+  res.render("admin-pages/dashboard", { latest, monthStatus, orders, products, admin: true, category: await getCategory() })
 });
 
 
-router.post('/weeklySalesReport',async function(req,res){
- let sales =await producthelper.getWeeklySales()
- let payment=await producthelper.getPaymentCount()
- let ord_status=await producthelper.getWeeklyStatus()
+router.post('/weeklySalesReport', async function (req, res) {
+  let sales = await producthelper.getWeeklySales()
+  let payment = await producthelper.getPaymentCount()
+  let ord_status = await producthelper.getWeeklyStatus()
 
- res.json({data:sales,pay:payment,status:ord_status})
+  res.json({ data: sales, pay: payment, status: ord_status })
 
 
- 
+
 })
 
 
-router.post('/search-by-date',(req,res)=>{
- 
-  searchBetween(req.body).then((response)=>{
+router.post('/search-by-date', (req, res) => {
+
+  searchBetween(req.body).then((response) => {
     console.log(response);
-    res.json({response})
+    res.json({ response })
   })
 
 
@@ -114,6 +117,16 @@ router.get('/product-mgmt', check, function (req, res, next) {
   })
 
 });
+
+router.get('/banners', check, function (req, res, next) {
+  producthelper.getAllProducts().then(async (result) => {
+    res.render("admin-pages/banners", { admin: true, result, category: await getCategory() })
+
+  })
+
+});
+
+
 
 
 
@@ -187,44 +200,44 @@ router.post('/updateProduct', check, function (req, res, next) {
       let img2 = image2.replace(/^data:([A-Za-z-+/]+);base64,/, "")
       let img3 = image3.replace(/^data:([A-Za-z-+/]+);base64,/, "")
 
-      if(img1&&img2&&img3){
+      if (img1 && img2 && img3) {
 
 
-      fs.writeFileSync(path1, img1, { encoding: 'base64' })
-      fs.writeFileSync(path2, img2, { encoding: 'base64' })
-      fs.writeFileSync(path3, img3, { encoding: 'base64' })
-    }else if(img1&&img2){
-      fs.writeFileSync(path1, img1, { encoding: 'base64' })
-      fs.writeFileSync(path2, img2, { encoding: 'base64' })
+        fs.writeFileSync(path1, img1, { encoding: 'base64' })
+        fs.writeFileSync(path2, img2, { encoding: 'base64' })
+        fs.writeFileSync(path3, img3, { encoding: 'base64' })
+      } else if (img1 && img2) {
+        fs.writeFileSync(path1, img1, { encoding: 'base64' })
+        fs.writeFileSync(path2, img2, { encoding: 'base64' })
 
-    }else if(img2&&img3){
-      fs.writeFileSync(path2, img2, { encoding: 'base64' })
-      fs.writeFileSync(path3, img3, { encoding: 'base64' })
+      } else if (img2 && img3) {
+        fs.writeFileSync(path2, img2, { encoding: 'base64' })
+        fs.writeFileSync(path3, img3, { encoding: 'base64' })
 
-    }
-    else if(img1&&img3){
-      fs.writeFileSync(path1, img1, { encoding: 'base64' })
-      fs.writeFileSync(path3, img3, { encoding: 'base64' })
+      }
+      else if (img1 && img3) {
+        fs.writeFileSync(path1, img1, { encoding: 'base64' })
+        fs.writeFileSync(path3, img3, { encoding: 'base64' })
 
-    }
-    else if(img1){
-      fs.writeFileSync(path1, img1, { encoding: 'base64' })
-     
-    }
-    else if(img2){
-      fs.writeFileSync(path2, img2, { encoding: 'base64' })
-     
+      }
+      else if (img1) {
+        fs.writeFileSync(path1, img1, { encoding: 'base64' })
 
-    }
-    else if(img3){
-      fs.writeFileSync(path3, img3, { encoding: 'base64' })
-    }     
+      }
+      else if (img2) {
+        fs.writeFileSync(path2, img2, { encoding: 'base64' })
 
-    
+
+      }
+      else if (img3) {
+        fs.writeFileSync(path3, img3, { encoding: 'base64' })
+      }
+
+
 
       res.redirect('/admin/product-mgmt')
 
- 
+
 
 
 
@@ -274,7 +287,7 @@ router.post('/add-product', check, function (req, res, next) {
   let price = parseInt(req.body.price)
   let qty = parseInt(req.body.qty)
 
- 
+
 
   let image1 = req.body.img1
   let image2 = req.body.img2
@@ -321,6 +334,66 @@ router.post('/add-product', check, function (req, res, next) {
 });
 
 
+router.post('/add-banner', check, function (req, res, next) {
+  console.log("I am hereeeeeeeeeeeeeeee AT banner");
+
+
+
+
+  let image1 = req.body.img1
+  let image2 = req.body.img2
+  let image3 = req.body.img3
+
+
+
+  let path1 = `./public/banner-images/banner1.jpg`
+  let path2 = `./public/banner-images/banner2.jpg`
+  let path3 = `./public/banner-images/banner3.jpg`
+
+
+
+  let img1 = image1.replace(/^data:([A-Za-z-+/]+);base64,/, "")
+  let img2 = image2.replace(/^data:([A-Za-z-+/]+);base64,/, "")
+  let img3 = image3.replace(/^data:([A-Za-z-+/]+);base64,/, "")
+
+  if (img1 && img2 && img3) {
+
+
+    fs.writeFileSync(path1, img1, { encoding: 'base64' })
+    fs.writeFileSync(path2, img2, { encoding: 'base64' })
+    fs.writeFileSync(path3, img3, { encoding: 'base64' })
+  } else if (img1 && img2) {
+    fs.writeFileSync(path1, img1, { encoding: 'base64' })
+    fs.writeFileSync(path2, img2, { encoding: 'base64' })
+
+  } else if (img2 && img3) {
+    fs.writeFileSync(path2, img2, { encoding: 'base64' })
+    fs.writeFileSync(path3, img3, { encoding: 'base64' })
+
+  }
+  else if (img1 && img3) {
+    fs.writeFileSync(path1, img1, { encoding: 'base64' })
+    fs.writeFileSync(path3, img3, { encoding: 'base64' })
+
+  }
+  else if (img1) {
+    fs.writeFileSync(path1, img1, { encoding: 'base64' })
+
+  }
+  else if (img2) {
+    fs.writeFileSync(path2, img2, { encoding: 'base64' })
+
+
+  }
+  else if (img3) {
+    fs.writeFileSync(path3, img3, { encoding: 'base64' })
+  }
+
+  res.redirect('/admin/banners')
+
+});
+
+
 
 router.get('/user-management', check, function (req, res, next) {
   userhelper.viewUsers().then(async (result) => {
@@ -354,23 +427,23 @@ router.post('/changestatus', check, async (req, res) => {
   res.json({ status: true })
 })
 
-router.get('/coupons',check,async(req,res)=>{
+router.get('/coupons', check, async (req, res) => {
   producthelper.viewCategory().then(async (result) => {
-    console.log("sortcheyanda ",result);
-    res.render('admin-pages/coupons',{admin:true,result,category: await getCategory()})
+    console.log("sortcheyanda ", result);
+    res.render('admin-pages/coupons', { admin: true, result, category: await getCategory() })
   })
 
 
 })
 
-router.post('/filter',(req,res)=>{
+router.post('/filter', (req, res) => {
   console.log("_____________________");
   console.log(req.body);
-  getNewSalesReport(req.body.day).then((response)=>{
-    res.json({filtered_item:response})
+  getNewSalesReport(req.body.day).then((response) => {
+    res.json({ filtered_item: response })
 
   })
-  
+
 
 
 
@@ -471,97 +544,97 @@ router.post('/delete-subcategory', check, function (req, res) {
 
 })
 
-router.post('/get-offer-product',check,(req,res)=>{
-  findProductByName(req.body.sub_cat).then((data)=>{
-    res.json({data})
+router.post('/get-offer-product', check, (req, res) => {
+  findProductByName(req.body.sub_cat).then((data) => {
+    res.json({ data })
   })
-  
+
 })
 
-router.get('/add-offer',check,async(req,res)=>{
-  console.log("asdasdasd",req.query.id);
-  getOfferProducts(req.query.id).then((result)=>{
-    res.render("admin-pages/offer-details",{admin:true,result})
+router.get('/add-offer', check, async (req, res) => {
+  console.log("asdasdasd", req.query.id);
+  getOfferProducts(req.query.id).then((result) => {
+    res.render("admin-pages/offer-details", { admin: true, result })
   })
- 
+
 })
-router.get('/delete-offer',check,async(req,res)=>{
-  console.log("deletee",req.query.id);
-  deleteOffer(req.query.id).then((result)=>{
-   res.redirect("/admin/coupons")
+router.get('/delete-offer', check, async (req, res) => {
+  console.log("deletee", req.query.id);
+  deleteOffer(req.query.id).then((result) => {
+    res.redirect("/admin/coupons")
   })
- 
+
 })
 
 
 
-router.get('/category-offer',check,async(req,res)=>{
+router.get('/category-offer', check, async (req, res) => {
 
   producthelper.viewCategory().then(async (result) => {
-    console.log("sortcheyanda ",result);
-    res.render('admin-pages/categoryoffer-details',{admin:true,result,category: await getCategory()})
+    console.log("sortcheyanda ", result);
+    res.render('admin-pages/categoryoffer-details', { admin: true, result, category: await getCategory() })
   })
-  })
+})
 
 
 
-  router.post('/add-category-offer',check,(req,res)=>{
+router.post('/add-category-offer', check, (req, res) => {
 
-    console.log("asdasdasd",req.body);
-    let per=parseInt(req.body.perentage)
-    let date=req.body.exp_date
-    addCatOffer(req.body.sub_category,per,date)
-    
-  })
+  console.log("asdasdasd", req.body);
+  let per = parseInt(req.body.perentage)
+  let date = req.body.exp_date
+  addCatOffer(req.body.sub_category, per, date)
 
-
+})
 
 
 
-router.post("/add-offer",check,(req,res)=>{
+
+
+router.post("/add-offer", check, (req, res) => {
   console.log(req.body);
-  id=req.body._id
-  price=parseInt(req.body.price)
-  per=parseInt(req.body.perentage)
-  date=new Date(req.body.exp_date)
-  addOffer(id,price,per,date).then((result)=>{
-    res.json({status:true})
+  id = req.body._id
+  price = parseInt(req.body.price)
+  per = parseInt(req.body.perentage)
+  date = new Date(req.body.exp_date)
+  addOffer(id, price, per, date).then((result) => {
+    res.json({ status: true })
   })
 
-  
-})
-
-router.get('/salesreport',check,(req,res)=>{
-  getAllOrderDetials().then((result)=>{
-  
-    console.log("order details",result)
-    res.render("admin-pages/salesreport",{admin:true,result})
-    
-})
-})
-
-
-router.get('/coupon-offer',check,(req,res)=>{
- getAllCoupons().then((result)=>{
-   console.log(result);
-    res.render("admin-pages/coupon-offer",{admin:true,result})
-    
-})
-})
-
-router.post('/add-coupons',(req,res)=>{
- addCoupon(req.body).then((response)=>{
-   res.json({status:true,mes:"Coupon Added"})
- })
 
 })
-router.post('/del-coupons',(req,res)=>{
-  console.log("deleted "); 
-  delCoupon(req.body.id).then((response)=>{
-    res.json({status:true,mes:"Coupon Deleted"})
+
+router.get('/salesreport', check, (req, res) => {
+  getAllOrderDetials().then((result) => {
+
+    console.log("order details", result)
+    res.render("admin-pages/salesreport", { admin: true, result })
+
   })
- 
- })
+})
+
+
+router.get('/coupon-offer', check, (req, res) => {
+  getAllCoupons().then((result) => {
+    console.log(result);
+    res.render("admin-pages/coupon-offer", { admin: true, result })
+
+  })
+})
+
+router.post('/add-coupons', (req, res) => {
+  addCoupon(req.body).then((response) => {
+    res.json({ status: true, mes: "Coupon Added" })
+  })
+
+})
+router.post('/del-coupons', (req, res) => {
+  console.log("deleted ");
+  delCoupon(req.body.id).then((response) => {
+    res.json({ status: true, mes: "Coupon Deleted" })
+  })
+
+})
 
 
 

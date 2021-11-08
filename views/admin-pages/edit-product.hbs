@@ -1,7 +1,3 @@
-
-
-
-
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script src="https://kit.fontawesome.com/4f9ff9a3d7.js" crossorigin="anonymous"></script>
 <!-- Material Dashboard CSS -->
@@ -13,266 +9,407 @@
 <script src="https://unpkg.com/dropzone"></script>
 <script src="https://unpkg.com/cropperjs"></script>
 
-<form style="margin-top: 1rem;" action="/admin/updateProduct" onsubmit="return checkValid()" method="POST" enctype="multipart/form-data">
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <meta name="description" content="" />
+  <meta name="author" content="" />
+  <title>Dashboard - SB Admin</title>
+  <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" />
+  <link href="/css/styles.css" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"
+    crossorigin="anonymous"></script>
+</head>
 
-  <div class="form-row mt mb-5 bg-light container bg-light justify-content-center">
-  <h3 class=" mt-5 text-center" >Edit PRODUCTS </h3>
-    <div class="row">
-
-      <div class=" form-group col-md-6">
-        <input hidden name="_id" value="{{data._id}}" >
-
-        <label for="productname ">PRODUCT NAME</label>
-
-         <span id="p_name_err" class="text-center text-danger"> </span>
-        <input type="text" required name="product_name" value="{{data.product_name}}" class="form-control" id="p_name">
+<body class="sb-nav-fixed">
+  <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+    <!-- Navbar Brand-->
+    <a class="navbar-brand ps-3" href="index.html">Cart</a>
+    <!-- Sidebar Toggle-->
+    <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i
+        class="fas fa-bars"></i></button>
+    <!-- Navbar Search-->
+    <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
+      <div class="input-group">
+        <input class="form-control" type="text" placeholder="Search for..." aria-label="Search for..."
+          aria-describedby="btnNavbarSearch" />
+        <button class="btn btn-primary" id="btnNavbarSearch" type="button"><i class="fas fa-search"></i></button>
       </div>
+    </form>
+    <!-- Navbar-->
+    <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown"
+          aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+          <li><a class="dropdown-item" href="#!">Settings</a></li>
+          <li><a class="dropdown-item" href="#!">Activity Log</a></li>
+          <li>
+            <hr class="dropdown-divider" />
+          </li>
+          <li><a class="dropdown-item" href="#!">Logout</a></li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+  <div id="layoutSidenav">
+    <div id="layoutSidenav_nav">
+      <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+        <div class="sb-sidenav-menu">
+          <div class="nav">
+            <div class="sb-sidenav-menu-heading">Core</div>
+            <a class="nav-link" href="/admin/dashboard">
+              <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+              Dashboard
+            </a>
+            <a class="nav-link" href="/admin/salesreport">
+              <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+              Report
+            </a>
+            <a class="nav-link" href="/admin/order-management">
+              <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+              Order Management
+            </a>
+            <a class="nav-link" href="/admin/category-management">
+              <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+              Category Management
+            </a>
+            <a class="nav-link" href="/admin/user-management">
+              <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+              User Management
+            </a>
+            <a class="nav-link" href="/admin/product-mgmt">
+              <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+              Produc Management
+            </a>
+            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts"
+              aria-expanded="false" aria-controls="collapseLayouts">
+              <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+              Offers/Coupons
+              <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+            </a>
+            <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+              <nav class="sb-sidenav-menu-nested nav">
+                <a class="nav-link" href="/admin/coupons">Product-offer</a>
+                <a class="nav-link" href="/admin/category-offer">Category-offer</a>
+                <a class="nav-link" href="/admin/coupon-offer">Coupons</a>
 
-      <div hidden class="form-group col-md-6">
-        <label for="category">CATEGORY</label>
-        <input name="category" value="{{data.category}}">
-      </div>
-    </div>
+              </nav>
+            </div>
+            <a class="nav-link" href="/admin/banners">
+              <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+              Banners
+            </a>
 
-
-    <div class="row">
-
-      <div class="form-group col-md-6">
-        <label for="description">DESCRIPTION</label>
-        <input name="description" value="{{data.description}}" type="text" class="form-control" id="inputEmail4">
-      </div>
-
-      <div hidden class="form-group col-md-6">
-        <label for="subcategory">SUB CATEGORY</label>
-       <input name="sub_category" value="{{data.sub_category}}" >
-         
-        </select>
-      </div>
-
-    </div>
-
-    <div class="row">
-      <div class="form-group col-md-6">
-        <label for="price">PRICE</label>
-         <span id="price_err" class="text-center text-danger"> </span>
-        <input name="price" required type="number" value="{{data.price}}" class="form-control" id="p_price">
-      </div>
-
-      <div class="form-group col-md-6">
-        <label for="price">Quantity</label>
-        <span id="qty_err" class="text-center text-danger"> </span>
-        <input name="qty" style="width: 10rem;" value="{{data.qty}}" type="number" required class="form-control" id="inputqty">
-      </div>
-
-    </div>
-
-    {{!-- <div class="form-group  ">
-
-
-      <div class="row p-3">
-        <div class="mb-3 col-md-4  image-div">
-          <input accept="image/*" type='file' name="img1" id="imgInp"  />
-          <img id="img" style="height: 250px;width: 250px;" class="img-thumbnail" src="/product-images/{{data._id}}1.jpg"
-            alt=" https://cdn.iconscout.com/icon/free/png-256/gallery-187-902099.png" />
+          </div>
         </div>
-
-        <div class="mb-3 col-md-4  image-div">
-          <input accept="image/*" type='file' name="img2" id="imgInp1"  />
-          <img id="img1" style="height: 250px;width: 250px;" class="img-thumbnail image-fluid" src="/product-images/{{data._id}}2.jpg"
-            alt=" https://cdn.iconscout.com/icon/free/png-256/gallery-187-902099.png" />
+        <div class="sb-sidenav-footer">
+          <div class="small">Logged in as:</div>
+          Start Bootstrap
         </div>
+      </nav>
+    </div>
+    <div id="layoutSidenav_content" class="container ms-5">
+      <main>
 
-        <div class="mb-3 col-md-4  image-div">
-          <input accept="image/*" name="img3" type='file' id="imgInp2"  />
-          <img id="img2" style="height: 250px;width: 250px;" class="img-thumbnail" src="/product-images/{{data._id}}3.jpg"
-            alt=" https://cdn.iconscout.com/icon/free/png-256/gallery-187-902099.png"alt=" img" />
-        </div>
+        <form  action="/admin/updateProduct" onsubmit="return checkValid()" method="POST"
+          enctype="multipart/form-data">
 
-      </div>
 
-    </div> --}}
+          <div class="form-row mb-5 bg-light container bg-light justify-content-center">
+            <h3 class=" mt-5 text-center">Edit PRODUCTS </h3>
+            <div class="row">
 
-     <div class="container">
-        <div class="row justify-content-between" style="width:90%">
-        {{!-- item 1 start --}}
-        <div class="col-md-2 col-sm-2">
-            <h4 class="title"> Image 1</h4>
-            <div class="fileinput fileinput-new text-center">
-                <div class="fileinput-new thumbnail">
-                    <img width="150px" height="150px" src="/product-images/{{data._id}}1.jpg" id="chekPreview1" alt="...">
+              <div class=" form-group col-md-6">
+                <input hidden name="_id" value="{{data._id}}">
 
+                <label for="productname ">PRODUCT NAME</label>
+
+                <span id="p_name_err" class="text-center text-danger"> </span>
+                <input type="text" required name="product_name" value="{{data.product_name}}" class="form-control"
+                  id="p_name">
+              </div>
+
+              <div hidden class="form-group col-md-6">
+                <label for="category">CATEGORY</label>
+                <input name="category" value="{{data.category}}">
+              </div>
+            </div>
+
+
+            <div class="row">
+
+              <div class="form-group col-md-6">
+                <label for="description">DESCRIPTION</label>
+               
+                  <textarea name="description"  value="{{data.description}}" type="text" class="form-control"
+                  id="inputEmail4">{{data.description}}</textarea>
+              </div>
+
+              <div hidden class="form-group col-md-6">
+                <label for="subcategory">SUB CATEGORY</label>
+                <input name="sub_category" value="{{data.sub_category}}">
+
+                </select>
+              </div>
+
+            </div>
+
+            <div class="row">
+              <div class="form-group col-md-6">
+                <label for="price">PRICE</label>
+                <span id="price_err" class="text-center text-danger"> </span>
+                <input name="price" required type="number" value="{{data.price}}" class="form-control" id="p_price">
+              </div>
+
+              <div class="form-group col-md-6">
+                <label for="price">Quantity</label>
+                <span id="qty_err" class="text-center text-danger"> </span>
+                <input name="qty" style="width: 10rem;" value="{{data.qty}}" type="number" required class="form-control"
+                  id="inputqty">
+              </div>
+
+            </div>
+
+            {{!-- <div class="form-group  ">
+
+
+              <div class="row p-3">
+                <div class="mb-3 col-md-4  image-div">
+                  <input accept="image/*" type='file' name="img1" id="imgInp" />
+                  <img id="img" style="height: 250px;width: 250px;" class="img-thumbnail"
+                    src="/product-images/{{data._id}}1.jpg"
+                    alt=" https://cdn.iconscout.com/icon/free/png-256/gallery-187-902099.png" />
                 </div>
-                <div>
-                    <span class="btn btn-rose btn-round btn-file">
+
+                <div class="mb-3 col-md-4  image-div">
+                  <input accept="image/*" type='file' name="img2" id="imgInp1" />
+                  <img id="img1" style="height: 250px;width: 250px;" class="img-thumbnail image-fluid"
+                    src="/product-images/{{data._id}}2.jpg"
+                    alt=" https://cdn.iconscout.com/icon/free/png-256/gallery-187-902099.png" />
+                </div>
+
+                <div class="mb-3 col-md-4  image-div">
+                  <input accept="image/*" name="img3" type='file' id="imgInp2" />
+                  <img id="img2" style="height: 250px;width: 250px;" class="img-thumbnail"
+                    src="/product-images/{{data._id}}3.jpg"
+                    alt=" https://cdn.iconscout.com/icon/free/png-256/gallery-187-902099.png" alt=" img" />
+                </div>
+
+              </div>
+
+            </div> --}}
+
+            <div class="container">
+              <div class="row justify-content-between" style="width:90%">
+                {{!-- item 1 start --}}
+                <div class="col-md-2 col-sm-2">
+                  <h4 class="title"> Image 1</h4>
+                  <div class="fileinput fileinput-new text-center">
+                    <div class="fileinput-new thumbnail">
+                      <img width="150px" height="150px" src="/product-images/{{data._id}}1.jpg" id="chekPreview1"
+                        alt="...">
+
+                    </div>
+                    <div>
+                      <span class="btn btn-rose btn-round btn-file">
                         <span class="fileinput-new">Select image</span>
-                        <input type="file" id="image1" name="img1" accept="image/gif, image/jpeg, image/png"  />
+                        <input type="file" id="image1" name="img1" accept="image/gif, image/jpeg, image/png" />
                         <textarea name="img1" id="imageValue1" cols="30" rows="10" hidden></textarea>
-                    </span>
+                      </span>
+                    </div>
+                  </div>
                 </div>
-            </div>
-        </div>
 
-     {{!-- item 1 end--}}
+                {{!-- item 1 end--}}
 
 
 
-      {{!-- item 2 start --}}
-        <div class="col-md-2 col-sm-2">
-            <h4 class="title"> Image 2</h4>
-            <div class="fileinput fileinput-new text-center">
-                <div class="fileinput-new thumbnail">
-                    <img  width="150px" height="150px" src="/product-images/{{data._id}}2.jpg" id="chekPreview2" alt="...">
+                {{!-- item 2 start --}}
+                <div class="col-md-2 col-sm-2">
+                  <h4 class="title"> Image 2</h4>
+                  <div class="fileinput fileinput-new text-center">
+                    <div class="fileinput-new thumbnail">
+                      <img width="150px" height="150px" src="/product-images/{{data._id}}2.jpg" id="chekPreview2"
+                        alt="...">
 
-                </div>
-                <div>
-                    <span class="btn btn-rose btn-round btn-file">
+                    </div>
+                    <div>
+                      <span class="btn btn-rose btn-round btn-file">
                         <span class="fileinput-new">Select image</span>
-                        <input type="file" id="image2" name="img2" accept="image/gif, image/jpeg, image/png"  />
-                        <textarea name="img2"  id="imageValue2" cols="20" rows="5" hidden></textarea>
-                    </span>
+                        <input type="file" id="image2" name="img2" accept="image/gif, image/jpeg, image/png" />
+                        <textarea name="img2" id="imageValue2" cols="20" rows="5" hidden></textarea>
+                      </span>
+                    </div>
+                  </div>
                 </div>
-            </div>
-        </div>
 
-     {{!-- item 2 end--}}
+                {{!-- item 2 end--}}
 
 
-    {{!-- item 3 start --}}
-        <div class="col-md-2 col-sm-2">
-            <h4 class="title"> Image 3</h4>
-            <div class="fileinput fileinput-new text-center">
-                <div class="fileinput-new thumbnail">
-                    <img  width="150px" height="150px" src="/product-images/{{data._id}}3.jpg" id="chekPreview3" alt="...">
+                {{!-- item 3 start --}}
+                <div class="col-md-2 col-sm-2">
+                  <h4 class="title"> Image 3</h4>
+                  <div class="fileinput fileinput-new text-center">
+                    <div class="fileinput-new thumbnail">
+                      <img width="150px" height="150px" src="/product-images/{{data._id}}3.jpg" id="chekPreview3"
+                        alt="...">
 
-                </div>
-                <div>
-                    <span class="btn btn-rose btn-round btn-file">
+                    </div>
+                    <div>
+                      <span class="btn btn-rose btn-round btn-file">
                         <span style="width: 10rem;height: 10rem;" class="fileinput-new">Select image</span>
-                        <input type="file" name="img3" id="image3" accept="image/gif, image/jpeg, image/png"  />
+                        <input type="file" name="img3" id="image3" accept="image/gif, image/jpeg, image/png" />
                         <textarea name="img3" id="imageValue3" cols="10" rows="10" hidden></textarea>
-                    </span>
+                      </span>
+                    </div>
+                  </div>
                 </div>
+
+                {{!-- item 3 end--}}
+
+
+              </div>
             </div>
-        </div>
-
-     {{!-- item 3 end--}}
 
 
-    </div>
-</div>
+            <button type="submit" class=" mb-5 ms-5   btn btn-primary">Add Product</button>
 
+          </div>
+        </form>
 
-  <button type="submit" class=" mb-5 ms-5   btn btn-primary"   >Add Product</button>
-
-  </div>
-</form>
-
-<div class="modal" id="modal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
+        <div class="modal" id="modal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Crop Image Here</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+                  <span aria-hidden="true">&times;</span>
                 </button>
-            </div>
-            <div class="modal-body container">
+              </div>
+              <div class="modal-body container">
                 <div class="img-container">
-                            <img style="max-height: 300px;" src="" id="sampleImage1" />
-                    <div class="row">
-                        
-                        
-                        <div class="col-md-4">
-                            <div class="preview" id="preview1"></div>
-                        </div>
+                  <img style="max-height: 300px;" src="" id="sampleImage1" />
+                  <div class="row">
+
+
+                    <div class="col-md-4">
+                      <div class="preview" id="preview1"></div>
                     </div>
+                  </div>
                 </div>
-            </div>
-            <div class="modal-footer">
+              </div>
+              <div class="modal-footer">
 
                 <button type="button" id="crop1" class="btn btn-primary">Crop</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
 
+              </div>
             </div>
+          </div>
         </div>
-    </div>
-</div>
-<!-- Modal  1 end-->
+        <!-- Modal  1 end-->
 
- 
 
-<!-- Modal 2-->
-<div class="modal fade" id="modal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
+
+        <!-- Modal 2-->
+        <div class="modal fade" id="modal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Crop Image Here</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+                  <span aria-hidden="true">&times;</span>
                 </button>
-            </div>
-            <div class="modal-body">
+              </div>
+              <div class="modal-body">
                 <div class="img-container">
-                   <img style="max-height: 300px;"  src="" id="sampleImage2" />
-                    <div class="row">
-                        <div >
-                           
-                        </div>
-                        <div class="col-md-4">
-                            <div class="preview" id="preview2"></div>
-                        </div>
+                  <img style="max-height: 300px;" src="" id="sampleImage2" />
+                  <div class="row">
+                    <div>
+
                     </div>
+                    <div class="col-md-4">
+                      <div class="preview" id="preview2"></div>
+                    </div>
+                  </div>
                 </div>
-            </div>
-            <div class="modal-footer">
+              </div>
+              <div class="modal-footer">
 
                 <button type="button" id="crop2" class="btn btn-primary">Crop</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
 
+              </div>
             </div>
+          </div>
         </div>
-    </div>
-</div>
-<!-- Modal  2 end-->
+        <!-- Modal  2 end-->
 
 
-<!-- Modal 3-->
-<div class="modal fade" id="modal3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
+        <!-- Modal 3-->
+        <div class="modal fade" id="modal3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Crop Image Here</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+                  <span aria-hidden="true">&times;</span>
                 </button>
-            </div>
-            <div class="modal-body">
+              </div>
+              <div class="modal-body">
                 <div class="img-container">
-                    <div class="row">
-                       <img style="max-height: 300px;"  src="" id="sampleImage3" />
-                        <div>
-                           
-                        </div>
-                        <div class="col-md-4">
-                            <div class="preview" id="preview3"></div>
-                        </div>
+                  <div class="row">
+                    <img style="max-height: 300px;" src="" id="sampleImage3" />
+                    <div>
+
                     </div>
+                    <div class="col-md-4">
+                      <div class="preview" id="preview3"></div>
+                    </div>
+                  </div>
                 </div>
-            </div>
-            <div class="modal-footer">
+              </div>
+              <div class="modal-footer">
 
                 <button type="button" id="crop3" class="btn btn-primary">Crop</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
 
+              </div>
             </div>
+          </div>
         </div>
+        <!-- Modal  3 end-->
+
+
+
+
+      </main>
+      <footer class="py-4 bg-light mt-auto">
+
+      </footer>
     </div>
-</div>
-<!-- Modal  3 end-->
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+    crossorigin="anonymous"></script>
+  <script src="/javascripts/js/scripts.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+  <script src="/assets/demo/chart-area-demo.js"></script>
+  <script src="/assets/demo/chart-bar-demo.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
+  <script src="/javascripts/js/datatables-simple-demo.js"></script>
+</body>
+
+</html>
+
+
 
 
 
@@ -281,7 +418,7 @@
 
 <script>
 
-   document.getElementById('image1').onchange = e => {
+  document.getElementById('image1').onchange = e => {
     value = e.target.files[0]
     value = value.type
     console.log(value)
@@ -359,7 +496,7 @@
 
     if (parts[1] == "jpeg" || parts[1] == "jpg" || parts[1] == "png") {
       img2 = true
-      
+
       var image2 = document.getElementById('sampleImage2');
       var modal2 = $('#modal2');
       var cropper2;
@@ -424,13 +561,13 @@
   }
 
 
-   document.getElementById('image3').onchange = e => {
+  document.getElementById('image3').onchange = e => {
     value = e.target.value
     parts = value.split('.')
     console.log(parts[1])
     if (parts[1] == "jpeg" || parts[1] == "jpg" || parts[1] == "png") {
       img3 = true
-     
+
       var image3 = document.getElementById('sampleImage3');
       var modal3 = $('#modal3');
       var cropper3;
@@ -496,92 +633,92 @@
   }
 
 
-   let p_name=true;
-  let p_price=true;
-  let inputqty=true;
+  let p_name = true;
+  let p_price = true;
+  let inputqty = true;
   let img1 = true;
   let img2 = true;
   let img3 = true;
 
 
   $("#p_name").on('input', function () {
-  this.value = this.value.replace(/[^a-zA-Z ]/, '')
+    this.value = this.value.replace(/[^a-zA-Z ]/, '')
 
 
-  if (this.value.charAt(0) == " ") {
-    $("#p_name_err").html("should not start with space")
-    $(this).css({ borderColor: "red" })
-    p_name = false;
-  }
+    if (this.value.charAt(0) == " ") {
+      $("#p_name_err").html("should not start with space")
+      $(this).css({ borderColor: "red" })
+      p_name = false;
+    }
 
-  else if (this.value.length < 3) {
-    $("#p_name_err").text("should be atleast 2 character")
-    $(this).css({ borderColor: "red" })
-    p_name = false;
+    else if (this.value.length < 3) {
+      $("#p_name_err").text("should be atleast 2 character")
+      $(this).css({ borderColor: "red" })
+      p_name = false;
 
-  }
-  else if (this.value.length > 20) {
-    $("#p_name_err").text("should be max 20  character")
-    $(this).css({ borderColor: "red" })
-    p_name = false;
+    }
+    else if (this.value.length > 20) {
+      $("#p_name_err").text("should be max 20  character")
+      $(this).css({ borderColor: "red" })
+      p_name = false;
 
-  }
-  else if (this.value.includes("  ")) {
-    $("#p_name_err").text("should not have more spaces ")
-    $(this).css({ borderColor: "red" })
-    p_name = false;
+    }
+    else if (this.value.includes("  ")) {
+      $("#p_name_err").text("should not have more spaces ")
+      $(this).css({ borderColor: "red" })
+      p_name = false;
 
-  }
-  else {
-    $(this).css({ borderColor: "green" })
-    $("#p_name_err").html("")
-    p_name = true
-  }
-})
+    }
+    else {
+      $(this).css({ borderColor: "green" })
+      $("#p_name_err").html("")
+      p_name = true
+    }
+  })
 
 
 
-var u_number = document.getElementById("p_price")
-u_number.addEventListener('input', (e) => {
+  var u_number = document.getElementById("p_price")
+  u_number.addEventListener('input', (e) => {
     u_number.value = u_number.value.replace(/[^0-9]/, '').replace(/(\..*)\./, '$1');;
 
 
     if (u_number.value.length < 0) {
-       price_err.innerHTML = "Enter price"
-        p_price = false;
+      price_err.innerHTML = "Enter price"
+      p_price = false;
 
     }
     else {
-        price_err.innerHTML = " "
-        p_price = true;
+      price_err.innerHTML = " "
+      p_price = true;
 
     }
-})
+  })
 
 
-var qty = document.getElementById("inputqty")
-qty.addEventListener('input', (e) => {
+  var qty = document.getElementById("inputqty")
+  qty.addEventListener('input', (e) => {
     qty.value = qty.value.replace(/[^0-9]/, '').replace(/(\..*)\./, '$1');;
 
 
     if (qty.value.length < 0) {
-       qty_err.innerHTML = "Enter price"
-        inputqty = false;
+      qty_err.innerHTML = "Enter price"
+      inputqty = false;
 
     }
     else {
-        qty_err.innerHTML = " "
-        inputqty = true;
+      qty_err.innerHTML = " "
+      inputqty = true;
 
     }
-})
- 
+  })
 
 
 
 
 
- function checkValid() {
+
+  function checkValid() {
 
     if (p_name && p_price && inputqty && img1 && img2 && img3) {
       Swal.fire({

@@ -91,6 +91,10 @@
 
                             </nav>
                         </div>
+                        <a class="nav-link" href="/admin/banners">
+                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                            Banners
+                        </a>
 
                     </div>
                 </div>
@@ -256,24 +260,42 @@
 
     function deletecat(name) {
         console.log(name)
-        $.ajax({
-            url: "/admin/deletecat",
-            method: "post",
-            data: { name },
-            success: function (response) {
-                if (response.status) {
-                    alert(response.mes)
-                    location.replace('/admin/category-management')
 
-                }
 
-            },
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
 
-            error: function (err) {
-                alert("Something Error")
+                $.ajax({
+                    url: "/admin/deletecat",
+                    method: "post",
+                    data: { name },
+                    success: function (response) {
+                        if (response.status) {
+
+                            location.replace('/admin/category-management')
+
+                        }
+
+                    },
+
+                    error: function (err) {
+
+
+                    }
+                })
 
             }
         })
+
+
 
     }
 
@@ -340,7 +362,15 @@
                     console.log(response)
 
                     if (response.status) {
-                        alert(response.mes)
+
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Category added',
+                            showConfirmButton: false,
+                            timer: 1000
+                        })
+
                         location.replace('/admin/category-management')
 
                     }
@@ -402,7 +432,18 @@
 
 
     function updateSub(oldValue, id) {
-        let newValue = $("#" + id).val()
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                        let newValue = $("#" + id).val()
         $.ajax({
             url: "/admin/update-subcategory",
             method: 'POST',
@@ -410,7 +451,7 @@
             success: function (response) {
                 console.log(response.success)
                 if (response.success) {
-                    alert("Successfully updated subcategory")
+                    
                     location.replace('/admin/category-management')
                 }
                 else {
@@ -423,30 +464,53 @@
             }
 
         })
+            
+            }
+        })
+
+
 
     }
 
     function deleteSub(oldValue) {
-        $.ajax({
-            url: "/admin/delete-subcategory",
-            method: 'POST',
-            data: { oldValue },
-            success: function (response) {
-                console.log(response.success)
-                if (response) {
-                    alert("Successfully deleted subcategory")
-                    location.replace('/admin/category-management')
-                }
-                else {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "/admin/delete-subcategory",
+                    method: 'POST',
+                    data: { oldValue },
+                    success: function (response) {
+                        console.log(response.success)
+                        if (response) {
+                            window.location.replace('/admin/category-management')
+                        }
+                        else {
 
-                }
-            },
-            error: function (err) {
-                alert("Something Error")
+                        }
+                    },
+                    error: function (err) {
+                        alert("Something Error")
+
+                    }
+
+                })
 
             }
-
         })
+
+
+
+
+
+
 
     }
 

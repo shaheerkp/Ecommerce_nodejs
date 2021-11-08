@@ -1,13 +1,32 @@
 <div class="wrapper bg-white" style="margin-top: 150px;">
     <h4 class="pb-4 border-bottom">Account settings</h4>
-    <div class="d-flex justify-content-center align-items-start py-3 border-bottom"> <img
-            src="https://media.istockphoto.com/vectors/user-icon-flat-isolated-on-white-background-user-symbol-vector-vector-id1300845620?b=1&k=20&m=1300845620&s=170667a&w=0&h=JbOeyFgAc6-3jmptv6mzXpGcAd_8xqkQa_oUK2viFr8="
-            class="img" alt="">
-        <div class="row">
 
-            <p id="edit_profile" style="color: #0779e4;" onclick="editProfile()">Edit Profile </p>
+
+
+
+
+    <div style="margin-left: 10rem;" class="row">
+
+        <p id="edit_profile" style="color: #0779e4;" onclick="editProfile()">Edit Profile </p>
+    </div>
+
+
+    <div style="margin-left: 10rem;" class="row ">
+        <div class="small-12 medium-2 large-2 columns">
+            <div class="circle">
+                <!-- User Profile Image -->
+                <img class="profile-pic" src="/user-images/{{user_details._id}}.jpg" alt="">
+
+                <!-- Default Image -->
+                <!-- <i class="fa fa-user fa-5x"></i> -->
+            </div>
+            <div class="p-image">
+                <i class="fa fa-camera upload-button"></i>
+                <input class="file-upload" type="file" accept="image/*" />
+            </div>
         </div>
     </div>
+
 
     <div class="py-2">
         <button class="btn-sm" type="button" class="btn btn-primary" data-bs-toggle="modal"
@@ -35,12 +54,12 @@
             <label class="form-check-label" id="{{this.id}}" for="flexRadioDefault1">
                 {{this.name}} , {{this.address}}<br>{{this.city}},{{this.state}}<br>{{this.pin}}
             </label>
-            <a onclick="return confirm('Are you sure you want to delete this item?');"
+            <a onclick="return confirm('Are you sure you want to delete this address?');"
                 href="/delete-address?prodid={{../productId}}&&id={{this.id}}&&profile=true">
                 <i class="ms-5 fas fa-trash-alt"></i>
 
             </a>
-              <a onclick="return confirm('Are you sure you want to delete this item?');"
+            <a onclick="return confirm('Are you sure you want to update this address?');"
                 href="/edit-address?id={{this.id}}">
                 <i class="fas fa-edit ms-2"></i>
 
@@ -78,7 +97,7 @@
                     <input type="password" id="newpass" name="newpassword" placeholder="New Password">
 
                 </div>
-                          <div class="col-lg-12 m-2">
+                <div class="col-lg-12 m-2">
                     <input type="password" id="conpass" name="confirmpassword" placeholder="Confirm Password">
 
                 </div>
@@ -214,71 +233,124 @@
             line-height: 18px
         }
     }
+
+    body {
+        background-color: #efefef;
+    }
+
+    .profile-pic {
+        max-width: 200px;
+        max-height: 200px;
+        display: block;
+    }
+
+    .file-upload {
+        display: none;
+    }
+
+    .circle {
+        border-radius: 1000px !important;
+        overflow: hidden;
+        width: 128px;
+        height: 128px;
+        border: 4px solid rgba(1, 0, 0, 0.7);
+
+        background-size: 100px 100px;
+
+        background-image: url("/images/user-avatar-icon-sign-profile-260nw-1145752283.jpg");
+
+    }
+
+    img {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .p-image {
+
+
+        right: 30px;
+        color: #666666;
+        transition: all .3s cubic-bezier(.175, .885, .32, 1.275);
+    }
+
+    .p-image:hover {
+        transition: all .3s cubic-bezier(.175, .885, .32, 1.275);
+    }
+
+    .upload-button {
+        font-size: 1.2em;
+    }
+
+    .upload-button:hover {
+        transition: all .3s cubic-bezier(.175, .885, .32, 1.275);
+        color: #999;
+    }
 </style>
 <script>
-    let old=false
-    let newp =false
-    let con=false
+    let old = false
+    let newp = false
+    let con = false
 
 
 
-    document.getElementById('oldpass').oninput=e=>{
-        old=true
-
-    }
-      document.getElementById('newpass').oninput=e=>{
-        newp=true
+    document.getElementById('oldpass').oninput = e => {
+        old = true
 
     }
-      document.getElementById('conpass').oninput=e=>{
-          console.log(document.getElementById('newpass').value)
-          console.log(e.target.value)
-          if(document.getElementById('newpass').value==e.target.value){
-        con=true
-        document.getElementById('passerr').innerHTML=""
+    document.getElementById('newpass').oninput = e => {
+        newp = true
 
-          }
-          else{
-              con=false
-              document.getElementById('passerr').innerHTML="passs word not match"
-      }
+    }
+    document.getElementById('conpass').oninput = e => {
+        console.log(document.getElementById('newpass').value)
+        console.log(e.target.value)
+        if (document.getElementById('newpass').value == e.target.value) {
+            con = true
+            document.getElementById('passerr').innerHTML = ""
+
+        }
+        else {
+            con = false
+            document.getElementById('passerr').innerHTML = "passs word not match"
+        }
 
     }
 
-    function changePassword(){
-        if(newp&&old&con){
-            let old_password=document.getElementById('oldpass').value
-            let new_password=document.getElementById('newpass').value
+    function changePassword() {
+        if (newp && old & con) {
+            let old_password = document.getElementById('oldpass').value
+            let new_password = document.getElementById('newpass').value
 
-          
+
             $.ajax({
-            url: "/change-password",
-                method:"post",
-                data:{old_password,new_password},
-                success:function(response){
-                console.log(response)
-                 if(response.status){
-                     alert(response.mes)
-                     location.reload()
-                 }
-                 else{
-                      document.getElementById('passerr').innerHTML=response.mes
+                url: "/change-password",
+                method: "post",
+                data: { old_password, new_password },
+                success: function (response) {
+                    console.log(response)
+                    if (response.status) {
+                        alert(response.mes)
+                        location.reload()
+                    }
+                    else {
+                        document.getElementById('passerr').innerHTML = response.mes
 
-                 }
+                    }
 
                 }
-               
+
 
             })
 
         }
-        else{
-            
-              document.getElementById('passerr').innerHTML="Enter all fields correctly"
+        else {
+
+            document.getElementById('passerr').innerHTML = "Enter all fields correctly"
 
         }
     }
-    
+
 
 
     window.onload = function () {
@@ -326,5 +398,61 @@
         })
 
     }
+
+
+
+
+    var readURL = function (input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('.profile-pic').attr('src', e.target.result);
+            }
+
+            reader.readAsDataURL(input.files[0]);
+
+            let formData = new FormData();
+            formData.append("file", input.files[0]);
+
+
+            $.ajax({
+                url: '/profilepic',
+                method: 'post',
+                data: formData,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+
+                    Swal.fire({
+                        position: 'top-bottom',
+                        icon: 'success',
+                        title: 'Image saved succefully',
+                        showConfirmButton: false,
+                        timer: 900
+                    })
+
+
+                }
+
+
+
+            })
+        }
+    }
+
+
+    $(".file-upload").on('change', function () {
+
+
+        readURL(this);
+    });
+
+    $(".upload-button").on('click', function () {
+
+        $(".file-upload").click();
+    });
+
 
 </script>

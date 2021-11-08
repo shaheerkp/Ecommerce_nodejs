@@ -142,6 +142,17 @@ module.exports = {
 
         })
     },
+
+    getLatestorders: () => {
+        return new Promise(async (resolve, reject) => {
+
+            let latest = await db.get().collection('orders').find({}).sort({ "orderObj.createdAt": -1 }).limit(5).toArray()
+            resolve(latest)
+
+        })
+
+
+    },
     deleteCategory: (name) => {
 
 
@@ -209,6 +220,7 @@ module.exports = {
         })
     },
     addtoCart: (userid, prodid) => {
+        console.log("teeeengaaa", prodid);
 
         let proOb = {
             item: prodid,
@@ -494,7 +506,7 @@ module.exports = {
 
 
             ]).toArray()
-            console.log("total" ,total);
+            console.log("total", total);
 
             let offer_total = 0
 
@@ -809,7 +821,7 @@ module.exports = {
         return new Promise(async (resolve, reject) => {
             const delivered = await db.get().collection('orders').find({ "orderObj.products": { $elemMatch: { staus: "Delivered" } } }).count()
             const placed = await db.get().collection('orders').find({ "orderObj.products": { $elemMatch: { staus: "placed" } } }).count()
-            const canceled = await db.get().collection('orders').find({ "orderObj.products": { $elemMatch: { staus: "User cancelled" } } }).count()
+            const canceled = await db.get().collection('orders').find({$or:[{"orderObj.products": {$elemMatch: { staus: "User cancelled" } } },{"orderObj.products": {$elemMatch: { staus: "Order Canceled" } } }]}).count()
             const Shipped = await db.get().collection('orders').find({ "orderObj.products": { $elemMatch: { staus: "Shipped" } } }).count()
             console.log("shipped", delivered, placed, canceled, Shipped);
 
@@ -878,41 +890,76 @@ module.exports = {
     searchProduct: (keyword) => {
         return new Promise(async (resolve, reject) => {
             key = keyword.toUpperCase();
-            console.log("asdas",key);
-            p_name=await db.get().collection("product").find({ "product_name": key }).toArray()
-            cat=await db.get().collection("product").find({ "category": key }).toArray()
-            sub=await db.get().collection("product").find({ "sub_category": key }).toArray()
-            console.log(p_name[0],cat[0],sub[0]);
-          
-                if(p_name[0]){
-                    console.log("p_name");
+            console.log("asdas", key);
+            p_name = await db.get().collection("product").find({ "product_name": key }).toArray()
+            cat = await db.get().collection("product").find({ "category": key }).toArray()
+            sub = await db.get().collection("product").find({ "sub_category": key }).toArray()
+            console.log(p_name[0], cat[0], sub[0]);
 
-                    resolve(p_name)
-                }
-                else if(cat[0]){
-                    console.log("cat");
+            if (p_name[0]) {
+                console.log("p_name");
 
-
-                    resolve(cat)
-                }
-                else if(sub[0]){
-                    console.log("sub");
+                resolve(p_name)
+            }
+            else if (cat[0]) {
+                console.log("cat");
 
 
-                    resolve(sub)
-                }
-                else{
-                    console.log("false");
+                resolve(cat)
+            }
+            else if (sub[0]) {
+                console.log("sub");
 
-                    resolve(false)
-                }
 
-           
+                resolve(sub)
+            }
+            else {
+                console.log("false");
+
+                resolve(false)
+            }
+
+
 
 
         })
 
     },
+
+
+    checksearchProduct: (keyword) => {
+        return new Promise(async (resolve, reject) => {
+            key = parseInt(keyword)
+            if (key == 1000) {
+                cat = await db.get().collection("product").find({ price: { $gte: key } }).toArray()
+                resolve(cat)
+
+            }
+            else {
+
+                cat = await db.get().collection("product").find({ price: { $lte: key } }).toArray()
+                resolve(cat)
+            }
+
+
+        })
+
+    },
+
+
+    checksearchProductbetween: (from, to) => {
+        return new Promise(async (resolve, reject) => {
+            from = parseInt(from)
+            to = parseInt(to)
+            cat = await db.get().collection("product").find({ $and: [{ price: { $gte: from } }, { price: { $lte: to } }] }).toArray()
+            console.log("between", cat);
+            resolve(cat)
+
+        })
+
+    },
+
+
 
 
 

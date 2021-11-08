@@ -11,254 +11,387 @@
 
 
 
+<!DOCTYPE html>
+<html lang="en">
 
-<form class="ms=5 me=5 " id="add_product" onsubmit="return checkValid()" method="POST" action="/admin/add-product"
-  enctype="multipart/form-data">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <meta name="description" content="" />
+  <meta name="author" content="" />
+  <title>Dashboard - SB Admin</title>
+  <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" />
+  <link href="/css/styles.css" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"
+    crossorigin="anonymous"></script>
+</head>
 
-
-  <div class="form-row mb-5 bg-light container bg-light justify-content-center">
-    <h3 class="text-center">ADD PRODUCTS </h3>
-    <div class="row">
-
-      <div class=" form-group col-md-6">
-        <input hidden name="_id" value="{{data._id}}">
-        <label for="productname ">PRODUCT NAME</label>
-        <span id="p_name_err" class="text-center text-danger"> </span>
-        <input type="text" itemid="p_name" name="product_name" class="form-control" id="p_name">
+<body class="sb-nav-fixed">
+  <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+    <!-- Navbar Brand-->
+    <a class="navbar-brand ps-3" href="index.html">Cart</a>
+    <!-- Sidebar Toggle-->
+    <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i
+        class="fas fa-bars"></i></button>
+    <!-- Navbar Search-->
+    <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
+      <div class="input-group">
+        <input class="form-control" type="text" placeholder="Search for..." aria-label="Search for..."
+          aria-describedby="btnNavbarSearch" />
+        <button class="btn btn-primary" id="btnNavbarSearch" type="button"><i class="fas fa-search"></i></button>
       </div>
+    </form>
+    <!-- Navbar-->
+    <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown"
+          aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+          <li><a class="dropdown-item" href="#!">Settings</a></li>
+          <li><a class="dropdown-item" href="#!">Activity Log</a></li>
+          <li>
+            <hr class="dropdown-divider" />
+          </li>
+          <li><a class="dropdown-item" href="#!">Logout</a></li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+  <div id="layoutSidenav">
+    <div id="layoutSidenav_nav">
+      <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+        <div class="sb-sidenav-menu">
+          <div class="nav">
+            <div class="sb-sidenav-menu-heading">Core</div>
+            <a class="nav-link" href="/admin/dashboard">
+              <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+              Dashboard
+            </a>
+            <a class="nav-link" href="/admin/salesreport">
+              <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+              Report
+            </a>
+            <a class="nav-link" href="/admin/order-management">
+              <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+              Order Management
+            </a>
+            <a class="nav-link" href="/admin/category-management">
+              <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+              Category Management
+            </a>
+            <a class="nav-link" href="/admin/user-management">
+              <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+              User Management
+            </a>
+            <a class="nav-link" href="/admin/product-mgmt">
+              <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+              Produc Management
+            </a>
+            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts"
+              aria-expanded="false" aria-controls="collapseLayouts">
+              <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+              Offers/Coupons
+              <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+            </a>
+            <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+              <nav class="sb-sidenav-menu-nested nav">
+                <a class="nav-link" href="/admin/coupons">Product-offer</a>
+                <a class="nav-link" href="/admin/category-offer">Category-offer</a>
+                <a class="nav-link" href="/admin/coupon-offer">Coupons</a>
 
-      <div class="form-group col-md-6">
-        <label for="category">CATEGORY</label>
-        <select required name="category" id="category" class="form-select" aria-label="Default select example">
-          <option>Select Category</option>
-          {{#each this.category}}
-          <option value={{this.category}}>{{this.category}}</option>
-          {{/each}}
-        </select>
-      </div>
+              </nav>
+            </div>
+            <a class="nav-link" href="/admin/banners">
+              <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+              Banners
+            </a>
+
+          </div>
+        </div>
+        <div class="sb-sidenav-footer">
+          <div class="small">Logged in as:</div>
+          Start Bootstrap
+        </div>
+      </nav>
     </div>
+    <div id="layoutSidenav_content" class="container ms-5">
+      <main >
+        <form class="ms=5 me=5 " id="add_product" onsubmit="return checkValid()" method="POST"
+          action="/admin/add-product" enctype="multipart/form-data">
 
 
-    <div class="row">
+          <div class="form-row mb-5 bg-light bg-light justify-content-center">
+            <h3 class="text-center">ADD PRODUCTS </h3>
+            <div class="row">
 
-      <div class="form-group col-md-6">
-        <label for="description">DESCRIPTION</label>
-        <input required name="description" type="text" class="form-control" id="des">
-      </div>
+              <div class=" form-group col-md-6">
+                <input hidden name="_id" value="{{data._id}}">
+                <label for="productname ">PRODUCT NAME</label>
+                <span id="p_name_err" class="text-center text-danger"> </span>
+                <input type="text" itemid="p_name" name="product_name" class="form-control" id="p_name">
+              </div>
 
-      <div class="form-group col-md-6">
-        <label for="subcategory">SUB CATEGORY</label>
-        <select name="sub_category" required id="myList" class="form-select" aria-label="Default select example">
-          {{#each result}}
+              <div class="form-group col-md-6">
+                <label for="category">CATEGORY</label>
+                <select required name="category" id="category" class="form-select" aria-label="Default select example">
+                  <option>Select Category</option>
+                  {{#each this.category}}
+                  <option value={{this.category}}>{{this.category}}</option>
+                  {{/each}}
+                </select>
+              </div>
+            </div>
 
-          {{/each}}
 
-        </select>
-      </div>
+            <div class="row">
 
-    </div>
+              <div class="form-group col-md-6">
+                <label for="description">DESCRIPTION</label>
+                <input required name="description" type="text" class="form-control" id="des">
+              </div>
 
-    <div class="row">
-      <div class="form-group col-md-6">
-        <label for="price">PRICE</label>
-        <span id="price_err" class="text-center text-danger"> </span>
-        <input name="price" id="p_price" required type="number" class="form-control" id="inputEmail4">
-      </div>
+              <div class="form-group col-md-6">
+                <label for="subcategory">SUB CATEGORY</label>
+                <select name="sub_category" required id="myList" class="form-select"
+                  aria-label="Default select example">
+                  {{#each result}}
 
-      <div class="form-group col-md-6">
-        <label for="price">Quantity</label>
-        <span id="qty_err" class="text-center text-danger"> </span>
-        <input name="qty" style="width: 10rem;" type="number" required class="form-control" id="inputqty">
-      </div>
+                  {{/each}}
 
-    </div>
-
-    <div class="container">
-      <span id="img_err" class="text-danger"></span>
-      <div class="row justify-content-between" style="width:90%">
-        {{!-- item 1 start --}}
-        <div class="col-md-2 col-sm-2">
-          <h4 class="title"> Image 1</h4>
-          <div class="fileinput fileinput-new text-center">
-            <div class="fileinput-new thumbnail">
-              <img width="150px" height="150px"
-                src="https://png.pngtree.com/png-vector/20190330/ourmid/pngtree-img-file-document-icon-png-image_897560.jpg"
-                id="chekPreview1" alt="...">
+                </select>
+              </div>
 
             </div>
-            <div>
-              <span class="btn btn-rose btn-round btn-file">
-                <span class="fileinput-new">Select image</span>
-                <input type="file" id="image1" name="img1" accept="image/gif, image/jpeg, image/png" />
-                <textarea name="img1" id="imageValue1" cols="30" rows="10" hidden></textarea>
-              </span>
+
+            <div class="row">
+              <div class="form-group col-md-6">
+                <label for="price">PRICE</label>
+                <span id="price_err" class="text-center text-danger"> </span>
+                <input name="price" id="p_price" required type="number" class="form-control" id="inputEmail4">
+              </div>
+
+              <div class="form-group col-md-6">
+                <label for="price">Quantity</label>
+                <span id="qty_err" class="text-center text-danger"> </span>
+                <input name="qty" style="width: 10rem;" type="number" required class="form-control" id="inputqty">
+              </div>
+
+            </div>
+
+            <div class="container">
+              <span id="img_err" class="text-danger"></span>
+              <div class="row justify-content-between" style="width:90%">
+                {{!-- item 1 start --}}
+                <div class="col-md-2 col-sm-2">
+                  <h4 class="title"> Image 1</h4>
+                  <div class="fileinput fileinput-new text-center">
+                    <div class="fileinput-new thumbnail">
+                      <img width="150px" height="150px"
+                        src="https://png.pngtree.com/png-vector/20190330/ourmid/pngtree-img-file-document-icon-png-image_897560.jpg"
+                        id="chekPreview1" alt="...">
+
+                    </div>
+                    <div>
+                      <span class="btn btn-rose btn-round btn-file">
+                        <span class="fileinput-new">Select image</span>
+                        <input type="file" id="image1" name="img1" accept="image/gif, image/jpeg, image/png" />
+                        <textarea name="img1" id="imageValue1" cols="30" rows="10" hidden></textarea>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {{!-- item 1 end--}}
+
+
+
+                {{!-- item 2 start --}}
+                <div class="col-md-2 col-sm-2">
+                  <h4 class="title"> Image 2</h4>
+                  <div class="fileinput fileinput-new text-center">
+                    <div class="fileinput-new thumbnail">
+                      <img width="150px" height="150px"
+                        src="https://png.pngtree.com/png-vector/20190330/ourmid/pngtree-img-file-document-icon-png-image_897560.jpg"
+                        id="chekPreview2" alt="...">
+
+                    </div>
+                    <div>
+                      <span class="btn btn-rose btn-round btn-file">
+                        <span class="fileinput-new">Select image</span>
+                        <input type="file" id="image2" name="img2" accept="image/gif, image/jpeg, image/png" />
+                        <textarea name="img2" id="imageValue2" cols="20" rows="5" hidden></textarea>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {{!-- item 2 end--}}
+
+
+                {{!-- item 3 start --}}
+                <div class="col-md-2 col-sm-2">
+                  <h4 class="title"> Image 3</h4>
+                  <div class="fileinput fileinput-new text-center">
+                    <div class="fileinput-new thumbnail">
+                      <img width="150px" height="150px"
+                        src="https://png.pngtree.com/png-vector/20190330/ourmid/pngtree-img-file-document-icon-png-image_897560.jpg"
+                        id="chekPreview3" alt="...">
+
+                    </div>
+
+                    <div>
+                      <span class="btn btn-rose btn-round btn-file">
+                        <span style="width: 10rem;height: 10rem;" class="fileinput-new">Select image</span>
+                        <input type="file" name="img3" id="image3" accept="image/gif, image/jpeg, image/png" />
+                        <textarea name="img3" id="imageValue3" cols="10" rows="10" hidden></textarea>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {{!-- item 3 end--}}
+
+
+              </div>
+            </div>
+
+
+
+            <button type="submit" class=" mb-5 ms-5 btn btn-primary">Add
+            </button>
+
+          </div>
+        </form>
+
+        <div class="modal" id="modal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Crop Image Here</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body container">
+                <div class="img-container">
+                  <img style="max-height: 300px;" src="" id="sampleImage1" />
+                  <div class="row">
+
+
+                    <div class="col-md-4">
+                      <div class="preview" id="preview1"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+
+                <button type="button" id="crop1" class="btn btn-primary">Crop</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Modal  1 end-->
+
+
+
+        <!-- Modal 2-->
+        <div class="modal fade" id="modal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Crop Image Here</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <div class="img-container">
+                  <img style="max-height: 300px;" src="" id="sampleImage2" />
+                  <div class="row">
+                    <div>
+
+                    </div>
+                    <div class="col-md-4">
+                      <div class="preview" id="preview2"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+
+                <button type="button" id="crop2" class="btn btn-primary">Crop</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Modal  2 end-->
+
+
+        <!-- Modal 3-->
+        <div class="modal fade" id="modal3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Crop Image Here</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <div class="img-container">
+                  <div class="row">
+                    <img style="max-height: 300px;" src="" id="sampleImage3" />
+                    <div>
+
+                    </div>
+                    <div class="col-md-4">
+                      <div class="preview" id="preview3"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+
+                <button type="button" id="crop3" class="btn btn-primary">Crop</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+
+              </div>
             </div>
           </div>
         </div>
 
-        {{!-- item 1 end--}}
 
+      </main>
+      <footer class="py-4 bg-light mt-auto">
 
-
-        {{!-- item 2 start --}}
-        <div class="col-md-2 col-sm-2">
-          <h4 class="title"> Image 2</h4>
-          <div class="fileinput fileinput-new text-center">
-            <div class="fileinput-new thumbnail">
-              <img width="150px" height="150px"
-                src="https://png.pngtree.com/png-vector/20190330/ourmid/pngtree-img-file-document-icon-png-image_897560.jpg"
-                id="chekPreview2" alt="...">
-
-            </div>
-            <div>
-              <span class="btn btn-rose btn-round btn-file">
-                <span class="fileinput-new">Select image</span>
-                <input type="file" id="image2" name="img2" accept="image/gif, image/jpeg, image/png" />
-                <textarea name="img2" id="imageValue2" cols="20" rows="5" hidden></textarea>
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {{!-- item 2 end--}}
-
-
-        {{!-- item 3 start --}}
-        <div class="col-md-2 col-sm-2">
-          <h4 class="title"> Image 3</h4>
-          <div class="fileinput fileinput-new text-center">
-            <div class="fileinput-new thumbnail">
-              <img width="150px" height="150px"
-                src="https://png.pngtree.com/png-vector/20190330/ourmid/pngtree-img-file-document-icon-png-image_897560.jpg"
-                id="chekPreview3" alt="...">
-
-            </div>
-
-            <div>
-              <span class="btn btn-rose btn-round btn-file">
-                <span style="width: 10rem;height: 10rem;" class="fileinput-new">Select image</span>
-                <input type="file" name="img3" id="image3" accept="image/gif, image/jpeg, image/png" />
-                <textarea name="img3" id="imageValue3" cols="10" rows="10" hidden></textarea>
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {{!-- item 3 end--}}
-
-
-      </div>
+      </footer>
     </div>
-
-
-
-    <button type="submit" class=" mb-5 ms-5 btn btn-primary">Add
-    </button>
-
   </div>
-</form>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+    crossorigin="anonymous"></script>
+  <script src="/javascripts/js/scripts.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+  <script src="/assets/demo/chart-area-demo.js"></script>
+  <script src="/assets/demo/chart-bar-demo.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
+  <script src="/javascripts/js/datatables-simple-demo.js"></script>
+</body>
 
-<div class="modal" id="modal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Crop Image Here</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body container">
-        <div class="img-container">
-          <img style="max-height: 300px;" src="" id="sampleImage1" />
-          <div class="row">
-
-
-            <div class="col-md-4">
-              <div class="preview" id="preview1"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-
-        <button type="button" id="crop1" class="btn btn-primary">Crop</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-
-      </div>
-    </div>
-  </div>
-</div>
-<!-- Modal  1 end-->
+</html>
 
 
 
-<!-- Modal 2-->
-<div class="modal fade" id="modal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Crop Image Here</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="img-container">
-          <img style="max-height: 300px;" src="" id="sampleImage2" />
-          <div class="row">
-            <div>
-
-            </div>
-            <div class="col-md-4">
-              <div class="preview" id="preview2"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-
-        <button type="button" id="crop2" class="btn btn-primary">Crop</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-
-      </div>
-    </div>
-  </div>
-</div>
-<!-- Modal  2 end-->
 
 
-<!-- Modal 3-->
-<div class="modal fade" id="modal3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Crop Image Here</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="img-container">
-          <div class="row">
-            <img style="max-height: 300px;" src="" id="sampleImage3" />
-            <div>
-
-            </div>
-            <div class="col-md-4">
-              <div class="preview" id="preview3"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-
-        <button type="button" id="crop3" class="btn btn-primary">Crop</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-
-      </div>
-    </div>
-  </div>
-</div>
 <!-- Modal  3 end-->
 
 

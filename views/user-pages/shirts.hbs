@@ -1,5 +1,5 @@
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<div id="full-div" class="row container-fluid " style="margin-top: 5rem;">
+<div class="row container-fluid " style="margin-top: 5rem;">
 
     <div class="sidebar col-lg-4">
 
@@ -18,32 +18,36 @@
                     <h6 class="font-weight-bold mb-3">Price</h6>
 
                     <div class="form-check pl-0 mb-3">
-                        <input type="radio" class="form-check-input" id="under25" name="materialExampleRadios">
+                        <input type="radio" onclick="checksearch(200)" class="form-check-input" id="under25"
+                            name="materialExampleRadios">
                         <label class="form-check-label small text-uppercase card-link-secondary" for="under25">Under
                             RS:200</label>
                     </div>
                     <div class="form-check pl-0 mb-3">
-                        <input type="radio" class="form-check-input" id="2550" name="materialExampleRadios">
+                        <input type="radio" onclick="checkbetween(200,500)" class="form-check-input" id="2550"
+                            name="materialExampleRadios">
                         <label class="form-check-label small text-uppercase card-link-secondary" for="2550">RS:200 to
                             RS:500</label>
                     </div>
                     <div class="form-check pl-0 mb-3">
-                        <input type="radio" class="form-check-input" id="50100" name="materialExampleRadios">
+                        <input type="radio" onclick="checkbetween(500,1000)" class="form-check-input" id="50100"
+                            name="materialExampleRadios">
                         <label class="form-check-label small text-uppercase card-link-secondary" for="50100">RS:500 to
                             RS:1000</label>
                     </div>
 
                     <div class="form-check pl-0 mb-3">
-                        <input type="radio" class="form-check-input" id="200above" name="materialExampleRadios">
+                        <input type="radio" onclick="checksearch(1000)" class="form-check-input" id="200above"
+                            name="materialExampleRadios">
                         <label class="form-check-label small text-uppercase card-link-secondary" for="200above">RS:1500
                             & Above</label>
                     </div>
-       
+
 
                 </section>
                 <!-- Section: Price -->
 
-  
+
 
 
                 <!-- Section: Color -->
@@ -58,9 +62,10 @@
     </div>
 
     <div class="  col-lg-8 float-end float-lg-start ">
-        <h1 class="d-flex p-2 mt-3">{{cat}}</h1>
-        <div class="row ">
+        <h1 class=" p-2 mt-3 text-center">{{cat}}</h1>
+        <div class="row " id="full-div">
             {{#each result}}
+
             <div class="col-lg-4 ">
                 <div class="card">
                     <img src="/product-images/{{this._id}}1.jpg" data-NZoomscale="2" class="zoom card-img-top"
@@ -90,13 +95,13 @@
                                     {{this.sub_category}} </p>
 
                             </div>
-                            
-                                <button onclick="wishList('{{this._id}}')" class="btn btn-light">
-                                    <span id="heart">
 
-                                        <i class="far fa-heart"></i></span>
-                                </button>
-                           
+                            <button onclick="wishList('{{this._id}}')" class="btn btn-light">
+                                <span id="heart">
+
+                                    <i class="far fa-heart"></i></span>
+                            </button>
+
 
                         </div>
                         {{#if offer}}
@@ -137,6 +142,10 @@
 
 
         </div>
+        <div class="row " id="searchrow">
+
+        </div>
+
 
 
     </div>
@@ -145,40 +154,243 @@
 
 
 
- <div id="searchdiv" class="  col-lg-12 float-end float-lg-start container justify-content-start ">
-        <h1 class="text-center p-2 mt-3">Search result  </h1>
-        <div id="searchrow" class="row d-flex ms-3 ">
-          
-            
-
-            
+<div id="searchdiv" class="  col-lg-12 float-end float-lg-start container justify-content-start ">
+    <h1 class="text-center p-2 mt-3"> </h1>
+    <div id="searchrow" class="row d-flex ms-3 ">
 
 
 
 
 
 
-        </div>
+
+
 
 
     </div>
+
+
+</div>
 <script src="/javascripts/user/cart.js"></script>
 <script src="/plugins/Nzoom.min.js"></script>
 <script>
+
+
+    function checksearch(famount) {
+    
+        $.ajax({
+            url: "/checksearch",
+            method: 'post',
+            data: { keyword: famount },
+            success: function (response) {
+                console.log(response)
+                document.getElementById('full-div').style.display = "none"
+                document.getElementById("searchrow").innerHTML = ""
+
+                let elem
+                for (let i = 0; i < response.body.length; i++) {
+
+                    elem = ` <div class="col-lg-4 ">
+                <div class="card">
+                    <img src="/product-images/${response.body[i]._id}1.jpg" data-NZoomscale="2" class="zoom card-img-top"
+                        alt="...">
+                    <div style="z-index: 10;">
+
+
+                    </div>
+
+                    <div class="card-body">
+                        <div class="row">
+
+                            {{#if offer}}
+                            <p class="text-center price">${response.body[i].off}% off </p>
+                            {{else}}
+                            <p class="text-center text-white price">. </p>
+                            {{/if}}
+                            <a href="/product-detail?id=${response.body[i]._id}" class="fill-div" style="text-decoration: none;">
+
+                                <div class="col-lg-12">
+                                    <p style="font-size: 15px;" class="card-title cardtitle">${response.body[i].product_name}</p>
+
+                                </div>
+                            </a>
+                            <div class="col-lg-9">
+                                <p class="text-center price" style="font-weight: lighter;color: rgb(119, 119, 119);">
+                                    ${response.body[i].sub_category}</p>
+
+                            </div>
+                            <div class="col-lg-3">
+                                <button onclick="wishList('${response.body[i]._id}')" class="btn btn-light">
+                                    <span id="heart">
+
+                                        <i class="far fa-heart"></i></span>
+                                </button>
+                            </div>
+
+                        </div>
+                        {{#if offer}}
+                        <div class="row d-flex justify-content-center">
+                            <div class="col-4">
+                                <p style="text-decoration: line-through;color: rgb(225, 34, 34);"
+                                    class="text-center price">RS: ${response.body[i].price} </p>
+
+                            </div>
+                            <div class="col-6">
+                                <p class="text-center price">RS: ${response.body[i].offer_price} </p>
+
+                            </div>
+
+                        </div>
+
+                        {{else}}
+                        <p class="text-center price">RS: ${response.body[i].price} </p>
+
+                        {{/if}}
+                    </div>
+                    <div class="row mb-3">
+
+                        <div class="col-6 ms-2"><a class="btn btn-info" onclick="addtoCart('${response.body[i]._id}')"
+                                style="width: 9rem;">ADD TO CART</a></div>
+                        <div class="col-4 ms-3"><a class="btn btn-success"
+                                href="/address/?sudden=true&&prodid=${response.body[i]._id}" style="=width:3rem">BUY</a></div>
+                    </div>
+
+                </div>
+            </div>`
+                document.getElementById("searchrow").innerHTML += elem
+
+                }
+
+
+
+
+
+
+
+
+            }
+
+
+
+
+        })
+    }
+
+    function checkbetween(famount, lamount) {
+
+               $.ajax({
+            url: "/checksearchbetween",
+            method: 'post',
+            data: { from: famount,to:lamount },
+            success: function (response) {
+                console.log(response)
+                document.getElementById('full-div').style.display = "none"
+                document.getElementById("searchrow").innerHTML = ""
+
+                let elem
+                for (let i = 0; i < response.body.length; i++) {
+
+                    elem = ` <div class="col-lg-4 ">
+                <div class="card">
+                    <img src="/product-images/${response.body[i]._id}1.jpg" data-NZoomscale="2" class="zoom card-img-top"
+                        alt="...">
+                    <div style="z-index: 10;">
+
+
+                    </div>
+
+                    <div class="card-body">
+                        <div class="row">
+
+                            {{#if offer}}
+                            <p class="text-center price">${response.body[i].off}% off </p>
+                            {{else}}
+                            <p class="text-center text-white price">. </p>
+                            {{/if}}
+                            <a href="/product-detail?id=${response.body[i]._id}" class="fill-div" style="text-decoration: none;">
+
+                                <div class="col-lg-12">
+                                    <p style="font-size: 15px;" class="card-title cardtitle">${response.body[i].product_name}</p>
+
+                                </div>
+                            </a>
+                            <div class="col-lg-9">
+                                <p class="text-center price" style="font-weight: lighter;color: rgb(119, 119, 119);">
+                                    ${response.body[i].sub_category}</p>
+
+                            </div>
+                            <div class="col-lg-3">
+                                <button onclick="wishList('${response.body[i]._id}')" class="btn btn-light">
+                                    <span id="heart">
+
+                                        <i class="far fa-heart"></i></span>
+                                </button>
+                            </div>
+
+                        </div>
+                        {{#if offer}}
+                        <div class="row d-flex justify-content-center">
+                            <div class="col-4">
+                                <p style="text-decoration: line-through;color: rgb(225, 34, 34);"
+                                    class="text-center price">RS: ${response.body[i].price} </p>
+
+                            </div>
+                            <div class="col-6">
+                                <p class="text-center price">RS: ${response.body[i].offer_price} </p>
+
+                            </div>
+
+                        </div>
+
+                        {{else}}
+                        <p class="text-center price">RS: ${response.body[i].price} </p>
+
+                        {{/if}}
+                    </div>
+                    <div class="row mb-3">
+
+                        <div class="col-6 ms-2"><a class="btn btn-info" onclick="addtoCart('${response.body[i]._id}')"
+                                style="width: 9rem;">ADD TO CART</a></div>
+                        <div class="col-4 ms-3"><a class="btn btn-success"
+                                href="/address/?sudden=true&&prodid=${response.body[i]._id}" style="=width:3rem">BUY</a></div>
+                    </div>
+
+                </div>
+            </div>`
+                document.getElementById("searchrow").innerHTML += elem
+
+                }
+
+
+
+
+
+
+
+
+            }
+
+
+
+
+        })
+
+       
+    }
+
+
+
     function wishList(id) {
-      
-      
         $.ajax({
             url: "/wishlist",
             method: "post",
             data: { id },
             success: function (response) {
-                if(response.status){
-                Swal.fire(
-                    response.status
-                )
-
-                }else{
+                if (response.status) {
+                    Swal.fire(
+                        response.status
+                    )
+                } else {
                     location.replace('/login')
                 }
 

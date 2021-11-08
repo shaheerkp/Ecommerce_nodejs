@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var db = require('../helper/userhelper')
 const { OAuth2Client } = require('google-auth-library');
-const { viewCategory, findProduct, addtoCart, getCartProducts, getTotalAmount, cartCount, deletecart, changeQuantity, changestatus, placeOrder, getCartProductList, getOrderDetials, orderStatus, buynowplaceOrder, deleteFinalcart, findProductByName, deleteOffer, validateCoupon, getSubAmount, getSingle, getWishlistProducts, deletewishlist, searchProduct, } = require('../helper/producthelper');
+const { viewCategory, findProduct, addtoCart, getCartProducts, getTotalAmount, cartCount, deletecart, changeQuantity, changestatus, placeOrder, getCartProductList, getOrderDetials, orderStatus, buynowplaceOrder, deleteFinalcart, findProductByName, deleteOffer, validateCoupon, getSubAmount, getSingle, getWishlistProducts, deletewishlist, searchProduct, checksearchProduct, checksearchProductbetween, } = require('../helper/producthelper');
 const { token } = require('morgan');
 const { googleSign, googleSignin, userSignup, getNumber, getuserAddress, getAddress, addAddress, deleteAddress, saveChanges, getUserById, changePassword, addtoWishList, editAddress } = require('../helper/userhelper');
 const userhelper = require('../helper/userhelper');
@@ -10,6 +10,7 @@ const CLIENT_ID = "360791234082-kap1r32c2bjt3fg3ip28qvp6fplu26ui.apps.googleuser
 const client = new OAuth2Client(CLIENT_ID);
 var uuid = require('uuid');
 const { response } = require('express');
+const fs = require('fs');
 var moment = require('moment');
 
 
@@ -260,22 +261,54 @@ router.get('/viewProducts/:sub', async function (req, res) {
 });
 
 
+router.post('/addtocartcheck', (req, res) => {
+  console.log("eles ffff");
 
-
-
-
-
-
-router.post('/addtocart', checkLogin, (req, res) => {
-  let userid = req.session.user._id
+  
   let productid = req.body.id
+  console.log("pro",productid);
+  
+
+  if(req.session.user){
+    console.log("iffff");
+    res.redirect(`/addtocart/${productid}`)
+
+  }
+  else{
+    console.log("else");
+    req.session.guest=productid
+    res.json({status:false})
+  }
+})
+
+
+
+
+
+router.get('/addtocart/:id', (req, res) => {
+  let userid = req.session.user._id
+  let productid = req.params.id
+  console.log("____-");
+  console.log(productid[0]);
+  let abc
   if (userid) {
     addtoCart(userid, productid).then(async (result) => {
       let cart_count = await cartCount(req.session.user._id)
-      if (result) {
-        res.json({ status: true, count: cart_count })
 
-      }
+      
+        if(req.session.guest){
+          console.log("ifilll kerrriiii ");
+          delete req.session.guest
+          res.redirect('/cart')
+         
+        }
+        else{
+
+          res.json({ status: true, count: cart_count })
+        }
+        
+
+      
 
     })
 
@@ -312,6 +345,21 @@ router.post('/removecart', (req, res) => {
 
 
 
+})
+
+router.post('/profilepic',(req,res)=>{
+  id=req.session.user._id
+
+  let img=req.files.file
+
+  let path1 = `./public/user-images/${id}.jpg`
+
+  img.mv(path1).then((result)=>{
+
+    res.json({status:true})
+
+  })
+ 
 })
 
 
@@ -501,20 +549,30 @@ router.post('/login', function (req, res) {
 
   db.userSignin(req.body).then((loggedin) => {
 
+    let guest
+
     if (loggedin == "block") {
       res.json({ status: false, message: "blocked by user" })
 
     }
     else if (loggedin) {
 
+      if(req.session.guest){
+        guest=req.session.guest
+        console.log("guestttttttt");
+      }
+
+
+
       req.session.user = {}
       req.session.user.email = loggedin.email
       req.session.user._id = loggedin._id
       req.session.user.isLoggedin = true
       console.log(req.session);
-      res.json({ status: true })
+      res.json({ status: true,guest })
 
     }
+ 
     else {
       res.json({ status: false, message: "Invalid credential" })
 
@@ -643,6 +701,50 @@ router.post('/search-product',(req,res)=>{
 
   searchProduct(req.body.keyword).then((result)=>{
     if(result){
+
+      res.json({body:result})
+    }
+    else{
+      res.json({body:false})
+    }
+    
+
+  })
+
+
+
+})
+
+
+router.post('/checksearch',(req,res)=>{
+ 
+
+  checksearchProduct(req.body.keyword).then((result)=>{
+    if(result){
+      console.log("result",result);
+
+      res.json({body:result})
+    }
+    else{
+      res.json({body:false})
+    }
+    
+
+  })
+
+
+
+})
+
+
+
+router.post('/checksearchbetween',(req,res)=>{
+  console.log("checkbetweeen");
+ 
+
+  checksearchProductbetween(req.body.from,req.body.to).then((result)=>{
+    if(result){
+      console.log("result",result);
 
       res.json({body:result})
     }
