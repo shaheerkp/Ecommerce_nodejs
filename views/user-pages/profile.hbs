@@ -1,3 +1,14 @@
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="https://kit.fontawesome.com/4f9ff9a3d7.js" crossorigin="anonymous"></script>
+<!-- Material Dashboard CSS -->
+<link href="/assets/css/material-dashboard.min.css?v=2.1.0" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://unpkg.com/dropzone/dist/dropzone.css" />
+<link href="https://unpkg.com/cropperjs/dist/cropper.css" rel="stylesheet" />
+
+<script src="https://unpkg.com/dropzone"></script>
+<script src="https://unpkg.com/cropperjs"></script>
+
 <div class="wrapper bg-white" style="margin-top: 150px;">
     <h4 class="pb-4 border-bottom">Account settings</h4>
 
@@ -15,7 +26,7 @@
         <div class="small-12 medium-2 large-2 columns">
             <div class="circle">
                 <!-- User Profile Image -->
-                <img class="profile-pic" src="/user-images/{{user_details._id}}.jpg" alt="">
+                <img class="profile-pic" id="chekPreview1" src="/user-images/{{user_details._id}}.jpg" alt="">
 
                 <!-- Default Image -->
                 <!-- <i class="fa fa-user fa-5x"></i> -->
@@ -105,6 +116,39 @@
             <div class="modal-footer">
 
                 <button type="button" onclick="changePassword()" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal" id="modal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Crop Image Here</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body container">
+                <div class="img-container">
+                    <img style="max-height: 300px;" src="" id="sampleImage1" />
+                    <div class="row">
+
+
+                        <div class="col-md-4">
+                            <div class="preview" id="preview1"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+
+                <button type="button" id="crop1" class="btn btn-primary">Crop</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+
             </div>
         </div>
     </div>
@@ -239,9 +283,9 @@
     }
 
     .profile-pic {
-        max-width: 200px;
-        max-height: 200px;
-        display: block;
+        max-width: 120px;
+        max-height: 120px;
+
     }
 
     .file-upload {
@@ -406,39 +450,120 @@
         if (input.files && input.files[0]) {
             var reader = new FileReader();
 
-            reader.onload = function (e) {
-                $('.profile-pic').attr('src', e.target.result);
-            }
+
 
             reader.readAsDataURL(input.files[0]);
 
             let formData = new FormData();
-            formData.append("file", input.files[0]);
 
 
-            $.ajax({
-                url: '/profilepic',
-                method: 'post',
-                data: formData,
-                cache: false,
-                contentType: false,
-                processData: false,
-                success: function (response) {
 
-                    Swal.fire({
-                        position: 'top-bottom',
-                        icon: 'success',
-                        title: 'Image saved succefully',
-                        showConfirmButton: false,
-                        timer: 900
-                    })
+            if (input.files[0]) {
+                img1 = true
+
+                //modal1 and image 1
+                var image1 = document.getElementById('sampleImage1');
+                var modal1 = $('#modal1');
+                var cropper1;
 
 
+                var files = event.target.files;
+
+                var done = function (url) {
+                    image1.src = url;
+                    modal1.modal('show');
+                };
+
+                if (files && files.length > 0) {
+                    reader = new FileReader();
+                    reader.onload = function (event) {
+                        done(reader.result);
+                    };
+                    reader.readAsDataURL(files[0]);
                 }
 
+                modal1.on('shown.bs.modal', function () {
+                    cropper1 = new Cropper(image1, {
+                        aspectRatio: 1,
+                        viewMode: 3,
+                        preview: '#preview1'
+                    });
+                }).on('hidden.bs.modal', function () {
+                    cropper1.destroy();
+                    cropper1 = null;
+                });
+
+                $('#crop1').click(function () {
+                    canvas = cropper1.getCroppedCanvas({
+                        width: 400,
+                        height: 400,
 
 
-            })
+                    });
+
+                    canvas.toBlob(function (blob) {
+                        url = URL.createObjectURL(blob);
+                        var reader = new FileReader();
+                        reader.readAsDataURL(blob);
+                        reader.onloadend = function () {
+                            var base64data = reader.result;
+                            modal1.modal('hide');
+                            $("#imageValue1").val(base64data)
+                            $('#chekPreview1').attr('src', base64data);
+                            formData.append("file", base64data);
+                            console.log(base64data)
+
+                            $.ajax({
+                                url: '/profilepic',
+                                method: "post",
+                                data: formData,
+                                cache: false,
+                                enctype: 'multipart/formdata',
+                                contentType: false,
+                                processData: false,
+                                success: function (response) {
+                                    Swal.fire({
+                                        position: 'top-bottom',
+                                        icon: 'success',
+                                        title: 'Image saved succefully',
+                                        showConfirmButton: false,
+                                        timer: 900
+                                    })
+
+                                }
+
+
+
+                            })
+
+
+
+
+
+
+
+
+
+
+
+
+                        };
+                    });
+                });
+
+            } else {
+                Swal.fire(
+                    'Error!',
+                    'Select correct format',
+
+                )
+                innerHTML = "Select Correct format"
+                img1 = false
+
+            }
+
+
+
         }
     }
 

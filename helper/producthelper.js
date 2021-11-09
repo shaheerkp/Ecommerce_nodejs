@@ -1116,6 +1116,7 @@ module.exports = {
     getCartProductList: (userid) => {
         return new Promise(async (resolve, reject) => {
             let cart = await db.get().collection('cart').find({ user: userid }).toArray()
+        
             resolve(cart[0].products)
         })
 
@@ -1163,7 +1164,7 @@ module.exports = {
     addOffer: (id, price, per, date) => {
 
 
-        let off_price = price - (price * per / 100)
+        let off_price =  parseInt( price - (price * per / 100))
 
         console.log("offer", off_price);
         return new Promise((resolve, reject) => {
@@ -1190,11 +1191,11 @@ module.exports = {
                     if (products[i].off < per) {
                         products[i].off = per
 
-                        let off = products[i].price * per / 100
+                        let off = parseInt(products[i].price * per / 100)
                         console.log("price", off);
                         products[i].exp_date = exp_date
 
-                        products[i].offer_price += off
+                        products[i].offer_price = products[i].price-off
                     }
 
 
@@ -1202,7 +1203,7 @@ module.exports = {
                 else {
                     products[i].offer = true
                     products[i].off = per
-                    products[i].offer_price = products[i].price - products[i].price * per / 100
+                    products[i].offer_price = parseInt(products[i].price - products[i].price * per / 100)
                     products[i].exp_date = exp_date
                 }
                 db.get().collection('product').updateOne({ _id: products[i]._id }, {

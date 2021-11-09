@@ -348,17 +348,24 @@ router.post('/removecart', (req, res) => {
 })
 
 router.post('/profilepic',(req,res)=>{
+  
   id=req.session.user._id
-
-  let img=req.files.file
+  console.log("profieeee");
+   image1=req.body.file
+  
 
   let path1 = `./public/user-images/${id}.jpg`
 
-  img.mv(path1).then((result)=>{
+  let img1 = image1.replace(/^data:([A-Za-z-+/]+);base64,/, "")
+
+  fs.writeFileSync(path1, img1, { encoding: 'base64' })
+
+
+  
 
     res.json({status:true})
 
-  })
+
  
 })
 

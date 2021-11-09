@@ -248,7 +248,7 @@
 
     })
     function razorpayPayment(order) {
-        console.log(order)
+      
         var options = {
             "key": "rzp_test_5hQK7ZeFBkNf4X", // Enter the Key ID generated from the Dashboard
             "amount": order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
@@ -276,12 +276,12 @@
         var rzp1 = new Razorpay(options);
         rzp1.open();
 
-    } alert(response.razorpay_payment_id);
-    alert(response.razorpay_order_id);
-    alert(response.razorpay_signature)
+    } 
 
 
     function verifyPayment(payment, order) {
+        console.log(payment)
+        console.log(order)
         $.ajax({
             url: "/verifypayment",
             data: ({

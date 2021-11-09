@@ -244,7 +244,7 @@
   function search() {
     let date1 = document.getElementById("date1").value
     let date2 = document.getElementById("date2").value
-    alert("asdasd")
+    
     $.ajax({
       url: '/admin/search-by-date',
       method: 'post',
@@ -312,9 +312,6 @@
 
 
   function filterDay(date) {
-    alert(date)
-
-
     $.ajax({
       url: '/admin/filter',
       method: 'post',

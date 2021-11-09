@@ -4,6 +4,7 @@ const objectId = require('mongodb').ObjectId
 const { LoopDetected } = require('http-errors')
 const Razorpay=require('razorpay')
 const { ObjectId } = require('bson')
+
 const { resolve } = require('path')
 const { response } = require('express')
 var instance = new Razorpay({
@@ -361,6 +362,8 @@ module.exports = {
     },
 
     generateRazorpay:(id,amount)=>{
+      
+        
         return new Promise(async (resolve, reject) => {
             var options = {
                 amount: amount.total*100, 
@@ -371,7 +374,6 @@ module.exports = {
                   if(err){
                       console.log(err);
                   }else{
-                      
                       resolve(order)
                   }
               });

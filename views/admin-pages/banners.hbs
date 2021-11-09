@@ -557,7 +557,7 @@
                 canvas.toBlob(function (blob) {
                     url = URL.createObjectURL(blob);
                     var reader = new FileReader();
-                    reader.readAsDataURL(blob);
+                    reader.readAsDataURL(blob);14655545
                     reader.onloadend = function () {
                         var base64data = reader.result;
                         modal3.modal('hide');
