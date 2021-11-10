@@ -4,7 +4,7 @@ const state={
 }
 
 module.exports.connect=(callback)=>{
-    var url = "mongodb://localhost:27017/mydb";
+    var url = "mongodb+srv://shaheer:1234@ecom.t0nbn.mongodb.net/test";
     var dbname="Ecommerce"
     mongoClient.connect(url,(err,data)=>{
         if(err) return callback(err)
