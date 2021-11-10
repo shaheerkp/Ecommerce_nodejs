@@ -1,6 +1,9 @@
-
 *{
     font-family:Georgia, 'Times New Roman', Times, serif ;
+  }
+
+  body{
+    background-color: #9d9a9a;
   }
   
   .nav-cus{
@@ -151,8 +154,7 @@
   }
   
   .login{
-    padding-left: 25%;
-    padding-right: 25%;
+   
     border: black;
   }
   
