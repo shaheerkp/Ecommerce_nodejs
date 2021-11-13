@@ -95,8 +95,8 @@ router.post('/pay', async (req, res) => {
         "payment_method": "paypal"
       },
       "redirect_urls": {
-        "return_url": "http://localhost:3000/success",
-        "cancel_url": "http://localhost:3000/cancel"
+        "return_url": "ecom.shaheerkp.tech/success",
+        "cancel_url": "ecom.shaheerkp.tech/cancel"
       },
       "transactions": [{
         "item_list": {
