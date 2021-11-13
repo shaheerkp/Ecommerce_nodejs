@@ -18,8 +18,8 @@ const paypal = require('paypal-rest-sdk');
 
 paypal.configure({
   'mode': 'sandbox', //sandbox or live
-  'client_id': 'ASBmU8eIqjR8f4yfMBL8yRBCd18Y9W622WEKVxJNI7qjVboo3qll46NO9_qx8qVQyUFjg6mUHWInLo7C',
-  'client_secret': 'EM9ekcQGYniwDvyaWMxWGU-gSXi5zaX2qODWXprK1QB6ra-3mvuLG5NAETFhoDiB2Gb2hvqGJVxLTQjR'
+  'client_id': 'AbidnDRDKGuxMeFNLQT9ZRWVkCv2Cwy1A1HW4KKxsENJHi4XZ1_uFYs1W6kowr00bSkqg9O45qafPoyl',
+  'client_secret': 'EC8huVJhjUe6fkxtJoArO-DUP6CDKg70mpUAIu-JUgS4WaerK799erkx8at0rqX4Gm7JrGeMpJ8vH6cg'
 });
 
 
@@ -95,8 +95,8 @@ router.post('/pay', async (req, res) => {
         "payment_method": "paypal"
       },
       "redirect_urls": {
-        "return_url": "https://ecom.shaheerkp.tech/success",
-        "cancel_url": "https://ecom.shaheerkp.tech/cancel"
+        "return_url": "http://localhost:3000/success",
+        "cancel_url": "http://localhost:3000/cancel"
       },
       "transactions": [{
         "item_list": {
@@ -122,6 +122,7 @@ router.post('/pay', async (req, res) => {
       } else {
         for (let i = 0; i < payment.links.length; i++) {
           if (payment.links[i].rel === 'approval_url') {
+            console.log(payment.links[i].href);
             res.json({ status: true, link: payment.links[i].href })
 
           }
@@ -142,6 +143,7 @@ router.post('/pay', async (req, res) => {
 });
 
 router.get('/success', (req, res) => {
+  console.log("sucessssss");
 
 
   const payerId = req.query.PayerID;
@@ -185,7 +187,7 @@ router.get('/success', (req, res) => {
 
 
 
-router.get('/cancel', (req, res) => res.send('Cancelled'));
+router.get('/cancel', (req, res) => res.redirect('/'));
 
 
 router.post('/verifypayment', (req, res) => {
