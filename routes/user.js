@@ -121,9 +121,9 @@ router.post('/pay', async (req, res) => {
         throw error;
       } else {
         for (let i = 0; i < payment.links.length; i++) {
-          if (payment.links[i].rel === 'approval_url') {
+          if (payment.links[i].rel === 'approval_url') {  
             console.log(payment.links[i].href);
-            res.redirect(payment.links[i].href )
+            res.json({status:true,link:payment.links[i].href} )
 
           }
         }
