@@ -117,6 +117,7 @@ router.post('/pay', async (req, res) => {
     };
 
     paypal.payment.create(create_payment_json, function (error, payment) {
+      console.log(payment);
       if (error) {
         throw error;
       } else {
