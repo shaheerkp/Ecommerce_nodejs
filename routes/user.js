@@ -208,10 +208,7 @@ router.get('/', checkauth, async function (req, res, next) {
   let tshirt = await findProductByName("Tshirt")
   let Pantss = await findProductByName("Pantss")
   let Shorts = await findProductByName("Shorts")
-  shirts = shirts[5]._id
-  tshirt = tshirt[0]._id
-  Pantss = Pantss[1]._id
-  Shorts = Shorts[0]._id
+ console.log("homeeeeeeeeeeeeeeee");
   console.log(shirts);
   let count = null
   if (req.session.user) {
@@ -219,11 +216,11 @@ router.get('/', checkauth, async function (req, res, next) {
       cart_count = await cartCount(req.session.user._id)
       req.session.user.isLoggedin = true
       user = req.session.user
-      res.render('user-pages/user-home', { shirts, Shorts, Pantss, tshirt, shirts, user, cart_count, category: await getCategory() });
+      res.render('user-pages/user-home', { user, cart_count, category: await getCategory() });
     })
   }
   else {
-    res.render('user-pages/user-home', { Shorts, Pantss, tshirt, shirts, category: await getCategory() });
+    res.render('user-pages/user-home', { category: await getCategory() });
   }
 
 
