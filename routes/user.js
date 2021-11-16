@@ -431,7 +431,7 @@ router.post('/wishlist', (req, res) => {
 router.post('/apply_coupon', (req, res) => {
   let total = parseInt(req.body.total)
 
-  console.log("it comming");
+ 
   console.log(req.session.user._id);
   validateCoupon(req.body.code, total, req.session.user._id).then((response) => {
     res.json(response)

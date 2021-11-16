@@ -1237,7 +1237,7 @@ module.exports = {
                 } else {
 
                     if (coupon[0].min_amount <= total) {
-                        off_price = total - total * coupon[0].off / 100
+                        off_price = parseInt(total - total * coupon[0].off / 100)
                         resolve({ coupon: true, amount: off_price, mes: "Coupon Applied" })
                     }
                     else {
