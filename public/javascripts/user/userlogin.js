@@ -31,7 +31,24 @@ $("#login-form").submit((e) => {
   })
 
 })
+ 
+document.getElementById("ver_otp").oninput=e=>{
+  e.target.value = e.target.value.replace(/[^0-9]/, '').replace(/(\..*)\./, '$1');;
+  if(e.target.value.length<6){
+    document.getElementById("otp_err").innerHTML="Enter 6 digits"
+    ver_otp=false
+  }
+  else{
+    document.getElementById("otp_err").innerHTML=""
+    ver_otp=true
 
+
+  }
+
+
+}
+
+let ver_otp=false;
 let number_val = false
 var email_val = false
 var u_number = document.getElementById("otp_number")
@@ -97,24 +114,30 @@ document.getElementById("ver_submit_btn").onclick = e => {
   e.preventDefault()
   let oneTime = $('#ver_otp').val()
   let number = $('#otp_number').val()
-  $.ajax({
-    url: "/verify-otp",
-    method: "post",
-    data: { oneTime, number },
-    success: function (response) {
-      if (response.status) {
-        window.location.reload()
-
+  if(ver_otp){
+    
+    $.ajax({
+      url: "/verify-otp",
+      method: "post",
+      data: { oneTime, number },
+      success: function (response) {
+        if (response.status) {
+          window.location.reload()
+  
+        }
+        else {
+          document.getElementById('number_err').innerHTML = "Incorrect Otp"
+        }
+  
+  
+      }, error: function () {
+  
       }
-      else {
-        document.getElementById('number_err').innerHTML = "Incorrect Otp"
-      }
-
-
-    }, error: function () {
-
-    }
-  })
+    })
+  }
+  else{
+    alert("Enter details correctly")
+  }
 
 
 }
@@ -122,6 +145,7 @@ document.getElementById("ver_submit_btn").onclick = e => {
 
 
 $('#otp-form').submit((e) => {
+
   e.preventDefault()
   if (number_val && email_val) {
     let number = $('#otp_number').val()
@@ -144,7 +168,7 @@ $('#otp-form').submit((e) => {
           document.getElementById('sent-otp').style.display = 'none'
           document.getElementById('countdown').style.display=''
 
-          const startingMinutes = 5;
+          const startingMinutes = 2;
           let time = startingMinutes * 60;
 
           const countdownEl = document.getElementById('countdown')

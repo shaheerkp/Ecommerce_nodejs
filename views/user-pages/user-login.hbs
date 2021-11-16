@@ -22,7 +22,8 @@
     </form>
 
     <div style="display: none;" id="otp_div" class=" row  input-group ms-2 mt-3 mb-3">
-      <input type="text" id="ver_otp" class="form-control" placeholder="Enter Otp" aria-label="Recipient's username"
+      <span id="otp_err" class="text-danger"></span>
+      <input type="text"  id="ver_otp" class="form-control" placeholder="Enter Otp" aria-label="Recipient's username"
         aria-describedby="basic-addon2">
       <div class=" col-lg-6 input-group-append">
         <button id="ver_submit_btn" class="btn btn-outline-secondary" type="button">Submit</button>

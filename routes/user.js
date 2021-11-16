@@ -77,15 +77,27 @@ function checkauth(req, res, next) {
 
 
 router.post('/pay', async (req, res) => {
+  console.log("pay");
 
   console.log(req.body);
-  let total_amount = await getTotalAmount(req.body.userid)
+  let price=0
+  if(!req.body.prodid==''){
+    console.log("if");
+    let products = await findProduct(req.body.prodid)
+    price=products[0].price
+    
+
+  }else{
+    console.log("else");
+    let total_amount = await getTotalAmount(req.body.userid)
+
+    price = total_amount.total
+  }
   let add = await getAddress(req.body.address, req.session.user.email);
   let selectedAddress = add.address.find((address) => address.id == req.body.address);
   if (selectedAddress) {
     console.log("addresss undddd");
-    let price = total_amount.total
-    console.log(total_amount.total);
+    console.log(price);
     req.session.user.price = price
     req.session.user.body = req.body
 
@@ -96,6 +108,7 @@ router.post('/pay', async (req, res) => {
         "payment_method": "paypal"
       },
       "redirect_urls": {
+       
         "return_url": "https://ecom.shaheerkp.tech/success",
         "cancel_url": "https://ecom.shaheerkp.tech/cancel"
       },
@@ -165,6 +178,9 @@ router.get('/success', (req, res) => {
   };
 
   paypal.payment.execute(paymentId, execute_payment_json, async function (error, payment) {
+    
+
+
     if (error) {
       console.log(error.response);
       throw error;
@@ -178,6 +194,8 @@ router.get('/success', (req, res) => {
       console.log(selectedAddress);
       req.session.user.ordersuccess = true;
       placeOrder(selectedAddress, req.session.user.body, products, total_amount).then((result) => {
+       delete req.session.user.price
+       delete req.session.user.body 
         res.redirect('/suc')
 
       })
@@ -189,7 +207,11 @@ router.get('/success', (req, res) => {
 
 
 
-router.get('/cancel', (req, res) => res.redirect('/'));
+router.get('/cancel', (req, res) => {
+  res.redirect('/')
+  delete req.session.user.price
+       delete req.session.user.body 
+});
 
 
 router.post('/verifypayment', (req, res) => {
@@ -240,21 +262,28 @@ router.get('/viewProducts/:sub', async function (req, res) {
   }
 
   db.viewProducts(req.params.sub).then(async (result) => {
-    let cat = result[0].sub_category
-    for (let i = 0; i < result.length; i++) {
-      var dt = new Date()
-      if (result[i].offer) {
-        diff = result[i].exp_date < dt ? true : false
-
-        console.log("diffff", diff);
-        if (diff) {
-          deleteOffer(result[i]._id)
+    console.log("viewwww",result);
+    if(result[0]){
+      
+      let cat = result[0].sub_category
+      for (let i = 0; i < result.length; i++) {
+        var dt = new Date()
+        if (result[i].offer) {
+          diff = result[i].exp_date < dt ? true : false
+  
+          console.log("diffff", diff);
+          if (diff) {
+            deleteOffer(result[i]._id)
+          }
         }
+  
       }
+  
+      res.render('user-pages/shirts', { user, cart_count, result, cat, category: await getCategory() });
+    }else{
+      res.render('user-pages/shirts', { user, cart_count, category: await getCategory() });
 
     }
-
-    res.render('user-pages/shirts', { user, cart_count, result, cat, category: await getCategory() });
 
   })
 });
