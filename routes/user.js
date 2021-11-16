@@ -85,6 +85,7 @@ router.post('/pay', async (req, res) => {
   if (selectedAddress) {
     console.log("addresss undddd");
     let price = total_amount.total
+    console.log(total_amount.total);
     req.session.user.price = price
     req.session.user.body = req.body
 
@@ -192,7 +193,6 @@ router.get('/cancel', (req, res) => res.redirect('/'));
 
 
 router.post('/verifypayment', (req, res) => {
-  console.log("verify", req.body);
   userhelper.verifyPayment(req.body).then((result) => {
     userhelper.changePaymentStatus(req.body['order[receipt]']).then((result) => {
       res.json({ status: true })
@@ -202,14 +202,13 @@ router.post('/verifypayment', (req, res) => {
   })
 })
 
-/* GET home page. */
+
 router.get('/', checkauth, async function (req, res, next) {
   let shirts = await findProductByName("Shirts")
   let tshirt = await findProductByName("Tshirt")
   let Pantss = await findProductByName("Pantss")
   let Shorts = await findProductByName("Shorts")
- console.log("homeeeeeeeeeeeeeeee");
-  console.log(shirts);
+  
   let count = null
   if (req.session.user) {
     await cartCount(req.session.user._id).then(async (cart_count) => {
