@@ -84,6 +84,7 @@ router.post('/pay', async (req, res) => {
   if(!req.body.prodid==''){
     console.log("if");
     let products = await findProduct(req.body.prodid)
+    
     price=products[0].price
     
 
@@ -108,9 +109,10 @@ router.post('/pay', async (req, res) => {
         "payment_method": "paypal"
       },
       "redirect_urls": {
-       
-        "return_url": "https://ecom.shaheerkp.tech/success",
-        "cancel_url": "https://ecom.shaheerkp.tech/cancel"
+        "return_url": "http://localhost:3000/success",
+        "cancel_url": "http://localhost:3000/cancel"
+        // "return_url": "https://ecom.shaheerkp.tech/success",
+        // "cancel_url": "https://ecom.shaheerkp.tech/cancel"
       },
       "transactions": [{
         "item_list": {
@@ -180,22 +182,44 @@ router.get('/success', (req, res) => {
   paypal.payment.execute(paymentId, execute_payment_json, async function (error, payment) {
     
 
-
+    let products
+    let total_amount
     if (error) {
-      console.log(error.response);
+      
       throw error;
     } else {
-      console.log(JSON.stringify(payment));
-      req.session.user.ordersuccess = true
-      let products = await getCartProductList(req.session.user.body.userid)
-      let total_amount = await getTotalAmount(req.session.user.body.userid)
+
+      if(!req.session.user.body.prodid==''){
+        console.log("if");
+         products = await findProduct(req.session.user.body.prodid)
+         products = [
+          {
+            item: products[0]._id,
+            quantity: 1,
+            staus: "placed",
+          }
+        ]
+         console.log("if products",products);
+         total_amount={
+           _id:null,
+           total:products[0].price
+         }
+
+      }else{
+        req.session.user.ordersuccess = true
+        products = await getCartProductList(req.session.user.body.userid)
+        console.log("else",products);
+       total_amount = await getTotalAmount(req.session.user.body.userid)
+      console.log("total amount",total_amount);
+      }
+
+      
       let add = await getAddress(req.session.user.body.address, req.session.user.email);
       let selectedAddress = add.address.find((address) => address.id == req.session.user.body.address);
       console.log(selectedAddress);
       req.session.user.ordersuccess = true;
       placeOrder(selectedAddress, req.session.user.body, products, total_amount).then((result) => {
-       delete req.session.user.price
-       delete req.session.user.body 
+       
         res.redirect('/suc')
 
       })
