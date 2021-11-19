@@ -40,8 +40,14 @@
 
 
     <div class="py-2">
+        {{#if user_details.password}}
         <button class="btn-sm" type="button" class="btn btn-primary" data-bs-toggle="modal"
             data-bs-target="#exampleModal" id="Change password" style="color: #0779e4;">Change Password </button>
+            {{else}}
+             <button class="btn-sm" type="button" class="btn btn-primary" data-bs-toggle="modal"
+            data-bs-target="#exampleModal1" id="Change password" style="color: #0779e4;">Set Password </button>
+
+            {{/if }}
         <span class="text-danger" id="err"></span>
         <div class="row py-2">
             <div class="col-md-6"> <label for="firstname">First Name</label> <input id="fname" type="text"
@@ -116,6 +122,32 @@
             <div class="modal-footer">
 
                 <button type="button" onclick="changePassword()" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Set Password</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body row">
+                <span class="text-danger" id="newpasserr"></span>
+
+                <div class="col-lg-12 m-2">
+                    <input type="password" id="newpass1" name="newpassword" placeholder="New Password">
+
+                </div>
+                <div class="col-lg-12 m-2">
+                    <input type="password" id="conpass1" name="confirmpassword" placeholder="Confirm Password">
+
+                </div>
+            </div>
+            <div class="modal-footer">
+
+                <button type="button" onclick="setPassword()" class="btn btn-primary">Save changes</button>
             </div>
         </div>
     </div>
@@ -298,11 +330,8 @@
         width: 128px;
         height: 128px;
         border: 4px solid rgba(1, 0, 0, 0.7);
-
         background-size: 100px 100px;
-
         background-image: url("/images/user-avatar-icon-sign-profile-260nw-1145752283.jpg");
-
     }
 
     img {
@@ -311,8 +340,6 @@
     }
 
     .p-image {
-
-
         right: 30px;
         color: #666666;
         transition: all .3s cubic-bezier(.175, .885, .32, 1.275);
@@ -331,6 +358,7 @@
         color: #999;
     }
 </style>
+
 <script>
     let old = false
     let newp = false
@@ -359,6 +387,11 @@
             document.getElementById('passerr').innerHTML = "passs word not match"
         }
 
+    }
+
+
+    document.getElementById('conpass1').oninput=e=>{
+        console.log(e.target.value)
     }
 
     function changePassword() {
@@ -393,6 +426,35 @@
             document.getElementById('passerr').innerHTML = "Enter all fields correctly"
 
         }
+    }
+
+        function setPassword() {
+        
+            let con_password = document.getElementById('conpass1').value
+            let new_password = document.getElementById('newpass1').value
+  
+            $.ajax({
+                url: "/set-password",
+                method: "post",
+                data: { con_password, new_password },
+                success: function (response) {
+                    console.log(response)
+                    if (response.status) {
+                        alert(response.mes)
+                        location.reload()
+                    }
+                    else {
+                        document.getElementById('newpasserr').innerHTML = response.mes
+
+                    }
+
+                }
+
+
+            })
+
+        
+     
     }
 
 

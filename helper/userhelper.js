@@ -145,6 +145,17 @@ module.exports = {
         })
 
     },
+    setPassword(data,password){
+        console.log("sdfa",data,password);
+        return new Promise(async(resolve,reject)=>{
+            new_password = await bcrypt.hash(password.con_password, 10)
+            db.get().collection("users").updateOne({_id:objectId(data)},{$set:{password:new_password}}).then((res)=>{
+                console.log(res);
+            })
+        })
+
+    },
+
     saveChanges:(eml,data)=>{
         return new Promise(async(resolve,reject)=>{
 

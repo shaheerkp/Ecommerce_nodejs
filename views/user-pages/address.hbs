@@ -260,6 +260,7 @@
 
                 verifyPayment(response, order)
             },
+          
 
             "prefill": {
                 "name": "Gaurav Kumar",
@@ -271,11 +272,22 @@
             },
             "theme": {
                 "color": "#3399cc"
+            },
+              "modal":{
+                "ondismiss":function(){
+                    console.log("******************"+order.receipt)
+                    deleteOrder(order.receipt)
+
+                }
             }
         };
         var rzp1 = new Razorpay(options);
         rzp1.open();
+        rzp1.on('payment.failed',function(response){
 
+            deleteOrder(order.receipt)
+
+        })
     } 
 
 
@@ -310,6 +322,22 @@
             error: function () {
 
             }
+        })
+
+    }
+    function deleteOrder(orderId){
+        alert("shaheerkp@gmail.com")
+        $.ajax({
+            url:"/deletefakeorder",
+            method:"post",
+            data:{orderId},
+            success:function(){
+
+            },
+            error:function(){
+
+            }
+            
         })
 
     }

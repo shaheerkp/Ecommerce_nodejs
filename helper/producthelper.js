@@ -889,11 +889,10 @@ module.exports = {
 
     searchProduct: (keyword) => {
         return new Promise(async (resolve, reject) => {
-            key = keyword.toUpperCase();
-            console.log("asdas", key);
-            p_name = await db.get().collection("product").find({ "product_name": key }).toArray()
-            cat = await db.get().collection("product").find({ "category": key }).toArray()
-            sub = await db.get().collection("product").find({ "sub_category": key }).toArray()
+            console.log("asdas", keyword);
+            p_name = await db.get().collection("product").find({ "product_name": {$regex:keyword} }).toArray()
+            cat = await db.get().collection("product").find({ "category": {$regex:keyword}}).toArray()
+            sub = await db.get().collection("product").find({ "sub_category": {$regex:keyword} }).toArray()
             console.log(p_name[0], cat[0], sub[0]);
 
             if (p_name[0]) {
@@ -1335,6 +1334,18 @@ module.exports = {
 
         })
 
+    },
+    deleteFakeOrder:(orderId)=>{
+
+        return new Promise(async (resolve, reject) => {
+            db.get().collection("orders").deleteOne({_id:objectId(orderId.orderId)}).then((res)=>{
+                console.log("---------++++++++++++++++++")
+                console.log(res)
+                resolve(res)
+            })
+
+        })
+     
     }
 
 }

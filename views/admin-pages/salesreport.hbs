@@ -92,17 +92,15 @@
 
               </nav>
             </div>
-              <a class="nav-link" href="/admin/banners">
+            <a class="nav-link" href="/admin/banners">
               <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
               Banners
             </a>
 
             <a class="nav-link" href="/admin/signout">
-                <div class="sb-nav-link-icon"><i
-                    class="fas fa-tachometer-alt"
-                  ></i></div>
-                Logout
-              </a>
+              <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+              Logout
+            </a>
 
           </div>
         </div>
@@ -228,6 +226,13 @@
       buttons: [
         'excel', 'pdf', 'print'
       ],
+      drawCallback: function () {
+        var hasRows = this.api().rows({ filter: 'applied' }).data().length > 0;
+        $('.buttons-excel')[0].style.visibility = hasRows ? 'visible' : 'hidden'
+        $('.buttons-pdf')[0].style.visibility = hasRows ? 'visible' : 'hidden'
+        $('.buttons-print')[0].style.visibility = hasRows ? 'visible' : 'hidden'
+
+      }
     });
 
   })
@@ -241,27 +246,27 @@
   today = yyyy + '-' + mm + '-' + dd;
   $('#date1').attr('max', today);
   $('#date2').attr('max', today);
-  document.getElementById('date1').onchange=e=>{
-    value=e.target.value
- 
+  document.getElementById('date1').onchange = e => {
+    value = e.target.value
+
     $('#date2').attr('min', value);
   }
 
   function search() {
     let date1 = document.getElementById("date1").value
     let date2 = document.getElementById("date2").value
-    
+
     $.ajax({
       url: '/admin/search-by-date',
       method: 'post',
       data: { date1, date2 },
       success: function (response) {
-        console.log(response)
         table.destroy();
 
         document.getElementById("myList").innerHTML = "";
 
         for (let i = 0; i < response.response.length; i++) {
+          console.log("response", response.response[i].orderObj.products)
           newelement = `  <tr>
              <td>${i + 1} </td>
           <td>${response.response[i]._id}</td>
@@ -304,8 +309,15 @@
           buttons: [
             'excel', 'pdf', 'print'
           ],
+          drawCallback: function () {
+            var hasRows = this.api().rows({ filter: 'applied' }).data().length > 0;
+            $('.buttons-excel')[0].style.visibility = hasRows ? 'visible' : 'hidden'
+            $('.buttons-pdf')[0].style.visibility = hasRows ? 'visible' : 'hidden'
+            $('.buttons-print')[0].style.visibility = hasRows ? 'visible' : 'hidden'
+
+          }
         });
-       
+
 
 
       }
@@ -371,6 +383,13 @@
           buttons: [
             'excel', 'pdf', 'print'
           ],
+          drawCallback: function () {
+            var hasRows = this.api().rows({ filter: 'applied' }).data().length > 0;
+            $('.buttons-excel')[0].style.visibility = hasRows ? 'visible' : 'hidden'
+            $('.buttons-pdf')[0].style.visibility = hasRows ? 'visible' : 'hidden'
+            $('.buttons-print')[0].style.visibility = hasRows ? 'visible' : 'hidden'
+
+          }
         });
 
 
