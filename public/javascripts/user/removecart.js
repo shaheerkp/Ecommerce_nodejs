@@ -91,6 +91,7 @@ function changeQuantity(cartId,proId,Count){
   if(Qty==1&&Count==-1){
     document.getElementById("qtyminus").disabled=false
   document.getElementById("qtyplus").disabled=false
+  window.location.reload()
 
   }
   else if(Qty==1&&Count==1){
@@ -122,6 +123,9 @@ function changeQuantity(cartId,proId,Count){
       qty:Qty
     },
     success:function(response){
+      document.getElementById("qtyminus").disabled=false
+      document.getElementById("qtyplus").disabled=false
+    
       console.log(response)
       if(response.status){
         if(Count==1){
@@ -141,9 +145,7 @@ function changeQuantity(cartId,proId,Count){
         document.getElementById(`price${proId}`).innerHTML=response.sub.total
 
       }
-      document.getElementById("qtyminus").disabled=false
-  document.getElementById("qtyplus").disabled=false
-
+     
       
     }
   })
