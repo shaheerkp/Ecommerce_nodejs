@@ -89,14 +89,12 @@ function changeQuantity(cartId,proId,Count){
   console.log(Qty,Count);
  
   if(Qty==1&&Count==-1){
-    document.getElementById("qtyminus").disabled=false
-  document.getElementById("qtyplus").disabled=false
+  
   window.location.reload()
 
   }
   else if(Qty==1&&Count==1){
-    document.getElementById("qtyminus").disabled=false
-    document.getElementById("qtyplus").disabled=false
+    window.location.reload()
   
 
   }
