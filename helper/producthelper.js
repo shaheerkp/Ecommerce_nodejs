@@ -1063,6 +1063,7 @@ module.exports = {
                         quantity: '$orderObj.products.quantity',
                         status: '$orderObj.products.staus',
                         isCanceled: '$orderObj.products.isCancel',
+                        createdAt: "$orderObj.createdAt",
                         isDelivered: '$orderObj.products.isDelivered'
                     }
                 },
@@ -1076,9 +1077,9 @@ module.exports = {
                 },
                 {
                     $project: {
-                        item: 1, quantity: 1, status: 1, isCanceled: 1, isDelivered: 1, products: { $arrayElemAt: ['$product', 0] }
+                        item: 1, quantity: 1, status: 1, isCanceled: 1, isDelivered: 1,createdAt:1, products: { $arrayElemAt: ['$product', 0] }
                     }
-                }
+                },{$sort:{createdAt:-1}}
                 // {
                 //     $group: {
 
