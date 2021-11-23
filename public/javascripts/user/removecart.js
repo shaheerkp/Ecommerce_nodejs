@@ -89,7 +89,7 @@ function changeQuantity(cartId,proId,Count){
   console.log(Qty,Count);
  
   if(Qty==1&&Count==-1){
-  
+  alert("Only one product available ")
   window.location.reload()
 
   }
