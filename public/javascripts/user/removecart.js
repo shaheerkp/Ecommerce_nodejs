@@ -87,9 +87,7 @@ function qtychange(){
 function changeQuantity(cartId,proId,Count){
   let Qty =document.getElementById(proId+"qty").value
   console.log(Qty,Count);
-  if(Qty%5==0){
-    window.location.reload()
-  }
+ 
   if(Qty==1&&Count==-1){
     document.getElementById("qtyminus").disabled=false
   document.getElementById("qtyplus").disabled=false
