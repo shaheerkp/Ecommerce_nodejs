@@ -28,6 +28,7 @@ const {
   searchProduct,
   checksearchProduct,
   checksearchProductbetween,
+  BuynowplaceOrder,
 } = require("../helper/producthelper");
 const { token } = require("morgan");
 const {
@@ -887,14 +888,14 @@ router.post("/place-order", async function (req, res) {
       console.log(req.body);
       if (req.body.mode == "cod") {
         req.session.user.ordersuccess = true;
-        placeOrder(selectedAddress, req.body, product, total_amount).then(
+        BuynowplaceOrder(selectedAddress, req.body, product, total_amount).then(
           (result) => {
             console.log(result);
             res.json({ codSuccess: true });
           }
         );
       } else if (req.body.mode == "r_pay") {
-        placeOrder(selectedAddress, req.body, product, total_amount).then(
+        BuynowplaceOrder(selectedAddress, req.body, product, total_amount).then(
           (id) => {
             console.log("resolved order id", id);
 

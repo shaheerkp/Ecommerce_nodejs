@@ -466,7 +466,7 @@ module.exports = {
 
     getTotalAmount: (userid) => {
 
-
+        
         return new Promise(async (resolve, reject) => {
 
             let total = await db.get().collection("cart").aggregate([
@@ -709,6 +709,88 @@ module.exports = {
                     if (address.mode == "cod" || address.mode == "p_pal") {
 
                         db.get().collection('cart').remove({ user: address.userid })
+                        resolve(result.insertedId)
+
+                    } else {
+                        resolve(result.insertedId)
+                    }
+
+
+                })
+            })
+        }
+    },
+
+    BuynowplaceOrder: (sel, address, products, total_amount, c_code) => {
+
+
+        if (sel.sudden) {
+            return new Promise((resolve, reject) => {
+                let ok = address.mode == "cod" ? 'placed' : 'pending'
+                let orderObj = {
+                    delivery_address: {
+                        name: sel.name,
+                        email: sel.email,
+                        city: sel.city,
+                        pin: sel.pin,
+                        address: sel.address,
+                        state: sel.state,
+
+                    },
+                    userid: address.userid,
+                    payment: address.mode,
+                    amount: total_amount.total,
+                    products: products,
+                    status: ok,
+                    date: moment().format('mmmm do yyyy, h:mm:ss a'),
+                    createdAt: new Date()
+
+                }
+                console.log("obj", orderObj);
+                db.get().collection('orders').insertOne({ orderObj }).then(() => {
+
+                    resolve(true)
+                })
+            })
+
+        } else {
+            return new Promise((resolve, reject) => {
+                let ok = address.mode == "cod" || address.mode == "p_pal" ? 'placed' : 'pending'
+
+
+
+                let orderObj = {
+                    delivery_address: {
+                        name: sel.name,
+                        email: sel.email,
+                        city: sel.city,
+                        pin: sel.pin,
+                        address: sel.address,
+                        state: sel.state,
+                    },
+                    userid: address.userid,
+                    payment: address.mode,
+                    amount: total_amount.total,
+                    products: products,
+                    createdAt: new Date(),
+                    status: ok,
+                    date: moment().format('MMMM Do YYYY, h:mm:ss a'),
+
+                }
+                db.get().collection('orders').insertOne({ orderObj }).then(async (result) => {
+
+                    let coupon = await db.get().collection('coupon').find({ code: c_code }).toArray()
+
+                    if (coupon[0]) {
+                        db.get().collection('users').update({ _id: objectId(address.userid) }, { $push: { "coupons": { _id: coupon[0]._id } } })
+
+                    }
+
+
+
+                    if (address.mode == "cod" || address.mode == "p_pal") {
+
+                       
                         resolve(result.insertedId)
 
                     } else {
@@ -1236,7 +1318,7 @@ module.exports = {
                 } else {
 
                     if (coupon[0].min_amount <= total) {
-                        off_price = g(total - total * coupon[0].off / 100)
+                        off_price = parseInt(total - total * coupon[0].off / 100)
                         resolve({ coupon: true, amount: off_price, mes: "Coupon Applied" })
                     }
                     else {
@@ -1290,14 +1372,11 @@ module.exports = {
             })
 
         })
-
-
     },
 
 
 
     viewOrderDetails: (id) => {
-        console.log("iddd", id);
         return new Promise(async (resolve, reject) => {
             let ordered_items = await db.get().collection('orders').aggregate([
                 {

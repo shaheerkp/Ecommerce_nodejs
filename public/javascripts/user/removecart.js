@@ -85,9 +85,29 @@ function qtychange(){
 
 
 function changeQuantity(cartId,proId,Count){
+  let Qty =document.getElementById(proId+"qty").value
+  console.log(Qty,Count);
+ 
+  if(Qty==1&&Count==-1){
+    document.getElementById("qtyminus").disabled=false
+  document.getElementById("qtyplus").disabled=false
+
+  }
+  else if(Qty==1&&Count==1){
+    document.getElementById("qtyminus").disabled=false
+    document.getElementById("qtyplus").disabled=false
+  
+
+  }
+  else{
+    
+     document.getElementById("qtyminus").disabled=true
+     document.getElementById("qtyplus").disabled=true
+
+  }
+  
   
   console.log(cartId);
-  let Qty =document.getElementById(proId+"qty").value
   console.log(Qty)
   console.log(cartId)
   console.log(proId)
@@ -102,6 +122,7 @@ function changeQuantity(cartId,proId,Count){
       qty:Qty
     },
     success:function(response){
+      console.log(response)
       if(response.status){
         if(Count==1){
           document.getElementById(proId+"qty").value=1+parseInt(Qty)  
@@ -120,6 +141,9 @@ function changeQuantity(cartId,proId,Count){
         document.getElementById(`price${proId}`).innerHTML=response.sub.total
 
       }
+      document.getElementById("qtyminus").disabled=false
+  document.getElementById("qtyplus").disabled=false
+
       
     }
   })
