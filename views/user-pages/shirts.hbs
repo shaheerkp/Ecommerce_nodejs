@@ -524,6 +524,7 @@ div.shadow{
     <div class="  col-lg-9 float-end float-lg-start ">
         <h1 class=" p-2 mt-3 text-center">{{cat}}</h1>
         <div class="row " id="full-div">
+			{{#if result}}
             {{#each result}}
 
             <div class="col-lg-4 mt-2 ">
@@ -595,6 +596,14 @@ div.shadow{
             </div>
 
             {{/each}}
+			{{else}}
+			<div>
+				<h1>
+					Sorry, No products
+				</h1>
+			</div>
+			{{/if}}
+			
 
 
 
