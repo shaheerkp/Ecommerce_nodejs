@@ -2,6 +2,9 @@ var express = require("express");
 var router = express.Router();
 var db = require("../helper/userhelper");
 const { OAuth2Client } = require("google-auth-library");
+const dotenv = require('dotenv')
+dotenv.config()
+
 const {
   viewCategory,
   findProduct,
@@ -47,9 +50,8 @@ const {
   editAddress,
 } = require("../helper/userhelper");
 const userhelper = require("../helper/userhelper");
-const CLIENT_ID =
-  "360791234082-kap1r32c2bjt3fg3ip28qvp6fplu26ui.apps.googleusercontent.com";
-const client = new OAuth2Client(CLIENT_ID);
+
+const client = new OAuth2Client(process.env.CLIENT_ID);
 var uuid = require("uuid");
 const { response } = require("express");
 const fs = require("fs");
@@ -60,16 +62,15 @@ const producthelper = require("../helper/producthelper");
 
 paypal.configure({
   mode: "sandbox", //sandbox or live
-  client_id:
-    "AbidnDRDKGuxMeFNLQT9ZRWVkCv2Cwy1A1HW4KKxsENJHi4XZ1_uFYs1W6kowr00bSkqg9O45qafPoyl",
-  client_secret:
-    "EC8huVJhjUe6fkxtJoArO-DUP6CDKg70mpUAIu-JUgS4WaerK799erkx8at0rqX4Gm7JrGeMpJ8vH6cg",
+  client_id:process.env.PAYPAL_CLIENT_ID,
+  client_secret:process.env.PAYPAL_CLIENT_SCERET,
 });
 
-const serviceSID = "VA233b542e6e55ddb7942545ac51720ed9";
-const accountSID = "AC9f86a3864a33d5791cbd030931c46150";
-const authToken = "832f6ab4aa8fdd625d254544e2febd59";
+const serviceSID = process.env.SERVICESID
+const accountSID = process.env.ACCOUNTSID;
+const authToken = process.env.AUTHTOKEN;
 const twilio = require("twilio")(accountSID, authToken);
+console.log(twilio,serviceSID,accountSID,authToken);
 
 const getCategory = async () => {
   let categories = await viewCategory();
@@ -78,7 +79,7 @@ const getCategory = async () => {
 
 const checkLogin = (req, res, next) => {
   if (req.session.user) {
-    next();
+    next();  
   } else {
     res.redirect("/login");
   }
@@ -535,7 +536,7 @@ router.post("/login-google", function (req, res) {
   async function verify() {
     const ticket = await client.verifyIdToken({
       idToken: token,
-      audience: CLIENT_ID,
+      audience: process.env.CLIENT_ID,
     });
     const payload = ticket.getPayload();
     payload;

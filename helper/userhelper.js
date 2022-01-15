@@ -4,12 +4,16 @@ const objectId = require('mongodb').ObjectId
 const { LoopDetected } = require('http-errors')
 const Razorpay=require('razorpay')
 const { ObjectId } = require('bson')
+const dotenv = require('dotenv')
+
+dotenv.config()
+
 
 const { resolve } = require('path')
 const { response } = require('express')
 var instance = new Razorpay({
-    key_id: 'rzp_test_5hQK7ZeFBkNf4X',
-    key_secret: 'OdlCOk6TWmdnr2nykmAUSaaW',
+    key_id: process.env.KEY_ID,
+    key_secret: process.env.KEY_SECRET,
   });
 
 
@@ -396,7 +400,7 @@ module.exports = {
         console.log("reach");
         return new Promise(async (resolve, reject) => {
             const {createHmac } = await import('crypto');
-            let  hmac = createHmac('sha256', 'OdlCOk6TWmdnr2nykmAUSaaW');
+            let  hmac = createHmac('sha256', process.env.RAZORPAY_KEY);
             
             hmac.update(details['payment[razorpay_order_id]']+'|'+details['payment[razorpay_payment_id]']); 
             hmac=hmac.digest('hex')
